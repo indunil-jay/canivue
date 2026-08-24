@@ -521,16 +521,15 @@ class _RoundIconButton extends StatelessWidget {
     final isFilled = gradient != null;
 
     final child = AnimatedContainer(
-      duration: const Duration(milliseconds: 250),
-      curve: Curves.easeOut,
+      duration: const Duration(milliseconds: 280),
+      curve: Curves.easeOutCubic,
       height: 48,
-      width: wide ? null : 48,
-      padding: wide ? const EdgeInsets.symmetric(horizontal: 22) : null,
+      width: wide ? 145 : 48,
+      padding: wide ? const EdgeInsets.symmetric(horizontal: 16) : EdgeInsets.zero,
       decoration: BoxDecoration(
         gradient: gradient,
         color: isFilled ? null : Colors.white.withValues(alpha: 0.15),
-        shape: wide ? BoxShape.rectangle : BoxShape.circle,
-        borderRadius: wide ? BorderRadius.circular(24) : null,
+        borderRadius: BorderRadius.circular(24),
         border: Border.all(
           color: Colors.white.withValues(alpha: isFilled ? 0.3 : 0.2),
         ),
@@ -544,33 +543,39 @@ class _RoundIconButton extends StatelessWidget {
               ]
             : null,
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, color: Colors.white, size: 20),
-          if (wide && label != null) ...[
-            const SizedBox(width: 8),
-            Text(
-              label!,
-              style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 14,
-                letterSpacing: 0.2,
+      child: Center(
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, color: Colors.white, size: 20),
+            if (wide && label != null) ...[
+              const SizedBox(width: 8),
+              Flexible(
+                child: Text(
+                  label!,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                    letterSpacing: 0.2,
+                  ),
+                ),
               ),
-            ),
+            ],
           ],
-        ],
+        ),
       ),
     );
 
     return Material(
       color: Colors.transparent,
-      shape: wide ? const StadiumBorder() : const CircleBorder(),
+      shape: const StadiumBorder(),
       child: InkWell(
         onTap: onTap,
-        customBorder: wide ? const StadiumBorder() : const CircleBorder(),
+        customBorder: const StadiumBorder(),
         child: child,
       ),
     );
