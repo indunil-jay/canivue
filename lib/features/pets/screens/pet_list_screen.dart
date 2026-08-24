@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:canivue/features/pets/models/pet_model.dart';
+import 'package:canivue/features/pets/screens/pet_detail_screen.dart';
 import 'package:canivue/features/pets/widgets/pet_card.dart';
 
 class PetListScreen extends StatefulWidget {
@@ -43,10 +44,9 @@ class _PetListScreenState extends State<PetListScreen> {
   }
 
   void _handlePetTap(Pet pet) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Opening detailed profile for ${pet.name}...'),
-        behavior: SnackBarBehavior.floating,
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => PetDetailScreen(pet: pet),
       ),
     );
   }
