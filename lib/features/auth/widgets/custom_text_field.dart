@@ -13,6 +13,7 @@ class CustomTextField extends StatelessWidget {
     this.textInputAction = TextInputAction.next,
     this.validator,
     this.onFieldSubmitted,
+    this.maxLines = 1,
   });
 
   final TextEditingController controller;
@@ -25,6 +26,7 @@ class CustomTextField extends StatelessWidget {
   final TextInputAction textInputAction;
   final String? Function(String?)? validator;
   final void Function(String)? onFieldSubmitted;
+  final int maxLines;
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +50,7 @@ class CustomTextField extends StatelessWidget {
           textInputAction: textInputAction,
           validator: validator,
           onFieldSubmitted: onFieldSubmitted,
+          maxLines: obscureText ? 1 : maxLines,
           autovalidateMode: AutovalidateMode.onUserInteraction,
           decoration: InputDecoration(
             hintText: hintText,
@@ -55,11 +58,13 @@ class CustomTextField extends StatelessWidget {
               color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
               fontSize: 14,
             ),
-            prefixIcon: Icon(
-              prefixIcon,
-              color: theme.colorScheme.primary,
-              size: 20,
-            ),
+            prefixIcon: maxLines > 1
+                ? null
+                : Icon(
+                    prefixIcon,
+                    color: theme.colorScheme.primary,
+                    size: 20,
+                  ),
             suffixIcon: suffixIcon,
             filled: true,
             fillColor: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.35),
