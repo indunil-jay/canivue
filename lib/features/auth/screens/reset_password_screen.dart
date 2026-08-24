@@ -67,7 +67,12 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.sizeOf(context);
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    final backgroundGradient = isDark ? AppTheme.obsidianAuthGradient : AppTheme.porcelainAuthGradient;
+    final titleColor = isDark ? Colors.white : const Color(0xFF0F172A);
+    final subtitleColor = isDark ? Colors.white.withValues(alpha: 0.8) : const Color(0xFF64748B);
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -75,53 +80,41 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
+          icon: Icon(
+            Icons.arrow_back_ios_new_rounded,
+            color: isDark ? Colors.white : const Color(0xFF0F172A),
+          ),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: AppTheme.midnightBackgroundGradient,
+        decoration: BoxDecoration(
+          gradient: backgroundGradient,
         ),
         child: Stack(
           children: [
             // Ambient Luminous Orbs
-            Positioned(
-              top: -60,
-              right: -40,
-              child: Container(
-                height: 260,
-                width: 260,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: RadialGradient(
-                    colors: [
-                      AppTheme.emeraldAccent.withValues(alpha: 0.3),
-                      Colors.transparent,
-                    ],
+            if (isDark) ...[
+              Positioned(
+                top: -60,
+                right: -40,
+                child: Container(
+                  height: 260,
+                  width: 260,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: RadialGradient(
+                      colors: [
+                        AppTheme.emeraldAccent.withValues(alpha: 0.15),
+                        Colors.transparent,
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-            Positioned(
-              bottom: size.height * 0.2,
-              left: -60,
-              child: Container(
-                height: 240,
-                width: 240,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: RadialGradient(
-                    colors: [
-                      AppTheme.cyanAccent.withValues(alpha: 0.25),
-                      Colors.transparent,
-                    ],
-                  ),
-                ),
-              ),
-            ),
+            ],
 
             SafeArea(
               child: Center(
@@ -138,26 +131,26 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                           // Key Brand Icon Badge
                           Center(
                             child: Container(
-                              height: 76,
-                              width: 76,
+                              height: 74,
+                              width: 74,
                               decoration: BoxDecoration(
                                 gradient: AppTheme.emeraldGradient,
-                                borderRadius: BorderRadius.circular(24),
+                                borderRadius: BorderRadius.circular(22),
                                 border: Border.all(
-                                  color: Colors.white.withValues(alpha: 0.4),
+                                  color: Colors.white.withValues(alpha: isDark ? 0.35 : 0.6),
                                   width: 1.5,
                                 ),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: AppTheme.emeraldAccent.withValues(alpha: 0.4),
-                                    blurRadius: 22,
-                                    offset: const Offset(0, 8),
+                                    color: AppTheme.emeraldAccent.withValues(alpha: isDark ? 0.35 : 0.25),
+                                    blurRadius: 20,
+                                    offset: const Offset(0, 6),
                                   ),
                                 ],
                               ),
                               child: const Icon(
                                 Icons.key_rounded,
-                                size: 40,
+                                size: 38,
                                 color: Colors.white,
                               ),
                             ),
@@ -171,7 +164,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                             style: GoogleFonts.plusJakartaSans(
                               fontSize: 28,
                               fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                              color: titleColor,
                               letterSpacing: -0.5,
                             ),
                           ),
@@ -181,37 +174,36 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                             textAlign: TextAlign.center,
                             style: GoogleFonts.plusJakartaSans(
                               fontSize: 14,
-                              color: Colors.white.withValues(alpha: 0.85),
+                              color: subtitleColor,
                               height: 1.4,
                             ),
                           ),
                           const SizedBox(height: 24),
 
-                          // Frosted Acrylic Card
+                          // Form Container
                           ClipRRect(
                             borderRadius: BorderRadius.circular(28),
                             child: BackdropFilter(
-                              filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+                              filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
                               child: Container(
                                 padding: const EdgeInsets.all(22),
                                 decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Colors.white.withValues(alpha: 0.15),
-                                      Colors.white.withValues(alpha: 0.08),
-                                    ],
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                  ),
+                                  color: isDark
+                                      ? const Color(0xFF141D2B).withValues(alpha: 0.85)
+                                      : Colors.white.withValues(alpha: 0.92),
                                   borderRadius: BorderRadius.circular(28),
                                   border: Border.all(
-                                    color: Colors.white.withValues(alpha: 0.25),
+                                    color: isDark
+                                        ? Colors.white.withValues(alpha: 0.12)
+                                        : const Color(0xFFE2E8F0),
                                     width: 1.2,
                                   ),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: Colors.black.withValues(alpha: 0.2),
-                                      blurRadius: 20,
+                                      color: isDark
+                                          ? Colors.black.withValues(alpha: 0.35)
+                                          : const Color(0xFF0F172A).withValues(alpha: 0.06),
+                                      blurRadius: 24,
                                       offset: const Offset(0, 8),
                                     ),
                                   ],
@@ -226,11 +218,10 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                                       prefixIcon: Icons.lock_outline_rounded,
                                       controller: _newPasswordController,
                                       obscureText: _obscureNewPassword,
-                                      isGlass: true,
                                       suffixIcon: IconButton(
                                         icon: Icon(
                                           _obscureNewPassword ? Icons.visibility_outlined : Icons.visibility_off_outlined,
-                                          color: Colors.white70,
+                                          color: isDark ? Colors.white70 : const Color(0xFF64748B),
                                         ),
                                         onPressed: () {
                                           setState(() {
@@ -257,11 +248,10 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                                       prefixIcon: Icons.lock_reset_rounded,
                                       controller: _confirmPasswordController,
                                       obscureText: _obscureConfirmPassword,
-                                      isGlass: true,
                                       suffixIcon: IconButton(
                                         icon: Icon(
                                           _obscureConfirmPassword ? Icons.visibility_outlined : Icons.visibility_off_outlined,
-                                          color: Colors.white70,
+                                          color: isDark ? Colors.white70 : const Color(0xFF64748B),
                                         ),
                                         onPressed: () {
                                           setState(() {
@@ -287,14 +277,11 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                                       decoration: BoxDecoration(
                                         gradient: AppTheme.emeraldGradient,
                                         borderRadius: BorderRadius.circular(16),
-                                        border: Border.all(
-                                          color: Colors.white.withValues(alpha: 0.35),
-                                        ),
                                         boxShadow: [
                                           BoxShadow(
-                                            color: AppTheme.emeraldAccent.withValues(alpha: 0.4),
-                                            blurRadius: 18,
-                                            offset: const Offset(0, 5),
+                                            color: AppTheme.emeraldAccent.withValues(alpha: 0.35),
+                                            blurRadius: 16,
+                                            offset: const Offset(0, 4),
                                           ),
                                         ],
                                       ),

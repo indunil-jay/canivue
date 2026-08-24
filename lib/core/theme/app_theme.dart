@@ -90,6 +90,27 @@ class AppTheme {
     end: Alignment.bottomCenter,
   );
 
+  // Auth Screen Gradients (Luxury Obsidian Onyx & Porcelain White)
+  static const LinearGradient obsidianAuthGradient = LinearGradient(
+    colors: [
+      Color(0xFF090D14), // Carbon Onyx
+      Color(0xFF0E141E), // Deep Charcoal Slate
+      Color(0xFF141D2B), // Obsidian Slate
+    ],
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+  );
+
+  static const LinearGradient porcelainAuthGradient = LinearGradient(
+    colors: [
+      Color(0xFFFFFFFF), // Pure White
+      Color(0xFFF8FAFC), // Porcelain
+      Color(0xFFF1F5F9), // Pearl Platinum
+    ],
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+  );
+
   static const LinearGradient glassCardGradient = LinearGradient(
     colors: [
       Color(0x28FFFFFF), // 16% Frosted White Glass

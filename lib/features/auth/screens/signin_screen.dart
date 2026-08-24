@@ -70,52 +70,77 @@ class _SignInScreenState extends State<SignInScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.sizeOf(context);
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    final backgroundGradient = isDark ? AppTheme.obsidianAuthGradient : AppTheme.porcelainAuthGradient;
+    final titleColor = isDark ? Colors.white : const Color(0xFF0F172A);
+    final subtitleColor = isDark ? Colors.white.withValues(alpha: 0.8) : const Color(0xFF64748B);
 
     return Scaffold(
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: AppTheme.midnightBackgroundGradient,
+        decoration: BoxDecoration(
+          gradient: backgroundGradient,
         ),
         child: Stack(
           children: [
             // Ambient Luminous Lighting
-            Positioned(
-              top: -80,
-              right: -60,
-              child: Container(
-                height: 320,
-                width: 320,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: RadialGradient(
-                    colors: [
-                      AppTheme.cyanAccent.withValues(alpha: 0.35),
-                      Colors.transparent,
-                    ],
+            if (isDark) ...[
+              Positioned(
+                top: -80,
+                right: -60,
+                child: Container(
+                  height: 300,
+                  width: 300,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: RadialGradient(
+                      colors: [
+                        AppTheme.cyanAccent.withValues(alpha: 0.18),
+                        Colors.transparent,
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-            Positioned(
-              bottom: size.height * 0.15,
-              left: -80,
-              child: Container(
-                height: 300,
-                width: 300,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: RadialGradient(
-                    colors: [
-                      AppTheme.primaryBlue.withValues(alpha: 0.35),
-                      Colors.transparent,
-                    ],
+              Positioned(
+                bottom: MediaQuery.sizeOf(context).height * 0.15,
+                left: -80,
+                child: Container(
+                  height: 280,
+                  width: 280,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: RadialGradient(
+                      colors: [
+                        AppTheme.primaryBlue.withValues(alpha: 0.15),
+                        Colors.transparent,
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
+            ] else ...[
+              Positioned(
+                top: -60,
+                right: -40,
+                child: Container(
+                  height: 280,
+                  width: 280,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: RadialGradient(
+                      colors: [
+                        AppTheme.primaryBlue.withValues(alpha: 0.08),
+                        Colors.transparent,
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
 
             SafeArea(
               child: Center(
@@ -134,40 +159,41 @@ class _SignInScreenState extends State<SignInScreen> {
                             child: Stack(
                               alignment: Alignment.center,
                               children: [
-                                Container(
-                                  height: 96,
-                                  width: 96,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    gradient: RadialGradient(
-                                      colors: [
-                                        AppTheme.cyanAccent.withValues(alpha: 0.4),
-                                        Colors.transparent,
-                                      ],
+                                if (isDark)
+                                  Container(
+                                    height: 90,
+                                    width: 90,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      gradient: RadialGradient(
+                                        colors: [
+                                          AppTheme.cyanAccent.withValues(alpha: 0.25),
+                                          Colors.transparent,
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
                                 Container(
-                                  height: 76,
-                                  width: 76,
+                                  height: 74,
+                                  width: 74,
                                   decoration: BoxDecoration(
                                     gradient: AppTheme.primaryGradient,
-                                    borderRadius: BorderRadius.circular(24),
+                                    borderRadius: BorderRadius.circular(22),
                                     border: Border.all(
-                                      color: Colors.white.withValues(alpha: 0.4),
+                                      color: Colors.white.withValues(alpha: isDark ? 0.35 : 0.6),
                                       width: 1.5,
                                     ),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: AppTheme.cyanAccent.withValues(alpha: 0.45),
-                                        blurRadius: 24,
-                                        offset: const Offset(0, 8),
+                                        color: AppTheme.primaryBlue.withValues(alpha: isDark ? 0.35 : 0.25),
+                                        blurRadius: 20,
+                                        offset: const Offset(0, 6),
                                       ),
                                     ],
                                   ),
                                   child: const Icon(
                                     Icons.pets_rounded,
-                                    size: 40,
+                                    size: 38,
                                     color: Colors.white,
                                   ),
                                 ),
@@ -176,14 +202,14 @@ class _SignInScreenState extends State<SignInScreen> {
                           ),
                           const SizedBox(height: 18),
 
-                          // Header Text with enhanced typography
+                          // Header Text
                           Text(
                             'Welcome Back',
                             textAlign: TextAlign.center,
                             style: GoogleFonts.plusJakartaSans(
                               fontSize: 28,
                               fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                              color: titleColor,
                               letterSpacing: -0.5,
                             ),
                           ),
@@ -193,38 +219,37 @@ class _SignInScreenState extends State<SignInScreen> {
                             textAlign: TextAlign.center,
                             style: GoogleFonts.plusJakartaSans(
                               fontSize: 14,
-                              color: Colors.white.withValues(alpha: 0.85),
+                              color: subtitleColor,
                               height: 1.4,
                             ),
                           ),
                           const SizedBox(height: 24),
 
-                          // Frosted Acrylic Form Container
+                          // Form Container (Obsidian Glass in Dark, Crisp Elevated Card in Light)
                           ClipRRect(
                             borderRadius: BorderRadius.circular(28),
                             child: BackdropFilter(
-                              filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+                              filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
                               child: Container(
                                 padding: const EdgeInsets.all(22),
                                 decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Colors.white.withValues(alpha: 0.15),
-                                      Colors.white.withValues(alpha: 0.08),
-                                    ],
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                  ),
+                                  color: isDark
+                                      ? const Color(0xFF141D2B).withValues(alpha: 0.85)
+                                      : Colors.white.withValues(alpha: 0.92),
                                   borderRadius: BorderRadius.circular(28),
                                   border: Border.all(
-                                    color: Colors.white.withValues(alpha: 0.25),
+                                    color: isDark
+                                        ? Colors.white.withValues(alpha: 0.12)
+                                        : const Color(0xFFE2E8F0),
                                     width: 1.2,
                                   ),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: Colors.black.withValues(alpha: 0.25),
+                                      color: isDark
+                                          ? Colors.black.withValues(alpha: 0.35)
+                                          : const Color(0xFF0F172A).withValues(alpha: 0.06),
                                       blurRadius: 24,
-                                      offset: const Offset(0, 10),
+                                      offset: const Offset(0, 8),
                                     ),
                                   ],
                                 ),
@@ -238,7 +263,6 @@ class _SignInScreenState extends State<SignInScreen> {
                                       prefixIcon: Icons.email_outlined,
                                       controller: _emailController,
                                       keyboardType: TextInputType.emailAddress,
-                                      isGlass: true,
                                       validator: (value) {
                                         if (value == null || value.trim().isEmpty) {
                                           return 'Please enter your email';
@@ -258,11 +282,10 @@ class _SignInScreenState extends State<SignInScreen> {
                                       prefixIcon: Icons.lock_outline_rounded,
                                       controller: _passwordController,
                                       obscureText: _obscurePassword,
-                                      isGlass: true,
                                       suffixIcon: IconButton(
                                         icon: Icon(
                                           _obscurePassword ? Icons.visibility_outlined : Icons.visibility_off_outlined,
-                                          color: Colors.white70,
+                                          color: isDark ? Colors.white70 : const Color(0xFF64748B),
                                         ),
                                         onPressed: () {
                                           setState(() {
@@ -293,9 +316,11 @@ class _SignInScreenState extends State<SignInScreen> {
                                               width: 24,
                                               child: Checkbox(
                                                 value: _rememberMe,
-                                                activeColor: AppTheme.cyanAccent,
-                                                checkColor: const Color(0xFF061126),
-                                                side: const BorderSide(color: Colors.white70),
+                                                activeColor: AppTheme.primaryBlue,
+                                                checkColor: Colors.white,
+                                                side: BorderSide(
+                                                  color: isDark ? Colors.white54 : const Color(0xFF94A3B8),
+                                                ),
                                                 shape: RoundedRectangleBorder(
                                                   borderRadius: BorderRadius.circular(4),
                                                 ),
@@ -311,7 +336,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                               'Remember me',
                                               style: GoogleFonts.plusJakartaSans(
                                                 fontSize: 13,
-                                                color: Colors.white70,
+                                                color: isDark ? Colors.white70 : const Color(0xFF475569),
                                               ),
                                             ),
                                           ],
@@ -328,7 +353,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                             style: GoogleFonts.plusJakartaSans(
                                               fontSize: 13,
                                               fontWeight: FontWeight.w600,
-                                              color: AppTheme.cyanAccent,
+                                              color: isDark ? AppTheme.cyanAccent : AppTheme.primaryBlue,
                                             ),
                                           ),
                                         ),
@@ -342,14 +367,11 @@ class _SignInScreenState extends State<SignInScreen> {
                                       decoration: BoxDecoration(
                                         gradient: AppTheme.primaryGradient,
                                         borderRadius: BorderRadius.circular(16),
-                                        border: Border.all(
-                                          color: Colors.white.withValues(alpha: 0.35),
-                                        ),
                                         boxShadow: [
                                           BoxShadow(
-                                            color: AppTheme.cyanAccent.withValues(alpha: 0.4),
-                                            blurRadius: 18,
-                                            offset: const Offset(0, 5),
+                                            color: AppTheme.primaryBlue.withValues(alpha: 0.35),
+                                            blurRadius: 16,
+                                            offset: const Offset(0, 4),
                                           ),
                                         ],
                                       ),
@@ -394,7 +416,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             children: [
                               Expanded(
                                 child: Divider(
-                                  color: Colors.white.withValues(alpha: 0.25),
+                                  color: isDark ? Colors.white.withValues(alpha: 0.2) : const Color(0xFFCBD5E1),
                                 ),
                               ),
                               Padding(
@@ -402,14 +424,14 @@ class _SignInScreenState extends State<SignInScreen> {
                                 child: Text(
                                   'or continue with',
                                   style: GoogleFonts.plusJakartaSans(
-                                    color: Colors.white.withValues(alpha: 0.7),
+                                    color: isDark ? Colors.white.withValues(alpha: 0.7) : const Color(0xFF64748B),
                                     fontSize: 13,
                                   ),
                                 ),
                               ),
                               Expanded(
                                 child: Divider(
-                                  color: Colors.white.withValues(alpha: 0.25),
+                                  color: isDark ? Colors.white.withValues(alpha: 0.2) : const Color(0xFFCBD5E1),
                                 ),
                               ),
                             ],
@@ -423,6 +445,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                 child: _SocialLoginButton(
                                   label: 'Google',
                                   icon: Icons.g_mobiledata_rounded,
+                                  isDark: isDark,
                                   onTap: () {
                                     AppFeedback.showToast(
                                       context,
@@ -438,6 +461,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                 child: _SocialLoginButton(
                                   label: 'Apple',
                                   icon: Icons.apple_rounded,
+                                  isDark: isDark,
                                   onTap: () {
                                     AppFeedback.showToast(
                                       context,
@@ -459,7 +483,7 @@ class _SignInScreenState extends State<SignInScreen> {
                               Text(
                                 "Don't have an account? ",
                                 style: GoogleFonts.plusJakartaSans(
-                                  color: Colors.white.withValues(alpha: 0.8),
+                                  color: isDark ? Colors.white.withValues(alpha: 0.8) : const Color(0xFF475569),
                                   fontSize: 14,
                                 ),
                               ),
@@ -480,7 +504,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                   'Sign Up',
                                   style: GoogleFonts.plusJakartaSans(
                                     fontWeight: FontWeight.bold,
-                                    color: AppTheme.cyanAccent,
+                                    color: isDark ? AppTheme.cyanAccent : AppTheme.primaryBlue,
                                   ),
                                 ),
                               ),
@@ -504,11 +528,13 @@ class _SocialLoginButton extends StatelessWidget {
   const _SocialLoginButton({
     required this.label,
     required this.icon,
+    required this.isDark,
     required this.onTap,
   });
 
   final String label;
   final IconData icon;
+  final bool isDark;
   final VoidCallback onTap;
 
   @override
@@ -519,21 +545,34 @@ class _SocialLoginButton extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 13),
         decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.12),
+          color: isDark ? const Color(0xFF141D2B).withValues(alpha: 0.8) : Colors.white,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: Colors.white.withValues(alpha: 0.25),
+            color: isDark ? Colors.white.withValues(alpha: 0.15) : const Color(0xFFE2E8F0),
           ),
+          boxShadow: isDark
+              ? null
+              : [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.04),
+                    blurRadius: 10,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, color: Colors.white, size: 22),
+            Icon(
+              icon,
+              color: isDark ? Colors.white : const Color(0xFF0F172A),
+              size: 22,
+            ),
             const SizedBox(width: 8),
             Text(
               label,
               style: GoogleFonts.plusJakartaSans(
-                color: Colors.white,
+                color: isDark ? Colors.white : const Color(0xFF0F172A),
                 fontWeight: FontWeight.w600,
                 fontSize: 14,
               ),
