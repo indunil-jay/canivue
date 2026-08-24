@@ -447,4 +447,3 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 }
-
