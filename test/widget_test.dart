@@ -15,8 +15,20 @@ import 'package:canivue/features/profile/widgets/profile_side_sheet.dart';
 import 'package:canivue/main.dart';
 
 void main() {
-  testWidgets('CanivueApp launches with SignInScreen smoke test', (WidgetTester tester) async {
+  testWidgets('CanivueApp launches with the onboarding flow smoke test', (WidgetTester tester) async {
     await tester.pumpWidget(const CanivueApp());
+    await tester.pump(const Duration(milliseconds: 500));
+
+    expect(find.text('All Your Pets,\nOne Loving Home'), findsOneWidget);
+    expect(find.text('Skip'), findsOneWidget);
+  });
+
+  testWidgets('Onboarding Skip navigates to SignInScreen smoke test', (WidgetTester tester) async {
+    await tester.pumpWidget(const CanivueApp());
+    await tester.pump(const Duration(milliseconds: 500));
+
+    await tester.tap(find.text('Skip'));
+    await tester.pumpAndSettle();
 
     expect(find.text('Welcome Back'), findsOneWidget);
     expect(find.text('Email Address'), findsOneWidget);
