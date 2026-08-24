@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:canivue/core/theme/app_theme.dart';
-import 'package:canivue/core/widgets/app_feedback.dart';
 import 'package:canivue/features/auth/screens/signin_screen.dart';
-import 'package:canivue/features/pets/models/pet_model.dart';
-import 'package:canivue/features/pets/screens/pet_detail_screen.dart';
 import 'package:canivue/features/pets/screens/pet_list_screen.dart';
 import 'package:canivue/features/profile/screens/personal_information_screen.dart';
 
@@ -65,27 +62,7 @@ class _ProfileSideSheetState extends State<ProfileSideSheet> {
           ],
         );
       },
-  void _handleLogout() async {
-    final confirmed = await AppFeedback.showLuxuryDialog(
-      context,
-      title: 'Log Out',
-      message: 'Are you sure you want to log out of Canivue?',
-      confirmText: 'Log Out',
-      cancelText: 'Cancel',
-      icon: Icons.logout_rounded,
-      accentColor: const Color(0xFFF43F5E),
-      iconGradient: const LinearGradient(
-        colors: [Color(0xFFE11D48), Color(0xFFFB7185)],
-      ),
     );
-
-    if (confirmed == true && mounted) {
-      Navigator.of(context).pop();
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => const SignInScreen()),
-        (route) => false,
-      );
-    }
   }
 
   void _navigateToPersonalInfo() {
@@ -115,11 +92,6 @@ class _ProfileSideSheetState extends State<ProfileSideSheet> {
         content: Text(message),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-  void _navigateToPetDetail(Pet pet) {
-    Navigator.of(context).pop();
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => PetDetailScreen(pet: pet),
       ),
     );
   }
@@ -179,7 +151,6 @@ class _ProfileSideSheetState extends State<ProfileSideSheet> {
                           boxShadow: [
                             BoxShadow(
                               color: AppTheme.primaryBlue.withValues(alpha: 0.35),
-                              color: AppTheme.primaryBlue.withValues(alpha: 0.3),
                               blurRadius: 16,
                               offset: const Offset(0, 6),
                             ),
@@ -200,15 +171,6 @@ class _ProfileSideSheetState extends State<ProfileSideSheet> {
                                       color: AppTheme.primaryBlue,
                                     ),
                                   ),
-                            CircleAvatar(
-                              radius: 30,
-                              backgroundColor: Colors.white,
-                              child: Text(
-                                _displayName.isNotEmpty ? _displayName[0].toUpperCase() : 'U',
-                                style: const TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                  color: AppTheme.primaryBlue,
                                 ),
                                 Positioned(
                                   bottom: 0,
@@ -223,7 +185,6 @@ class _ProfileSideSheetState extends State<ProfileSideSheet> {
                                   ),
                                 ),
                               ],
-                              ),
                             ),
                             const SizedBox(width: 14),
                             Expanded(
@@ -233,14 +194,9 @@ class _ProfileSideSheetState extends State<ProfileSideSheet> {
                                   Text(
                                     _displayName,
                                     style: theme.textTheme.titleMedium?.copyWith(
-                                    style: const TextStyle(
-                                      color: Colors.white,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.white,
-                                      fontSize: 18,
                                     ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
                                   ),
                                   const SizedBox(height: 2),
                                   Text(
@@ -248,9 +204,7 @@ class _ProfileSideSheetState extends State<ProfileSideSheet> {
                                     style: TextStyle(
                                       color: Colors.white.withValues(alpha: 0.85),
                                       fontSize: 12,
-                                      fontSize: 13,
                                     ),
-                                    maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                   const SizedBox(height: 6),
@@ -260,14 +214,10 @@ class _ProfileSideSheetState extends State<ProfileSideSheet> {
                                       color: Colors.white.withValues(alpha: 0.2),
                                       borderRadius: BorderRadius.circular(12),
                                       border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
-                                      color: Colors.white.withValues(alpha: 0.22),
-                                      borderRadius: BorderRadius.circular(8),
                                     ),
                                     child: const Text(
                                       '⭐ Premium Pet Parent',
-                                      '⭐ Premium Plan Active',
                                       style: TextStyle(
-                                        color: Colors.white,
                                         fontSize: 11,
                                         fontWeight: FontWeight.w600,
                                         color: Colors.white,
@@ -279,9 +229,7 @@ class _ProfileSideSheetState extends State<ProfileSideSheet> {
                             ),
                             const Icon(
                               Icons.chevron_right_rounded,
-                              Icons.arrow_forward_ios_rounded,
                               color: Colors.white,
-                              size: 16,
                             ),
                           ],
                         ),
@@ -298,7 +246,6 @@ class _ProfileSideSheetState extends State<ProfileSideSheet> {
                           onPressed: _navigateToPets,
                           style: TextButton.styleFrom(
                             padding: EdgeInsets.zero,
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                             minimumSize: Size.zero,
                             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           ),
@@ -309,9 +256,6 @@ class _ProfileSideSheetState extends State<ProfileSideSheet> {
                               fontWeight: FontWeight.bold,
                               color: colorScheme.primary,
                             ),
-                          child: const Text(
-                            'Manage',
-                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
                           ),
                         ),
                       ],
@@ -324,12 +268,6 @@ class _ProfileSideSheetState extends State<ProfileSideSheet> {
                       color: Colors.amber,
                       theme: theme,
                       onTap: _navigateToPets,
-                    ...Pet.samplePets.map(
-                      (pet) => _buildPetTile(
-                        pet: pet,
-                        theme: theme,
-                        onTap: () => _navigateToPetDetail(pet),
-                      ),
                     ),
                     _buildPetTile(
                       name: 'Luna',
@@ -339,19 +277,15 @@ class _ProfileSideSheetState extends State<ProfileSideSheet> {
                       theme: theme,
                       onTap: _navigateToPets,
                     ),
-                    const SizedBox(height: 4),
                     InkWell(
                       onTap: _navigateToPets,
                       borderRadius: BorderRadius.circular(12),
                       child: Container(
                         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-                        padding: const EdgeInsets.symmetric(vertical: 10),
                         decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.35),
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
                             color: colorScheme.primary.withValues(alpha: 0.5),
-                            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
                             style: BorderStyle.solid,
                           ),
                         ),
@@ -359,15 +293,12 @@ class _ProfileSideSheetState extends State<ProfileSideSheet> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(Icons.add_rounded, color: colorScheme.primary, size: 20),
-                            Icon(Icons.add_rounded, size: 18, color: Theme.of(context).colorScheme.primary),
                             const SizedBox(width: 6),
                             Text(
                               'Add Another Pet',
                               style: TextStyle(
                                 color: colorScheme.primary,
                                 fontWeight: FontWeight.w600,
-                                color: Theme.of(context).colorScheme.primary,
-                                fontWeight: FontWeight.bold,
                                 fontSize: 13,
                               ),
                             ),
@@ -392,14 +323,6 @@ class _ProfileSideSheetState extends State<ProfileSideSheet> {
                       title: 'Medical & Vet Records',
                       subtitle: 'Vaccinations & prescriptions',
                       onTap: () => _showActionSnackBar('Opening Medical Records'),
-                      onTap: () {
-                        AppFeedback.showToast(
-                          context,
-                          title: 'Medical Records 📋',
-                          message: 'All electronic vet records are synchronized with Bay Area Vet.',
-                          type: ToastType.info,
-                        );
-                      },
                       theme: theme,
                     ),
                     _buildNavTile(
@@ -407,15 +330,6 @@ class _ProfileSideSheetState extends State<ProfileSideSheet> {
                       title: 'Membership & Billing',
                       subtitle: 'Canivue Premium Plan',
                       onTap: () => _showActionSnackBar('Opening Membership & Billing'),
-                      subtitle: 'Canivue Premium Plan • Active',
-                      onTap: () {
-                        AppFeedback.showToast(
-                          context,
-                          title: 'Subscription Active 👑',
-                          message: 'You have unlimited AI symptom checks and 24/7 tele-vet access.',
-                          type: ToastType.success,
-                        );
-                      },
                       theme: theme,
                     ),
                     const SizedBox(height: 24),
@@ -432,11 +346,6 @@ class _ProfileSideSheetState extends State<ProfileSideSheet> {
                         setState(() {
                           _notificationsEnabled = val;
                         });
-                        AppFeedback.showToast(
-                          context,
-                          message: val ? 'Care notifications enabled' : 'Care notifications disabled',
-                          type: ToastType.info,
-                        );
                       },
                       theme: theme,
                     ),
@@ -449,11 +358,6 @@ class _ProfileSideSheetState extends State<ProfileSideSheet> {
                         setState(() {
                           _aiInsightsEnabled = val;
                         });
-                        AppFeedback.showToast(
-                          context,
-                          message: val ? 'AI Health Insights active' : 'AI Health Insights paused',
-                          type: ToastType.info,
-                        );
                       },
                       theme: theme,
                     ),
@@ -467,14 +371,6 @@ class _ProfileSideSheetState extends State<ProfileSideSheet> {
                       title: 'Help Center & 24/7 Vet Chat',
                       subtitle: 'Talk with certified veterinarians',
                       onTap: () => _showActionSnackBar('Connecting to Support...'),
-                      onTap: () {
-                        AppFeedback.showToast(
-                          context,
-                          title: '24/7 Tele-Vet Live 🩺',
-                          message: 'A certified veterinarian will be with you in under 2 minutes.',
-                          type: ToastType.success,
-                        );
-                      },
                       theme: theme,
                     ),
                     _buildNavTile(
@@ -482,15 +378,6 @@ class _ProfileSideSheetState extends State<ProfileSideSheet> {
                       title: 'Privacy & Security',
                       subtitle: 'Manage permissions & encryption',
                       onTap: () => _showActionSnackBar('Opening Privacy Settings'),
-                      subtitle: 'Manage permissions & 256-bit encryption',
-                      onTap: () {
-                        AppFeedback.showToast(
-                          context,
-                          title: 'Security Verified 🔒',
-                          message: 'All canine biometric data is end-to-end encrypted.',
-                          type: ToastType.info,
-                        );
-                      },
                       theme: theme,
                     ),
                     const SizedBox(height: 20),
@@ -544,40 +431,29 @@ class _ProfileSideSheetState extends State<ProfileSideSheet> {
     required String breed,
     required IconData icon,
     required MaterialColor color,
-    required Pet pet,
     required ThemeData theme,
     VoidCallback? onTap,
   }) {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
-      borderRadius: BorderRadius.circular(14),
       child: Container(
         margin: const EdgeInsets.only(bottom: 8),
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
           color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
           borderRadius: BorderRadius.circular(12),
-          borderRadius: BorderRadius.circular(14),
           border: Border.all(color: theme.colorScheme.outlineVariant.withValues(alpha: 0.4)),
         ),
         child: Row(
           children: [
             Container(
               padding: const EdgeInsets.all(8),
-              height: 42,
-              width: 42,
               decoration: BoxDecoration(
                 color: color.shade50,
                 borderRadius: BorderRadius.circular(10),
-                gradient: AppTheme.aquaGradient,
-                borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(icon, color: color.shade700, size: 20),
-              clipBehavior: Clip.antiAlias,
-              child: pet.assetImagePath != null
-                  ? Image.asset(pet.assetImagePath!, fit: BoxFit.cover)
-                  : Center(child: Text(pet.avatarEmoji, style: const TextStyle(fontSize: 22))),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -586,12 +462,10 @@ class _ProfileSideSheetState extends State<ProfileSideSheet> {
                 children: [
                   Text(
                     name,
-                    pet.name,
                     style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
                   ),
                   Text(
                     breed,
-                    '${pet.breed} • ${pet.ageFormatted}',
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: theme.colorScheme.onSurfaceVariant,
                       fontSize: 11,

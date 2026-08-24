@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:canivue/core/theme/app_theme.dart';
-import 'package:canivue/core/widgets/app_feedback.dart';
 import 'package:canivue/features/auth/widgets/custom_text_field.dart';
 import 'package:canivue/features/pets/models/pet_model.dart';
 
@@ -333,13 +332,6 @@ class _AddEditPetScreenState extends State<AddEditPetScreen> {
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
-    AppFeedback.showToast(
-      context,
-      title: widget.pet != null ? 'Profile Updated ⭐' : 'Pet Registered 🐾',
-      message: widget.pet != null
-          ? 'Medical profile and vitals for ${savedPet.name} have been updated.'
-          : '${savedPet.name} has been added to your active pet family.',
-      type: ToastType.success,
     );
   }
 
