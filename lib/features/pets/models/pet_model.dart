@@ -11,6 +11,7 @@ class Pet {
   final String microchipId;
   final String avatarEmoji;
   final String? imagePath;
+  final String? assetImagePath;
   final DateTime birthDate;
   final bool isNeutered;
   final String bloodGroup;
@@ -31,6 +32,7 @@ class Pet {
     this.microchipId = '985141002348123',
     this.avatarEmoji = '🐶',
     this.imagePath,
+    this.assetImagePath,
     required this.birthDate,
     this.isNeutered = true,
     this.bloodGroup = 'DEA 1.1+',
@@ -62,6 +64,7 @@ class Pet {
     String? microchipId,
     String? avatarEmoji,
     String? imagePath,
+    String? assetImagePath,
     DateTime? birthDate,
     bool? isNeutered,
     String? bloodGroup,
@@ -82,6 +85,7 @@ class Pet {
       microchipId: microchipId ?? this.microchipId,
       avatarEmoji: avatarEmoji ?? this.avatarEmoji,
       imagePath: imagePath ?? this.imagePath,
+      assetImagePath: assetImagePath ?? this.assetImagePath,
       birthDate: birthDate ?? this.birthDate,
       isNeutered: isNeutered ?? this.isNeutered,
       bloodGroup: bloodGroup ?? this.bloodGroup,
@@ -104,6 +108,7 @@ class Pet {
           color: 'Golden Honey',
           microchipId: '985141002348123',
           avatarEmoji: '🐕',
+          assetImagePath: 'assets/images/pets/luna.jpg',
           birthDate: DateTime(2023, 6, 12),
           isNeutered: true,
           bloodGroup: 'DEA 1.1+',
@@ -123,6 +128,7 @@ class Pet {
           color: 'Black & Tan',
           microchipId: '985141009876543',
           avatarEmoji: '🐶',
+          assetImagePath: 'assets/images/pets/max.jpg',
           birthDate: DateTime(2025, 2, 20),
           isNeutered: true,
           bloodGroup: 'DEA 1.1-',
@@ -142,6 +148,7 @@ class Pet {
           color: 'Brindle',
           microchipId: '985141005544332',
           avatarEmoji: '🐾',
+          assetImagePath: 'assets/images/pets/rocky.jpg',
           birthDate: DateTime(2024, 8, 15),
           isNeutered: true,
           bloodGroup: 'DEA 1.2+',
@@ -151,4 +158,3 @@ class Pet {
         ),
       ];
 }
-
