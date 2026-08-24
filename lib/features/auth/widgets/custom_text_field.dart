@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:canivue/core/theme/app_theme.dart';
 
 class CustomTextField extends StatelessWidget {
   const CustomTextField({
@@ -14,6 +15,7 @@ class CustomTextField extends StatelessWidget {
     this.validator,
     this.onFieldSubmitted,
     this.maxLines = 1,
+    this.isGlass = true,
   });
 
   final TextEditingController controller;
@@ -27,6 +29,7 @@ class CustomTextField extends StatelessWidget {
   final String? Function(String?)? validator;
   final void Function(String)? onFieldSubmitted;
   final int maxLines;
+  final bool isGlass;
 
   @override
   Widget build(BuildContext context) {
@@ -37,9 +40,11 @@ class CustomTextField extends StatelessWidget {
       children: [
         Text(
           label,
-          style: theme.textTheme.labelMedium?.copyWith(
+          style: TextStyle(
+            fontSize: 13,
             fontWeight: FontWeight.w600,
-            color: theme.colorScheme.onSurfaceVariant,
+            color: isGlass ? Colors.white.withValues(alpha: 0.9) : theme.colorScheme.onSurfaceVariant,
+            letterSpacing: 0.2,
           ),
         ),
         const SizedBox(height: 6),
@@ -51,54 +56,62 @@ class CustomTextField extends StatelessWidget {
           validator: validator,
           onFieldSubmitted: onFieldSubmitted,
           maxLines: obscureText ? 1 : maxLines,
+          style: TextStyle(
+            color: isGlass ? Colors.white : const Color(0xFF0F172A),
+            fontSize: 15,
+          ),
           autovalidateMode: AutovalidateMode.onUserInteraction,
           decoration: InputDecoration(
             hintText: hintText,
             hintStyle: TextStyle(
-              color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
+              color: isGlass
+                  ? Colors.white.withValues(alpha: 0.5)
+                  : theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
               fontSize: 14,
             ),
             prefixIcon: maxLines > 1
                 ? null
                 : Icon(
                     prefixIcon,
-                    color: theme.colorScheme.primary,
+                    color: isGlass ? AppTheme.cyanAccent : theme.colorScheme.primary,
                     size: 20,
                   ),
             suffixIcon: suffixIcon,
             filled: true,
-            fillColor: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.35),
+            fillColor: isGlass
+                ? Colors.white.withValues(alpha: 0.12)
+                : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.35),
             contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(14),
               borderSide: BorderSide(
-                color: theme.colorScheme.outlineVariant,
+                color: isGlass ? Colors.white.withValues(alpha: 0.2) : theme.colorScheme.outlineVariant,
                 width: 1,
               ),
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(14),
               borderSide: BorderSide(
-                color: theme.colorScheme.outlineVariant.withValues(alpha: 0.7),
+                color: isGlass ? Colors.white.withValues(alpha: 0.2) : theme.colorScheme.outlineVariant.withValues(alpha: 0.7),
                 width: 1,
               ),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(14),
               borderSide: BorderSide(
-                color: theme.colorScheme.primary,
+                color: isGlass ? AppTheme.cyanAccent : theme.colorScheme.primary,
                 width: 1.8,
               ),
             ),
             errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(14),
               borderSide: BorderSide(
                 color: theme.colorScheme.error,
                 width: 1.2,
               ),
             ),
             focusedErrorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(14),
               borderSide: BorderSide(
                 color: theme.colorScheme.error,
                 width: 1.8,
@@ -110,4 +123,3 @@ class CustomTextField extends StatelessWidget {
     );
   }
 }
-
