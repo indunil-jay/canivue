@@ -228,3 +228,4 @@ class _BiometricRingPainter extends CustomPainter {
         oldDelegate.accentColor != accentColor;
   }
 }
+
