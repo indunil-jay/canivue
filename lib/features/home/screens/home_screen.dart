@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:canivue/core/theme/app_theme.dart';
 import 'package:canivue/features/auth/screens/signin_screen.dart';
 import 'package:canivue/features/pets/screens/pet_list_screen.dart';
 import 'package:canivue/features/profile/widgets/profile_side_sheet.dart';
@@ -95,9 +96,21 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 2),
             child: Row(
               children: [
-                CircleAvatar(
-                  backgroundColor: colorScheme.primaryContainer,
-                  child: Icon(Icons.pets_rounded, color: colorScheme.primary, size: 20),
+                Container(
+                  height: 38,
+                  width: 38,
+                  decoration: BoxDecoration(
+                    gradient: AppTheme.aquaGradient,
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppTheme.primaryBlue.withValues(alpha: 0.25),
+                        blurRadius: 8,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: const Icon(Icons.pets_rounded, color: Colors.white, size: 20),
                 ),
                 const SizedBox(width: 12),
                 Column(
@@ -136,9 +149,9 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           IconButton(
             icon: CircleAvatar(
-              radius: 14,
-              backgroundColor: colorScheme.primary.withValues(alpha: 0.15),
-              child: Icon(Icons.person_rounded, size: 18, color: colorScheme.primary),
+              radius: 15,
+              backgroundColor: AppTheme.primaryBlue.withValues(alpha: 0.12),
+              child: const Icon(Icons.person_rounded, size: 18, color: AppTheme.primaryBlue),
             ),
             tooltip: 'Profile & Settings',
             onPressed: _openProfileSideSheet,
@@ -201,11 +214,18 @@ class _HomeScreenState extends State<HomeScreen> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
               decoration: BoxDecoration(
-                color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.4),
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
                   color: colorScheme.outlineVariant.withValues(alpha: 0.5),
                 ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.03),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
               ),
               child: Row(
                 children: [
@@ -220,32 +240,28 @@ class _HomeScreenState extends State<HomeScreen> {
                           fontSize: 14,
                         ),
                         border: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        filled: false,
                       ),
                     ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 20),
 
-            // Overview Banner
+            // Overview Blue Gradient Hero Banner
             Container(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(22),
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    colorScheme.primary,
-                    colorScheme.primary.withValues(alpha: 0.8),
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                borderRadius: BorderRadius.circular(20),
+                gradient: AppTheme.heroGradient,
+                borderRadius: BorderRadius.circular(24),
                 boxShadow: [
                   BoxShadow(
-                    color: colorScheme.primary.withValues(alpha: 0.25),
-                    blurRadius: 16,
-                    offset: const Offset(0, 6),
+                    color: AppTheme.primaryBlue.withValues(alpha: 0.35),
+                    blurRadius: 20,
+                    offset: const Offset(0, 8),
                   ),
                 ],
               ),
@@ -258,11 +274,14 @@ class _HomeScreenState extends State<HomeScreen> {
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                           decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.2),
+                            color: Colors.white.withValues(alpha: 0.22),
                             borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: Colors.white.withValues(alpha: 0.3),
+                            ),
                           ),
                           child: const Text(
-                            'Canine Health AI',
+                            '✨ Canine Health AI',
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 12,
@@ -270,20 +289,21 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 12),
                         const Text(
                           'Smart Pet Health Monitoring',
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 18,
+                            fontSize: 19,
                             fontWeight: FontWeight.bold,
+                            letterSpacing: -0.3,
                           ),
                         ),
                         const SizedBox(height: 6),
                         Text(
                           'Track vital stats, vaccinations, and daily activities easily.',
                           style: TextStyle(
-                            color: Colors.white.withValues(alpha: 0.9),
+                            color: Colors.white.withValues(alpha: 0.92),
                             fontSize: 13,
                           ),
                         ),
@@ -292,11 +312,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   const SizedBox(width: 12),
                   Container(
-                    height: 56,
-                    width: 56,
+                    height: 58,
+                    width: 58,
                     decoration: BoxDecoration(
                       color: Colors.white.withValues(alpha: 0.2),
                       shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.3),
+                      ),
                     ),
                     child: const Icon(
                       Icons.insights_rounded,
@@ -331,21 +354,33 @@ class _HomeScreenState extends State<HomeScreen> {
                   title: 'Health Check',
                   subtitle: 'AI Symptom Scan',
                   icon: Icons.health_and_safety_rounded,
-                  color: Colors.blue,
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF0066FF), Color(0xFF00B4D8)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
                   theme: theme,
                 ),
                 _buildServiceCard(
                   title: 'Vaccinations',
                   subtitle: 'Schedule & Alerts',
                   icon: Icons.vaccines_rounded,
-                  color: Colors.orange,
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF0284C7), Color(0xFF38BDF8)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
                   theme: theme,
                 ),
                 _buildServiceCard(
                   title: 'Pet Profiles',
                   subtitle: 'Medical History',
                   icon: Icons.badge_rounded,
-                  color: Colors.purple,
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF2563EB), Color(0xFF60A5FA)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
                   theme: theme,
                   onTap: _navigateToPets,
                 ),
@@ -353,7 +388,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   title: 'Appointments',
                   subtitle: 'Vet Consultations',
                   icon: Icons.calendar_month_rounded,
-                  color: Colors.teal,
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF0F766E), Color(0xFF14B8A6)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
                   theme: theme,
                 ),
               ],
@@ -368,33 +407,47 @@ class _HomeScreenState extends State<HomeScreen> {
     required String title,
     required String subtitle,
     required IconData icon,
-    required MaterialColor color,
+    required LinearGradient gradient,
     required ThemeData theme,
     VoidCallback? onTap,
   }) {
     return InkWell(
       onTap: onTap ?? () {},
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(18),
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
-          borderRadius: BorderRadius.circular(16),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(18),
           border: Border.all(
-            color: theme.colorScheme.outlineVariant.withValues(alpha: 0.4),
+            color: theme.colorScheme.outlineVariant.withValues(alpha: 0.5),
           ),
+          boxShadow: [
+            BoxShadow(
+              color: AppTheme.primaryBlue.withValues(alpha: 0.04),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+          ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: color.shade50,
-                borderRadius: BorderRadius.circular(10),
+                gradient: gradient,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: gradient.colors.first.withValues(alpha: 0.3),
+                    blurRadius: 8,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
               ),
-              child: Icon(icon, color: color.shade700, size: 24),
+              child: Icon(icon, color: Colors.white, size: 22),
             ),
             const Spacer(),
             Text(

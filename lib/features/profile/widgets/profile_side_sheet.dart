@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:canivue/core/theme/app_theme.dart';
 import 'package:canivue/features/auth/screens/signin_screen.dart';
 import 'package:canivue/features/pets/screens/pet_list_screen.dart';
 import 'package:canivue/features/profile/screens/personal_information_screen.dart';
@@ -143,20 +144,17 @@ class _ProfileSideSheetState extends State<ProfileSideSheet> {
                       onTap: _navigateToPersonalInfo,
                       borderRadius: BorderRadius.circular(20),
                       child: Container(
-                        padding: const EdgeInsets.all(16),
+                        padding: const EdgeInsets.all(18),
                         decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              colorScheme.primaryContainer,
-                              colorScheme.surfaceContainerHighest,
-                            ],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
+                          gradient: AppTheme.heroGradient,
                           borderRadius: BorderRadius.circular(20),
-                          border: Border.all(
-                            color: colorScheme.outlineVariant.withValues(alpha: 0.5),
-                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppTheme.primaryBlue.withValues(alpha: 0.35),
+                              blurRadius: 16,
+                              offset: const Offset(0, 6),
+                            ),
+                          ],
                         ),
                         child: Row(
                           children: [
@@ -164,13 +162,13 @@ class _ProfileSideSheetState extends State<ProfileSideSheet> {
                               children: [
                                 CircleAvatar(
                                   radius: 30,
-                                  backgroundColor: colorScheme.primary,
+                                  backgroundColor: Colors.white,
                                   child: Text(
                                     _displayName.isNotEmpty ? _displayName[0].toUpperCase() : 'U',
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontSize: 24,
                                       fontWeight: FontWeight.bold,
-                                      color: colorScheme.onPrimary,
+                                      color: AppTheme.primaryBlue,
                                     ),
                                   ),
                                 ),
@@ -179,12 +177,11 @@ class _ProfileSideSheetState extends State<ProfileSideSheet> {
                                   right: 0,
                                   child: Container(
                                     padding: const EdgeInsets.all(4),
-                                    decoration: BoxDecoration(
-                                      color: colorScheme.primary,
+                                    decoration: const BoxDecoration(
+                                      color: Colors.white,
                                       shape: BoxShape.circle,
-                                      border: Border.all(color: Colors.white, width: 1.5),
                                     ),
-                                    child: const Icon(Icons.edit_rounded, size: 12, color: Colors.white),
+                                    child: const Icon(Icons.edit_rounded, size: 12, color: AppTheme.primaryBlue),
                                   ),
                                 ),
                               ],
@@ -198,13 +195,15 @@ class _ProfileSideSheetState extends State<ProfileSideSheet> {
                                     _displayName,
                                     style: theme.textTheme.titleMedium?.copyWith(
                                       fontWeight: FontWeight.bold,
+                                      color: Colors.white,
                                     ),
                                   ),
                                   const SizedBox(height: 2),
                                   Text(
                                     widget.userEmail,
-                                    style: theme.textTheme.bodySmall?.copyWith(
-                                      color: colorScheme.onSurfaceVariant,
+                                    style: TextStyle(
+                                      color: Colors.white.withValues(alpha: 0.85),
+                                      fontSize: 12,
                                     ),
                                     overflow: TextOverflow.ellipsis,
                                   ),
@@ -212,24 +211,25 @@ class _ProfileSideSheetState extends State<ProfileSideSheet> {
                                   Container(
                                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                                     decoration: BoxDecoration(
-                                      color: colorScheme.primary.withValues(alpha: 0.15),
+                                      color: Colors.white.withValues(alpha: 0.2),
                                       borderRadius: BorderRadius.circular(12),
+                                      border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
                                     ),
-                                    child: Text(
+                                    child: const Text(
                                       '⭐ Premium Pet Parent',
                                       style: TextStyle(
                                         fontSize: 11,
                                         fontWeight: FontWeight.w600,
-                                        color: colorScheme.primary,
+                                        color: Colors.white,
                                       ),
                                     ),
                                   ),
                                 ],
                               ),
                             ),
-                            Icon(
+                            const Icon(
                               Icons.chevron_right_rounded,
-                              color: colorScheme.onSurfaceVariant,
+                              color: Colors.white,
                             ),
                           ],
                         ),

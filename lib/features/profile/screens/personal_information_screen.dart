@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:canivue/core/theme/app_theme.dart';
 import 'package:canivue/features/auth/widgets/custom_text_field.dart';
 
 class PersonalInformationScreen extends StatefulWidget {
@@ -592,23 +593,35 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                     const SizedBox(height: 32),
 
                     // Save Changes Button
-                    SizedBox(
+                    Container(
                       height: 52,
-                      child: FilledButton(
-                        onPressed: _isSaving ? null : _handleSaveProfile,
-                        style: FilledButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                      decoration: BoxDecoration(
+                        gradient: AppTheme.primaryGradient,
+                        borderRadius: BorderRadius.circular(14),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppTheme.primaryBlue.withValues(alpha: 0.35),
+                            blurRadius: 14,
+                            offset: const Offset(0, 5),
                           ),
-                          elevation: 2,
+                        ],
+                      ),
+                      child: ElevatedButton(
+                        onPressed: _isSaving ? null : _handleSaveProfile,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.transparent,
+                          shadowColor: Colors.transparent,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
                         ),
                         child: _isSaving
-                            ? SizedBox(
+                            ? const SizedBox(
                                 height: 22,
                                 width: 22,
                                 child: CircularProgressIndicator(
                                   strokeWidth: 2.5,
-                                  color: colorScheme.onPrimary,
+                                  color: Colors.white,
                                 ),
                               )
                             : const Text(
@@ -616,6 +629,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
+                                  color: Colors.white,
                                 ),
                               ),
                       ),

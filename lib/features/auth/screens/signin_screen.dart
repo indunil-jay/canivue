@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:canivue/core/theme/app_theme.dart';
 import 'package:canivue/features/auth/screens/forgot_password_screen.dart';
 import 'package:canivue/features/auth/screens/signup_screen.dart';
 import 'package:canivue/features/auth/widgets/custom_text_field.dart';
@@ -82,23 +83,23 @@ class _SignInScreenState extends State<SignInScreen> {
                     // App Logo Badge
                     Center(
                       child: Container(
-                        height: 72,
-                        width: 72,
+                        height: 76,
+                        width: 76,
                         decoration: BoxDecoration(
-                          color: colorScheme.primaryContainer,
-                          borderRadius: BorderRadius.circular(20),
+                          gradient: AppTheme.heroGradient,
+                          borderRadius: BorderRadius.circular(22),
                           boxShadow: [
                             BoxShadow(
-                              color: colorScheme.primary.withValues(alpha: 0.15),
-                              blurRadius: 16,
+                              color: AppTheme.primaryBlue.withValues(alpha: 0.35),
+                              blurRadius: 20,
                               offset: const Offset(0, 8),
                             ),
                           ],
                         ),
-                        child: Icon(
+                        child: const Icon(
                           Icons.pets_rounded,
-                          size: 38,
-                          color: colorScheme.primary,
+                          size: 40,
+                          color: Colors.white,
                         ),
                       ),
                     ),
@@ -238,23 +239,35 @@ class _SignInScreenState extends State<SignInScreen> {
                     const SizedBox(height: 24),
 
                     // Sign In Submit Button
-                    SizedBox(
+                    Container(
                       height: 52,
-                      child: FilledButton(
-                        onPressed: _isLoading ? null : _handleSignIn,
-                        style: FilledButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                      decoration: BoxDecoration(
+                        gradient: AppTheme.primaryGradient,
+                        borderRadius: BorderRadius.circular(14),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppTheme.primaryBlue.withValues(alpha: 0.35),
+                            blurRadius: 14,
+                            offset: const Offset(0, 5),
                           ),
-                          elevation: 2,
+                        ],
+                      ),
+                      child: ElevatedButton(
+                        onPressed: _isLoading ? null : _handleSignIn,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.transparent,
+                          shadowColor: Colors.transparent,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
                         ),
                         child: _isLoading
-                            ? SizedBox(
+                            ? const SizedBox(
                                 height: 22,
                                 width: 22,
                                 child: CircularProgressIndicator(
                                   strokeWidth: 2.5,
-                                  color: colorScheme.onPrimary,
+                                  color: Colors.white,
                                 ),
                               )
                             : const Text(
@@ -262,6 +275,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
+                                  color: Colors.white,
                                 ),
                               ),
                       ),

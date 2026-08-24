@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:canivue/core/theme/app_theme.dart';
 import 'package:canivue/features/auth/widgets/custom_text_field.dart';
 import 'package:canivue/features/pets/models/pet_model.dart';
 
@@ -380,11 +381,11 @@ class _AddEditPetScreenState extends State<AddEditPetScreen> {
                             height: 96,
                             width: 96,
                             decoration: BoxDecoration(
-                              color: colorScheme.primaryContainer,
+                              gradient: AppTheme.aquaGradient,
                               borderRadius: BorderRadius.circular(28),
                               boxShadow: [
                                 BoxShadow(
-                                  color: colorScheme.primary.withValues(alpha: 0.15),
+                                  color: AppTheme.primaryBlue.withValues(alpha: 0.25),
                                   blurRadius: 16,
                                   offset: const Offset(0, 6),
                                 ),
@@ -664,23 +665,35 @@ class _AddEditPetScreenState extends State<AddEditPetScreen> {
                     const SizedBox(height: 32),
 
                     // Save Button
-                    SizedBox(
+                    Container(
                       height: 52,
-                      child: FilledButton(
-                        onPressed: _isSaving ? null : _handleSave,
-                        style: FilledButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                      decoration: BoxDecoration(
+                        gradient: AppTheme.primaryGradient,
+                        borderRadius: BorderRadius.circular(14),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppTheme.primaryBlue.withValues(alpha: 0.35),
+                            blurRadius: 14,
+                            offset: const Offset(0, 5),
                           ),
-                          elevation: 2,
+                        ],
+                      ),
+                      child: ElevatedButton(
+                        onPressed: _isSaving ? null : _handleSave,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.transparent,
+                          shadowColor: Colors.transparent,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
                         ),
                         child: _isSaving
-                            ? SizedBox(
+                            ? const SizedBox(
                                 height: 22,
                                 width: 22,
                                 child: CircularProgressIndicator(
                                   strokeWidth: 2.5,
-                                  color: colorScheme.onPrimary,
+                                  color: Colors.white,
                                 ),
                               )
                             : Text(
@@ -688,6 +701,7 @@ class _AddEditPetScreenState extends State<AddEditPetScreen> {
                                 style: const TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
+                                  color: Colors.white,
                                 ),
                               ),
                       ),

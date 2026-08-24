@@ -38,7 +38,7 @@ void main() {
     expect(find.text('Email Address'), findsOneWidget);
     expect(find.text('Password'), findsOneWidget);
     expect(find.text('Confirm Password'), findsOneWidget);
-    expect(find.byType(FilledButton), findsOneWidget);
+    expect(find.text('Sign Up'), findsOneWidget);
   });
 
   testWidgets('ForgotPasswordScreen renders correctly smoke test', (WidgetTester tester) async {

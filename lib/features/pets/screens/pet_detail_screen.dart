@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:canivue/core/theme/app_theme.dart';
 import 'package:canivue/features/pets/models/pet_model.dart';
 import 'package:canivue/features/pets/screens/add_edit_pet_screen.dart';
 
@@ -318,7 +319,6 @@ class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProv
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final pet = _pet;
-    final isMale = pet.gender.toLowerCase() == 'male';
 
     return Scaffold(
       appBar: AppBar(
@@ -356,20 +356,17 @@ class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProv
                         children: [
                           // Pet Hero Card
                           Container(
-                            padding: const EdgeInsets.all(20),
+                            padding: const EdgeInsets.all(22),
                             decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [
-                                  colorScheme.primaryContainer,
-                                  colorScheme.surfaceContainerHighest.withValues(alpha: 0.8),
-                                ],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                              ),
+                              gradient: AppTheme.heroGradient,
                               borderRadius: BorderRadius.circular(24),
-                              border: Border.all(
-                                color: colorScheme.outlineVariant.withValues(alpha: 0.5),
-                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: AppTheme.primaryBlue.withValues(alpha: 0.35),
+                                  blurRadius: 20,
+                                  offset: const Offset(0, 8),
+                                ),
+                              ],
                             ),
                             child: Column(
                               children: [
@@ -385,11 +382,11 @@ class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProv
                                             height: 84,
                                             width: 84,
                                             decoration: BoxDecoration(
-                                              color: colorScheme.surface,
+                                              color: Colors.white,
                                               borderRadius: BorderRadius.circular(24),
                                               boxShadow: [
                                                 BoxShadow(
-                                                  color: colorScheme.primary.withValues(alpha: 0.15),
+                                                  color: Colors.black.withValues(alpha: 0.15),
                                                   blurRadius: 16,
                                                   offset: const Offset(0, 6),
                                                 ),
@@ -408,14 +405,14 @@ class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProv
                                             child: Container(
                                               padding: const EdgeInsets.all(6),
                                               decoration: BoxDecoration(
-                                                color: colorScheme.primary,
+                                                color: Colors.white,
                                                 shape: BoxShape.circle,
-                                                border: Border.all(color: Colors.white, width: 2),
+                                                border: Border.all(color: AppTheme.primaryBlue, width: 2),
                                               ),
                                               child: const Icon(
                                                 Icons.camera_alt_rounded,
                                                 size: 14,
-                                                color: Colors.white,
+                                                color: AppTheme.primaryBlue,
                                               ),
                                             ),
                                           ),
@@ -436,21 +433,23 @@ class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProv
                                                   pet.name,
                                                   style: theme.textTheme.headlineSmall?.copyWith(
                                                     fontWeight: FontWeight.bold,
+                                                    color: Colors.white,
                                                   ),
                                                 ),
                                               ),
                                               Container(
                                                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                                                 decoration: BoxDecoration(
-                                                  color: (isMale ? Colors.blue : Colors.pink).withValues(alpha: 0.15),
+                                                  color: Colors.white.withValues(alpha: 0.22),
                                                   borderRadius: BorderRadius.circular(12),
+                                                  border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
                                                 ),
                                                 child: Text(
                                                   pet.gender,
-                                                  style: TextStyle(
+                                                  style: const TextStyle(
                                                     fontSize: 12,
                                                     fontWeight: FontWeight.bold,
-                                                    color: isMale ? Colors.blue.shade700 : Colors.pink.shade700,
+                                                    color: Colors.white,
                                                   ),
                                                 ),
                                               ),
@@ -459,9 +458,10 @@ class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProv
                                           const SizedBox(height: 4),
                                           Text(
                                             '${pet.breed} • ${pet.species}',
-                                            style: theme.textTheme.bodyMedium?.copyWith(
-                                              color: colorScheme.onSurfaceVariant,
+                                            style: TextStyle(
+                                              color: Colors.white.withValues(alpha: 0.9),
                                               fontWeight: FontWeight.w500,
+                                              fontSize: 13,
                                             ),
                                           ),
                                           const SizedBox(height: 8),
@@ -469,26 +469,27 @@ class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProv
                                             onTap: _copyMicrochip,
                                             borderRadius: BorderRadius.circular(8),
                                             child: Container(
-                                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                               decoration: BoxDecoration(
-                                                color: colorScheme.surface.withValues(alpha: 0.8),
+                                                color: Colors.white.withValues(alpha: 0.2),
                                                 borderRadius: BorderRadius.circular(8),
+                                                border: Border.all(color: Colors.white.withValues(alpha: 0.25)),
                                               ),
                                               child: Row(
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: [
-                                                  Icon(Icons.qr_code_2_rounded, size: 14, color: colorScheme.primary),
+                                                  const Icon(Icons.qr_code_2_rounded, size: 14, color: Colors.white),
                                                   const SizedBox(width: 4),
                                                   Text(
                                                     'Microchip: ${pet.microchipId}',
-                                                    style: TextStyle(
+                                                    style: const TextStyle(
                                                       fontSize: 11,
                                                       fontWeight: FontWeight.w600,
-                                                      color: colorScheme.primary,
+                                                      color: Colors.white,
                                                     ),
                                                   ),
                                                   const SizedBox(width: 4),
-                                                  Icon(Icons.copy_rounded, size: 11, color: colorScheme.primary),
+                                                  const Icon(Icons.copy_rounded, size: 11, color: Colors.white),
                                                 ],
                                               ),
                                             ),
@@ -586,20 +587,35 @@ class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProv
             ),
             const SizedBox(width: 12),
             Expanded(
-              child: FilledButton.icon(
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Booking Vet Appointment...'),
-                      behavior: SnackBarBehavior.floating,
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: AppTheme.primaryGradient,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppTheme.primaryBlue.withValues(alpha: 0.35),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
                     ),
-                  );
-                },
-                icon: const Icon(Icons.calendar_month_rounded),
-                label: const Text('Book Vet'),
-                style: FilledButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  ],
+                ),
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Booking Vet Appointment...'),
+                        behavior: SnackBarBehavior.floating,
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.calendar_month_rounded, color: Colors.white),
+                  label: const Text('Book Vet', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.transparent,
+                    shadowColor: Colors.transparent,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
                 ),
               ),
             ),

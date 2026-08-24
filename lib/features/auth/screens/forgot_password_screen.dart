@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:canivue/core/theme/app_theme.dart';
 import 'package:canivue/features/auth/screens/otp_verification_screen.dart';
 import 'package:canivue/features/auth/widgets/custom_text_field.dart';
 
@@ -80,20 +81,20 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         height: 80,
                         width: 80,
                         decoration: BoxDecoration(
-                          color: colorScheme.primaryContainer,
+                          gradient: AppTheme.heroGradient,
                           borderRadius: BorderRadius.circular(24),
                           boxShadow: [
                             BoxShadow(
-                              color: colorScheme.primary.withValues(alpha: 0.15),
-                              blurRadius: 16,
+                              color: AppTheme.primaryBlue.withValues(alpha: 0.35),
+                              blurRadius: 18,
                               offset: const Offset(0, 8),
                             ),
                           ],
                         ),
-                        child: Icon(
+                        child: const Icon(
                           Icons.lock_reset_rounded,
                           size: 44,
-                          color: colorScheme.primary,
+                          color: Colors.white,
                         ),
                       ),
                     ),
@@ -147,23 +148,35 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     const SizedBox(height: 28),
 
                     // Submit Button
-                    SizedBox(
+                    Container(
                       height: 52,
-                      child: FilledButton(
-                        onPressed: _isLoading ? null : _handleResetPassword,
-                        style: FilledButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                      decoration: BoxDecoration(
+                        gradient: AppTheme.primaryGradient,
+                        borderRadius: BorderRadius.circular(14),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppTheme.primaryBlue.withValues(alpha: 0.35),
+                            blurRadius: 14,
+                            offset: const Offset(0, 5),
                           ),
-                          elevation: 2,
+                        ],
+                      ),
+                      child: ElevatedButton(
+                        onPressed: _isLoading ? null : _handleResetPassword,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.transparent,
+                          shadowColor: Colors.transparent,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
                         ),
                         child: _isLoading
-                            ? SizedBox(
+                            ? const SizedBox(
                                 height: 22,
                                 width: 22,
                                 child: CircularProgressIndicator(
                                   strokeWidth: 2.5,
-                                  color: colorScheme.onPrimary,
+                                  color: Colors.white,
                                 ),
                               )
                             : const Text(
@@ -171,6 +184,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
+                                  color: Colors.white,
                                 ),
                               ),
                       ),
