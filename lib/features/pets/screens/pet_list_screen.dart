@@ -187,7 +187,7 @@ class _PetListScreenState extends State<PetListScreen> {
                           ),
                         )
                       : ListView.builder(
-                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
+                          padding: const EdgeInsets.fromLTRB(20, 6, 20, 110),
                           physics: const BouncingScrollPhysics(),
                           itemCount: _filteredPets.length,
                           itemBuilder: (context, index) {

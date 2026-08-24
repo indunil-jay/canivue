@@ -94,3 +94,4 @@ class NotificationItem {
     return '${diff.inDays}d ago';
   }
 }
+

@@ -74,3 +74,4 @@ class LuxurySegmentedBar extends StatelessWidget {
     );
   }
 }
+
