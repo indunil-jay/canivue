@@ -116,7 +116,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ),
             ),
 
-            // Top Header: Brand Logo & Step Pill
+            // Top Header: Brand Logo & Brand Title
             Positioned(
               top: 0,
               left: 0,
@@ -125,61 +125,35 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      // Canivue Logo & Brand Title
-                      Row(
-                        children: [
-                          Container(
-                            height: 38,
-                            width: 38,
-                            decoration: BoxDecoration(
-                              gradient: _currentSlide.primaryGradient,
-                              borderRadius: BorderRadius.circular(12),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: _currentSlide.accentColor.withValues(alpha: 0.35),
-                                  blurRadius: 10,
-                                  offset: const Offset(0, 3),
-                                ),
-                              ],
-                            ),
-                            child: const Icon(
-                              Icons.pets_rounded,
-                              color: Colors.white,
-                              size: 20,
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          Text(
-                            'Canivue',
-                            style: GoogleFonts.plusJakartaSans(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                              letterSpacing: -0.3,
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      // Step Pill
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        height: 38,
+                        width: 38,
                         decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.16),
-                          borderRadius: BorderRadius.circular(18),
-                          border: Border.all(
-                            color: Colors.white.withValues(alpha: 0.25),
-                          ),
+                          gradient: _currentSlide.primaryGradient,
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: _currentSlide.accentColor.withValues(alpha: 0.35),
+                              blurRadius: 10,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
                         ),
-                        child: Text(
-                          _currentSlide.stepLabel,
-                          style: GoogleFonts.plusJakartaSans(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 12,
-                          ),
+                        child: const Icon(
+                          Icons.pets_rounded,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Text(
+                        'Canivue',
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          letterSpacing: -0.3,
                         ),
                       ),
                     ],
@@ -188,7 +162,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ),
             ),
 
-            // Floating Bottom Navigation Controls (Without the heavy box container)
+            // Floating Bottom Navigation Controls
             Positioned(
               left: 0,
               right: 0,
@@ -196,99 +170,100 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               child: SafeArea(
                 top: false,
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 22),
-                  child: Row(
+                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      // Left Action: Prominent Skip Button or Back Button
-                      Expanded(
-                        flex: 3,
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: _currentPage == 0
-                              ? InkWell(
-                                  onTap: _goToSignIn,
-                                  borderRadius: BorderRadius.circular(22),
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white.withValues(alpha: 0.2),
-                                      borderRadius: BorderRadius.circular(22),
-                                      border: Border.all(
-                                        color: Colors.white.withValues(alpha: 0.35),
-                                        width: 1.2,
-                                      ),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withValues(alpha: 0.15),
-                                          blurRadius: 10,
-                                          offset: const Offset(0, 3),
-                                        ),
-                                      ],
-                                    ),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Text(
-                                          'Skip',
-                                          style: GoogleFonts.plusJakartaSans(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 14,
-                                            letterSpacing: 0.2,
-                                          ),
-                                        ),
-                                        const SizedBox(width: 4),
-                                        const Icon(
-                                          Icons.chevron_right_rounded,
-                                          color: Colors.white,
-                                          size: 18,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                )
-                              : _RoundIconButton(
-                                  key: const ValueKey('back'),
-                                  icon: Icons.arrow_back_rounded,
-                                  onTap: _handleBack,
-                                  gradient: null,
-                                  accentColor: _currentSlide.accentColor,
+                      // Main navigation row
+                      Row(
+                        children: [
+                          // Left: Back button (if not page 0)
+                          Expanded(
+                            flex: 2,
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: _currentPage > 0
+                                  ? _RoundIconButton(
+                                      key: const ValueKey('back'),
+                                      icon: Icons.arrow_back_rounded,
+                                      onTap: _handleBack,
+                                      gradient: null,
+                                      accentColor: _currentSlide.accentColor,
+                                    )
+                                  : const SizedBox(height: 48, width: 48),
+                            ),
+                          ),
+
+                          // Center: Smooth Page Indicator
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 6),
+                            child: SmoothPageIndicator(
+                              controller: _pageController,
+                              count: onboardingSlides.length,
+                              effect: ExpandingDotsEffect(
+                                activeDotColor: _currentSlide.accentColor,
+                                dotColor: Colors.white.withValues(alpha: 0.35),
+                                dotHeight: 8,
+                                dotWidth: 8,
+                                expansionFactor: 3.5,
+                                spacing: 6,
+                              ),
+                            ),
+                          ),
+
+                          // Right: Next / Get Started Button
+                          Expanded(
+                            flex: 2,
+                            child: Align(
+                              alignment: Alignment.centerRight,
+                              child: _RoundIconButton(
+                                icon: _isLastPage ? Icons.rocket_launch_rounded : Icons.arrow_forward_rounded,
+                                onTap: _handleNext,
+                                gradient: _currentSlide.primaryGradient,
+                                accentColor: _currentSlide.accentColor,
+                                wide: _isLastPage,
+                                label: _isLastPage ? 'Get Started' : null,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      // Bottom Skip Button (Available across slides until the last page)
+                      if (!_isLastPage) ...[
+                        const SizedBox(height: 8),
+                        TextButton(
+                          onPressed: _goToSignIn,
+                          style: TextButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                            minimumSize: Size.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                'Skip',
+                                style: GoogleFonts.plusJakartaSans(
+                                  color: Colors.white.withValues(alpha: 0.88),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14,
+                                  letterSpacing: 0.2,
                                 ),
-                        ),
-                      ),
-
-                      // Center: Smooth Page Indicator
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 6),
-                        child: SmoothPageIndicator(
-                          controller: _pageController,
-                          count: onboardingSlides.length,
-                          effect: ExpandingDotsEffect(
-                            activeDotColor: _currentSlide.accentColor,
-                            dotColor: Colors.white.withValues(alpha: 0.35),
-                            dotHeight: 8,
-                            dotWidth: 8,
-                            expansionFactor: 3.5,
-                            spacing: 6,
+                              ),
+                              const SizedBox(width: 4),
+                              Icon(
+                                Icons.chevron_right_rounded,
+                                color: Colors.white.withValues(alpha: 0.88),
+                                size: 18,
+                              ),
+                            ],
                           ),
                         ),
-                      ),
-
-                      // Right Action: Next / Get Started Button
-                      Expanded(
-                        flex: 3,
-                        child: Align(
-                          alignment: Alignment.centerRight,
-                          child: _RoundIconButton(
-                            icon: _isLastPage ? Icons.rocket_launch_rounded : Icons.arrow_forward_rounded,
-                            onTap: _handleNext,
-                            gradient: _currentSlide.primaryGradient,
-                            accentColor: _currentSlide.accentColor,
-                            wide: _isLastPage,
-                            label: _isLastPage ? 'Get Started' : null,
-                          ),
-                        ),
-                      ),
+                      ] else ...[
+                        const SizedBox(height: 32),
+                      ],
                     ],
                   ),
                 ),
