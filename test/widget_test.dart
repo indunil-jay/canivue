@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:canivue/features/auth/screens/signin_screen.dart';
 import 'package:canivue/main.dart';
 
 void main() {
@@ -13,5 +14,20 @@ void main() {
     expect(find.text('Password'), findsOneWidget);
     expect(find.text('Confirm Password'), findsOneWidget);
     expect(find.byType(FilledButton), findsOneWidget);
+  });
+
+  testWidgets('SignInScreen renders correctly smoke test', (WidgetTester tester) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: SignInScreen(),
+      ),
+    );
+
+    expect(find.text('Welcome Back'), findsOneWidget);
+    expect(find.text('Email Address'), findsOneWidget);
+    expect(find.text('Password'), findsOneWidget);
+    expect(find.text('Remember me'), findsOneWidget);
+    expect(find.text('Forgot Password?'), findsOneWidget);
+    expect(find.text('Log In'), findsOneWidget);
   });
 }
