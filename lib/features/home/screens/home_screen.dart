@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:canivue/core/theme/app_theme.dart';
 import 'package:canivue/core/widgets/app_feedback.dart';
-import 'package:canivue/features/auth/screens/signin_screen.dart';
 import 'package:canivue/features/health_check/screens/health_check_capture_screen.dart';
 import 'package:canivue/features/pets/models/pet_model.dart';
 import 'package:canivue/features/pets/screens/pet_detail_screen.dart';
@@ -36,28 +35,6 @@ class _HomeScreenState extends State<HomeScreen> {
       return emailPrefix[0].toUpperCase() + emailPrefix.substring(1);
     }
     return 'Pet Parent';
-  }
-
-  void _handleLogout() async {
-    final confirmed = await AppFeedback.showLuxuryDialog(
-      context,
-      title: 'Log Out',
-      message: 'Are you sure you want to log out of Canivue?',
-      confirmText: 'Log Out',
-      cancelText: 'Cancel',
-      icon: Icons.logout_rounded,
-      accentColor: const Color(0xFFF43F5E),
-      iconGradient: const LinearGradient(
-        colors: [Color(0xFFE11D48), Color(0xFFFB7185)],
-      ),
-    );
-
-    if (confirmed == true && mounted) {
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => const SignInScreen()),
-        (route) => false,
-      );
-    }
   }
 
   void _openProfileSideSheet() {
@@ -112,51 +89,47 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         backgroundColor: colorScheme.surface,
         elevation: 0,
-        title: InkWell(
-          onTap: _openProfileSideSheet,
-          borderRadius: BorderRadius.circular(14),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 2),
-            child: Row(
-              children: [
-                Container(
-                  height: 40,
-                  width: 40,
-                  decoration: BoxDecoration(
-                    gradient: AppTheme.heroGradient,
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppTheme.primaryBlue.withValues(alpha: 0.3),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: const Icon(Icons.pets_rounded, color: Colors.white, size: 20),
-                ),
-                const SizedBox(width: 12),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Hello, $_displayName 👋',
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
-                    Text(
-                      'Canine Health Intelligence',
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: colorScheme.onSurfaceVariant,
-                        fontSize: 12,
-                      ),
+        title: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 2),
+          child: Row(
+            children: [
+              Container(
+                height: 40,
+                width: 40,
+                decoration: BoxDecoration(
+                  gradient: AppTheme.heroGradient,
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppTheme.primaryBlue.withValues(alpha: 0.3),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
                     ),
                   ],
                 ),
-              ],
-            ),
+                child: const Icon(Icons.pets_rounded, color: Colors.white, size: 20),
+              ),
+              const SizedBox(width: 12),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Hello, $_displayName 👋',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                  Text(
+                    'Canine Health Intelligence',
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: colorScheme.onSurfaceVariant,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
         actions: [
@@ -172,21 +145,6 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             },
           ),
-          IconButton(
-            icon: CircleAvatar(
-              radius: 16,
-              backgroundColor: AppTheme.primaryBlue.withValues(alpha: 0.12),
-              child: const Icon(Icons.person_rounded, size: 18, color: AppTheme.primaryBlue),
-            ),
-            tooltip: 'Profile & Settings',
-            onPressed: _openProfileSideSheet,
-          ),
-          IconButton(
-            icon: const Icon(Icons.logout_rounded),
-            tooltip: 'Log Out',
-            onPressed: _handleLogout,
-          ),
-          const SizedBox(width: 4),
           const SizedBox(width: 8),
         ],
       ),
