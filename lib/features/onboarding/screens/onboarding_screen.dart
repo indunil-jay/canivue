@@ -1,6 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:canivue/core/utils/page_transitions.dart';
 import 'package:canivue/features/auth/screens/signin_screen.dart';
@@ -116,7 +116,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ),
             ),
 
-            // Top Header: Brand Badge & Step Pill & Skip Button
+            // Top Header: Brand Logo & Step Pill
             Positioned(
               top: 0,
               left: 0,
@@ -127,55 +127,58 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      // Canivue Logo
-                      Container(
-                        height: 38,
-                        width: 38,
-                        decoration: BoxDecoration(
-                          gradient: _currentSlide.primaryGradient,
-                          borderRadius: BorderRadius.circular(12),
-                          boxShadow: [
-                            BoxShadow(
-                              color: _currentSlide.accentColor.withValues(alpha: 0.3),
-                              blurRadius: 10,
-                              offset: const Offset(0, 3),
+                      // Canivue Logo & Brand Title
+                      Row(
+                        children: [
+                          Container(
+                            height: 38,
+                            width: 38,
+                            decoration: BoxDecoration(
+                              gradient: _currentSlide.primaryGradient,
+                              borderRadius: BorderRadius.circular(12),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: _currentSlide.accentColor.withValues(alpha: 0.35),
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 3),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                        child: const Icon(
-                          Icons.pets_rounded,
-                          color: Colors.white,
-                          size: 20,
-                        ),
+                            child: const Icon(
+                              Icons.pets_rounded,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Text(
+                            'Canivue',
+                            style: GoogleFonts.plusJakartaSans(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              letterSpacing: -0.3,
+                            ),
+                          ),
+                        ],
                       ),
 
-                      // Skip Button
-                      AnimatedOpacity(
-                        opacity: _isLastPage ? 0 : 1,
-                        duration: const Duration(milliseconds: 250),
-                        child: TextButton(
-                          onPressed: _isLastPage ? null : _goToSignIn,
-                          style: TextButton.styleFrom(
-                            backgroundColor: Colors.white.withValues(alpha: 0.14),
-                            foregroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                              side: BorderSide(
-                                color: Colors.white.withValues(alpha: 0.2),
-                              ),
-                            ),
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      // Step Pill
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.16),
+                          borderRadius: BorderRadius.circular(18),
+                          border: Border.all(
+                            color: Colors.white.withValues(alpha: 0.25),
                           ),
-                          child: const Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                'Skip',
-                                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
-                              ),
-                              SizedBox(width: 4),
-                              Icon(Icons.chevron_right_rounded, size: 16),
-                            ],
+                        ),
+                        child: Text(
+                          _currentSlide.stepLabel,
+                          style: GoogleFonts.plusJakartaSans(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 12,
                           ),
                         ),
                       ),
@@ -185,7 +188,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ),
             ),
 
-            // Bottom Navigation Controls
+            // Floating Bottom Navigation Controls (Without the heavy box container)
             Positioned(
               left: 0,
               right: 0,
@@ -193,76 +196,100 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               child: SafeArea(
                 top: false,
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(24, 0, 24, 20),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(28),
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(28),
-                          border: Border.all(
-                            color: Colors.white.withValues(alpha: 0.2),
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.2),
-                              blurRadius: 20,
-                              offset: const Offset(0, 8),
-                            ),
-                          ],
-                        ),
-                        child: Row(
-                          children: [
-                            // Back Button
-                            AnimatedSwitcher(
-                              duration: const Duration(milliseconds: 250),
-                              child: _currentPage > 0
-                                  ? _RoundIconButton(
-                                      key: const ValueKey('back'),
-                                      icon: Icons.arrow_back_rounded,
-                                      onTap: _handleBack,
-                                      gradient: null,
-                                      accentColor: _currentSlide.accentColor,
-                                    )
-                                  : const SizedBox(key: ValueKey('no-back'), width: 0),
-                            ),
-                            if (_currentPage > 0) const SizedBox(width: 14),
-
-                            // Indicator
-                            Expanded(
-                              child: Center(
-                                child: SmoothPageIndicator(
-                                  controller: _pageController,
-                                  count: onboardingSlides.length,
-                                  effect: ExpandingDotsEffect(
-                                    activeDotColor: _currentSlide.accentColor,
-                                    dotColor: Colors.white.withValues(alpha: 0.3),
-                                    dotHeight: 8,
-                                    dotWidth: 8,
-                                    expansionFactor: 3.5,
-                                    spacing: 6,
+                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 22),
+                  child: Row(
+                    children: [
+                      // Left Action: Prominent Skip Button or Back Button
+                      Expanded(
+                        flex: 3,
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: _currentPage == 0
+                              ? InkWell(
+                                  onTap: _goToSignIn,
+                                  borderRadius: BorderRadius.circular(22),
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white.withValues(alpha: 0.2),
+                                      borderRadius: BorderRadius.circular(22),
+                                      border: Border.all(
+                                        color: Colors.white.withValues(alpha: 0.35),
+                                        width: 1.2,
+                                      ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withValues(alpha: 0.15),
+                                          blurRadius: 10,
+                                          offset: const Offset(0, 3),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          'Skip',
+                                          style: GoogleFonts.plusJakartaSans(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 14,
+                                            letterSpacing: 0.2,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 4),
+                                        const Icon(
+                                          Icons.chevron_right_rounded,
+                                          color: Colors.white,
+                                          size: 18,
+                                        ),
+                                      ],
+                                    ),
                                   ),
+                                )
+                              : _RoundIconButton(
+                                  key: const ValueKey('back'),
+                                  icon: Icons.arrow_back_rounded,
+                                  onTap: _handleBack,
+                                  gradient: null,
+                                  accentColor: _currentSlide.accentColor,
                                 ),
-                              ),
-                            ),
-                            const SizedBox(width: 14),
-
-                            // Next / Get Started Button
-                            _RoundIconButton(
-                              icon: _isLastPage ? Icons.rocket_launch_rounded : Icons.arrow_forward_rounded,
-                              onTap: _handleNext,
-                              gradient: _currentSlide.primaryGradient,
-                              accentColor: _currentSlide.accentColor,
-                              wide: _isLastPage,
-                              label: _isLastPage ? 'Get Started' : null,
-                            ),
-                          ],
                         ),
                       ),
-                    ),
+
+                      // Center: Smooth Page Indicator
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 6),
+                        child: SmoothPageIndicator(
+                          controller: _pageController,
+                          count: onboardingSlides.length,
+                          effect: ExpandingDotsEffect(
+                            activeDotColor: _currentSlide.accentColor,
+                            dotColor: Colors.white.withValues(alpha: 0.35),
+                            dotHeight: 8,
+                            dotWidth: 8,
+                            expansionFactor: 3.5,
+                            spacing: 6,
+                          ),
+                        ),
+                      ),
+
+                      // Right Action: Next / Get Started Button
+                      Expanded(
+                        flex: 3,
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: _RoundIconButton(
+                            icon: _isLastPage ? Icons.rocket_launch_rounded : Icons.arrow_forward_rounded,
+                            onTap: _handleNext,
+                            gradient: _currentSlide.primaryGradient,
+                            accentColor: _currentSlide.accentColor,
+                            wide: _isLastPage,
+                            label: _isLastPage ? 'Get Started' : null,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -285,13 +312,12 @@ class _OnboardingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final size = MediaQuery.sizeOf(context);
     final isCompact = size.height < 700;
 
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
-      padding: EdgeInsets.fromLTRB(20, isCompact ? 70 : 85, 20, 100),
+      padding: EdgeInsets.fromLTRB(20, isCompact ? 70 : 85, 20, 95),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -317,10 +343,16 @@ class _OnboardingPage extends StatelessWidget {
               child: Stack(
                 fit: StackFit.expand,
                 children: [
-                  // Image
+                  // Image with safe test errorBuilder
                   Image.asset(
                     slide.imageAsset,
                     fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => Container(
+                      color: const Color(0xFF0A2540),
+                      child: Center(
+                        child: Icon(slide.icon, size: 64, color: slide.accentColor),
+                      ),
+                    ),
                   ),
 
                   // Gradient Scrim Layer for Smooth Blending
@@ -367,7 +399,7 @@ class _OnboardingPage extends StatelessWidget {
                               const SizedBox(width: 6),
                               Text(
                                 slide.badge,
-                                style: const TextStyle(
+                                style: GoogleFonts.plusJakartaSans(
                                   color: Colors.white,
                                   fontSize: 13,
                                   fontWeight: FontWeight.bold,
@@ -377,7 +409,7 @@ class _OnboardingPage extends StatelessWidget {
                           ),
                         ),
                       ),
-                    ).animate(target: isActive ? 1 : 0).fadeIn(duration: 380.ms).slideY(begin: 0.3, end: 0),
+                    ),
                   ),
                 ],
               ),
@@ -413,8 +445,9 @@ class _OnboardingPage extends StatelessWidget {
                     // Title
                     Text(
                       slide.title,
-                      style: theme.textTheme.headlineMedium?.copyWith(
+                      style: GoogleFonts.plusJakartaSans(
                         fontWeight: FontWeight.bold,
+                        fontSize: 24,
                         color: Colors.white,
                         height: 1.18,
                         letterSpacing: -0.5,
@@ -426,25 +459,19 @@ class _OnboardingPage extends StatelessWidget {
                           ),
                         ],
                       ),
-                    )
-                        .animate(target: isActive ? 1 : 0)
-                        .fadeIn(duration: 400.ms, delay: 80.ms)
-                        .slideY(begin: 0.25, end: 0, curve: Curves.easeOutCubic),
+                    ),
                     const SizedBox(height: 10),
 
                     // Description
                     Text(
                       slide.description,
-                      style: TextStyle(
+                      style: GoogleFonts.plusJakartaSans(
                         color: Colors.white.withValues(alpha: 0.88),
                         fontSize: 14,
                         height: 1.45,
                         fontWeight: FontWeight.w400,
                       ),
-                    )
-                        .animate(target: isActive ? 1 : 0)
-                        .fadeIn(duration: 400.ms, delay: 140.ms)
-                        .slideY(begin: 0.25, end: 0, curve: Curves.easeOutCubic),
+                    ),
                     const SizedBox(height: 16),
 
                     // Feature Pill Chips
@@ -453,12 +480,12 @@ class _OnboardingPage extends StatelessWidget {
                       runSpacing: 8,
                       children: slide.featureTags.map((tag) {
                         return Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                           decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.12),
-                            borderRadius: BorderRadius.circular(12),
+                            color: Colors.white.withValues(alpha: 0.14),
+                            borderRadius: BorderRadius.circular(14),
                             border: Border.all(
-                              color: slide.accentColor.withValues(alpha: 0.35),
+                              color: slide.accentColor.withValues(alpha: 0.4),
                               width: 1,
                             ),
                           ),
@@ -468,14 +495,14 @@ class _OnboardingPage extends StatelessWidget {
                               Icon(
                                 Icons.check_circle_rounded,
                                 color: slide.accentColor,
-                                size: 13,
+                                size: 14,
                               ),
-                              const SizedBox(width: 5),
+                              const SizedBox(width: 6),
                               Text(
                                 tag,
-                                style: const TextStyle(
+                                style: GoogleFonts.plusJakartaSans(
                                   color: Colors.white,
-                                  fontSize: 11,
+                                  fontSize: 12,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
@@ -483,10 +510,7 @@ class _OnboardingPage extends StatelessWidget {
                           ),
                         );
                       }).toList(),
-                    )
-                        .animate(target: isActive ? 1 : 0)
-                        .fadeIn(duration: 400.ms, delay: 200.ms)
-                        .slideY(begin: 0.2, end: 0),
+                    ),
                   ],
                 ),
               ),
@@ -520,18 +544,16 @@ class _RoundIconButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final isFilled = gradient != null;
 
-    final child = AnimatedContainer(
-      duration: const Duration(milliseconds: 280),
-      curve: Curves.easeOutCubic,
+    final child = Container(
       height: 48,
-      width: wide ? 145 : 48,
       padding: wide ? const EdgeInsets.symmetric(horizontal: 16) : EdgeInsets.zero,
+      width: wide ? 135 : 48,
       decoration: BoxDecoration(
         gradient: gradient,
-        color: isFilled ? null : Colors.white.withValues(alpha: 0.15),
+        color: isFilled ? null : Colors.white.withValues(alpha: 0.18),
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
-          color: Colors.white.withValues(alpha: isFilled ? 0.3 : 0.2),
+          color: Colors.white.withValues(alpha: isFilled ? 0.35 : 0.25),
         ),
         boxShadow: isFilled
             ? [
@@ -550,16 +572,16 @@ class _RoundIconButton extends StatelessWidget {
           children: [
             Icon(icon, color: Colors.white, size: 20),
             if (wide && label != null) ...[
-              const SizedBox(width: 8),
+              const SizedBox(width: 6),
               Flexible(
                 child: Text(
                   label!,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
+                  style: GoogleFonts.plusJakartaSans(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
-                    fontSize: 14,
+                    fontSize: 13.5,
                     letterSpacing: 0.2,
                   ),
                 ),
