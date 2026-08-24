@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:canivue/core/theme/app_theme.dart';
-import 'package:canivue/features/auth/screens/signin_screen.dart';
+import 'package:canivue/features/onboarding/screens/onboarding_screen.dart';
 
 void main() {
   runApp(const CanivueApp());
@@ -15,7 +15,7 @@ class CanivueApp extends StatelessWidget {
       title: 'Canivue',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
-      home: const SignInScreen(),
+      home: const OnboardingScreen(),
     );
   }
 }
