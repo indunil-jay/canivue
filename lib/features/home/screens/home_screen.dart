@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:canivue/features/auth/screens/signin_screen.dart';
+import 'package:canivue/features/profile/widgets/profile_side_sheet.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({
@@ -16,6 +17,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int _currentIndex = 0;
 
   String get _displayName {
@@ -61,40 +63,56 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  void _openProfileSideSheet() {
+    _scaffoldKey.currentState?.openEndDrawer();
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
     return Scaffold(
+      key: _scaffoldKey,
+      endDrawer: ProfileSideSheet(
+        userEmail: widget.userEmail,
+        userName: widget.userName,
+      ),
       appBar: AppBar(
         backgroundColor: colorScheme.surface,
         elevation: 0,
-        title: Row(
-          children: [
-            CircleAvatar(
-              backgroundColor: colorScheme.primaryContainer,
-              child: Icon(Icons.pets_rounded, color: colorScheme.primary, size: 20),
-            ),
-            const SizedBox(width: 12),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+        title: InkWell(
+          onTap: _openProfileSideSheet,
+          borderRadius: BorderRadius.circular(12),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 2),
+            child: Row(
               children: [
-                Text(
-                  'Hello, $_displayName 👋',
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                CircleAvatar(
+                  backgroundColor: colorScheme.primaryContainer,
+                  child: Icon(Icons.pets_rounded, color: colorScheme.primary, size: 20),
                 ),
-                Text(
-                  'Welcome to Canivue',
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: colorScheme.onSurfaceVariant,
-                  ),
+                const SizedBox(width: 12),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Hello, $_displayName 👋',
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      'Welcome to Canivue',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
-          ],
+          ),
         ),
         actions: [
           IconButton(
@@ -110,11 +128,20 @@ class _HomeScreenState extends State<HomeScreen> {
             },
           ),
           IconButton(
+            icon: CircleAvatar(
+              radius: 14,
+              backgroundColor: colorScheme.primary.withValues(alpha: 0.15),
+              child: Icon(Icons.person_rounded, size: 18, color: colorScheme.primary),
+            ),
+            tooltip: 'Profile & Settings',
+            onPressed: _openProfileSideSheet,
+          ),
+          IconButton(
             icon: const Icon(Icons.logout_rounded),
             tooltip: 'Log Out',
             onPressed: _handleLogout,
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: 4),
         ],
       ),
       body: SafeArea(
@@ -274,6 +301,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     icon: Icons.badge_rounded,
                     color: Colors.purple,
                     theme: theme,
+                    onTap: _openProfileSideSheet,
                   ),
                   _buildServiceCard(
                     title: 'Appointments',
@@ -291,9 +319,13 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: NavigationBar(
         selectedIndex: _currentIndex,
         onDestinationSelected: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
+          if (index == 3) {
+            _openProfileSideSheet();
+          } else {
+            setState(() {
+              _currentIndex = index;
+            });
+          }
         },
         destinations: const [
           NavigationDestination(
@@ -327,9 +359,10 @@ class _HomeScreenState extends State<HomeScreen> {
     required IconData icon,
     required MaterialColor color,
     required ThemeData theme,
+    VoidCallback? onTap,
   }) {
     return InkWell(
-      onTap: () {},
+      onTap: onTap ?? () {},
       borderRadius: BorderRadius.circular(16),
       child: Container(
         padding: const EdgeInsets.all(16),
@@ -373,4 +406,3 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-

@@ -6,6 +6,7 @@ import 'package:canivue/features/auth/screens/otp_verification_screen.dart';
 import 'package:canivue/features/auth/screens/reset_password_screen.dart';
 import 'package:canivue/features/auth/screens/signup_screen.dart';
 import 'package:canivue/features/home/screens/home_screen.dart';
+import 'package:canivue/features/profile/widgets/profile_side_sheet.dart';
 import 'package:canivue/main.dart';
 
 void main() {
@@ -86,5 +87,27 @@ void main() {
     expect(find.text('Quick Services'), findsOneWidget);
     expect(find.text('Health Check'), findsOneWidget);
     expect(find.text('Vaccinations'), findsOneWidget);
+  });
+
+  testWidgets('ProfileSideSheet renders correctly smoke test', (WidgetTester tester) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Scaffold(
+          body: ProfileSideSheet(
+            userEmail: 'alex@canivue.com',
+            userName: 'Alex',
+          ),
+        ),
+      ),
+    );
+
+    expect(find.text('Profile & Settings'), findsOneWidget);
+    expect(find.text('Alex'), findsOneWidget);
+    expect(find.text('alex@canivue.com'), findsOneWidget);
+    expect(find.text('MY PETS'), findsOneWidget);
+    expect(find.text('Buddy'), findsOneWidget);
+    expect(find.text('Luna'), findsOneWidget);
+    expect(find.text('Add Another Pet'), findsOneWidget);
+    expect(find.text('Log Out'), findsOneWidget);
   });
 }
