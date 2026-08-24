@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:canivue/features/auth/screens/signin_screen.dart';
+import 'package:canivue/features/pets/screens/pet_list_screen.dart';
 import 'package:canivue/features/profile/widgets/profile_side_sheet.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -65,6 +66,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _openProfileSideSheet() {
     _scaffoldKey.currentState?.openEndDrawer();
+  }
+
+  void _navigateToPets() {
+    setState(() {
+      _currentIndex = 1;
+    });
   }
 
   @override
@@ -144,178 +151,7 @@ class _HomeScreenState extends State<HomeScreen> {
           const SizedBox(width: 4),
         ],
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Search / Filter Banner
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                decoration: BoxDecoration(
-                  color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.4),
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: colorScheme.outlineVariant.withValues(alpha: 0.5),
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    Icon(Icons.search_rounded, color: colorScheme.onSurfaceVariant),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: TextField(
-                        decoration: InputDecoration(
-                          hintText: 'Search pets, records, symptoms...',
-                          hintStyle: TextStyle(
-                            color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
-                            fontSize: 14,
-                          ),
-                          border: InputBorder.none,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 24),
-
-              // Overview Banner
-              Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      colorScheme.primary,
-                      colorScheme.primary.withValues(alpha: 0.8),
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: colorScheme.primary.withValues(alpha: 0.25),
-                      blurRadius: 16,
-                      offset: const Offset(0, 6),
-                    ),
-                  ],
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.2),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: const Text(
-                              'Canine Health AI',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          const Text(
-                            'Smart Pet Health Monitoring',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 6),
-                          Text(
-                            'Track vital stats, vaccinations, and daily activities easily.',
-                            style: TextStyle(
-                              color: Colors.white.withValues(alpha: 0.9),
-                              fontSize: 13,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Container(
-                      height: 56,
-                      width: 56,
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.2),
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.insights_rounded,
-                        color: Colors.white,
-                        size: 32,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 28),
-
-              // Quick Actions Header
-              Text(
-                'Quick Services',
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 14),
-
-              // Quick Action Grid
-              GridView.count(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                crossAxisCount: 2,
-                crossAxisSpacing: 14,
-                mainAxisSpacing: 14,
-                childAspectRatio: 1.25,
-                children: [
-                  _buildServiceCard(
-                    title: 'Health Check',
-                    subtitle: 'AI Symptom Scan',
-                    icon: Icons.health_and_safety_rounded,
-                    color: Colors.blue,
-                    theme: theme,
-                  ),
-                  _buildServiceCard(
-                    title: 'Vaccinations',
-                    subtitle: 'Schedule & Alerts',
-                    icon: Icons.vaccines_rounded,
-                    color: Colors.orange,
-                    theme: theme,
-                  ),
-                  _buildServiceCard(
-                    title: 'Pet Profile',
-                    subtitle: 'Medical History',
-                    icon: Icons.badge_rounded,
-                    color: Colors.purple,
-                    theme: theme,
-                    onTap: _openProfileSideSheet,
-                  ),
-                  _buildServiceCard(
-                    title: 'Appointments',
-                    subtitle: 'Vet Consultations',
-                    icon: Icons.calendar_month_rounded,
-                    color: Colors.teal,
-                    theme: theme,
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
+      body: _currentIndex == 1 ? const PetListScreen() : _buildDashboardBody(theme, colorScheme),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _currentIndex,
         onDestinationSelected: (index) {
@@ -349,6 +185,181 @@ class _HomeScreenState extends State<HomeScreen> {
             label: 'Profile',
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildDashboardBody(ThemeData theme, ColorScheme colorScheme) {
+    return SafeArea(
+      child: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Search / Filter Banner
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              decoration: BoxDecoration(
+                color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.4),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: colorScheme.outlineVariant.withValues(alpha: 0.5),
+                ),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.search_rounded, color: colorScheme.onSurfaceVariant),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: TextField(
+                      decoration: InputDecoration(
+                        hintText: 'Search pets, records, symptoms...',
+                        hintStyle: TextStyle(
+                          color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+                          fontSize: 14,
+                        ),
+                        border: InputBorder.none,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
+
+            // Overview Banner
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    colorScheme.primary,
+                    colorScheme.primary.withValues(alpha: 0.8),
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: colorScheme.primary.withValues(alpha: 0.25),
+                    blurRadius: 16,
+                    offset: const Offset(0, 6),
+                  ),
+                ],
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.2),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: const Text(
+                            'Canine Health AI',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        const Text(
+                          'Smart Pet Health Monitoring',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          'Track vital stats, vaccinations, and daily activities easily.',
+                          style: TextStyle(
+                            color: Colors.white.withValues(alpha: 0.9),
+                            fontSize: 13,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Container(
+                    height: 56,
+                    width: 56,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.2),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.insights_rounded,
+                      color: Colors.white,
+                      size: 32,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 28),
+
+            // Quick Actions Header
+            Text(
+              'Quick Services',
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 14),
+
+            // Quick Action Grid
+            GridView.count(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              crossAxisCount: 2,
+              crossAxisSpacing: 14,
+              mainAxisSpacing: 14,
+              childAspectRatio: 1.25,
+              children: [
+                _buildServiceCard(
+                  title: 'Health Check',
+                  subtitle: 'AI Symptom Scan',
+                  icon: Icons.health_and_safety_rounded,
+                  color: Colors.blue,
+                  theme: theme,
+                ),
+                _buildServiceCard(
+                  title: 'Vaccinations',
+                  subtitle: 'Schedule & Alerts',
+                  icon: Icons.vaccines_rounded,
+                  color: Colors.orange,
+                  theme: theme,
+                ),
+                _buildServiceCard(
+                  title: 'Pet Profiles',
+                  subtitle: 'Medical History',
+                  icon: Icons.badge_rounded,
+                  color: Colors.purple,
+                  theme: theme,
+                  onTap: _navigateToPets,
+                ),
+                _buildServiceCard(
+                  title: 'Appointments',
+                  subtitle: 'Vet Consultations',
+                  icon: Icons.calendar_month_rounded,
+                  color: Colors.teal,
+                  theme: theme,
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

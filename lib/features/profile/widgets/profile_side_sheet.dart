@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:canivue/features/auth/screens/signin_screen.dart';
+import 'package:canivue/features/pets/screens/pet_list_screen.dart';
+import 'package:canivue/features/profile/screens/personal_information_screen.dart';
 
 class ProfileSideSheet extends StatefulWidget {
   const ProfileSideSheet({
@@ -62,6 +64,27 @@ class _ProfileSideSheetState extends State<ProfileSideSheet> {
     );
   }
 
+  void _navigateToPersonalInfo() {
+    Navigator.of(context).pop();
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => PersonalInformationScreen(
+          userEmail: widget.userEmail,
+          userName: widget.userName,
+        ),
+      ),
+    );
+  }
+
+  void _navigateToPets() {
+    Navigator.of(context).pop();
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => const PetListScreen(),
+      ),
+    );
+  }
+
   void _showActionSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -116,98 +139,127 @@ class _ProfileSideSheetState extends State<ProfileSideSheet> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Profile Card
-                    Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            colorScheme.primaryContainer,
-                            colorScheme.surfaceContainerHighest,
-                          ],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                          color: colorScheme.outlineVariant.withValues(alpha: 0.5),
-                        ),
-                      ),
-                      child: Row(
-                        children: [
-                          Stack(
-                            children: [
-                              CircleAvatar(
-                                radius: 30,
-                                backgroundColor: colorScheme.primary,
-                                child: Text(
-                                  _displayName.isNotEmpty ? _displayName[0].toUpperCase() : 'U',
-                                  style: TextStyle(
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.bold,
-                                    color: colorScheme.onPrimary,
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                bottom: 0,
-                                right: 0,
-                                child: Container(
-                                  padding: const EdgeInsets.all(4),
-                                  decoration: BoxDecoration(
-                                    color: colorScheme.primary,
-                                    shape: BoxShape.circle,
-                                    border: Border.all(color: Colors.white, width: 1.5),
-                                  ),
-                                  child: const Icon(Icons.edit_rounded, size: 12, color: Colors.white),
-                                ),
-                              ),
+                    InkWell(
+                      onTap: _navigateToPersonalInfo,
+                      borderRadius: BorderRadius.circular(20),
+                      child: Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              colorScheme.primaryContainer,
+                              colorScheme.surfaceContainerHighest,
                             ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
                           ),
-                          const SizedBox(width: 14),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: colorScheme.outlineVariant.withValues(alpha: 0.5),
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            Stack(
                               children: [
-                                Text(
-                                  _displayName,
-                                  style: theme.textTheme.titleMedium?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const SizedBox(height: 2),
-                                Text(
-                                  widget.userEmail,
-                                  style: theme.textTheme.bodySmall?.copyWith(
-                                    color: colorScheme.onSurfaceVariant,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                const SizedBox(height: 6),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                  decoration: BoxDecoration(
-                                    color: colorScheme.primary.withValues(alpha: 0.15),
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
+                                CircleAvatar(
+                                  radius: 30,
+                                  backgroundColor: colorScheme.primary,
                                   child: Text(
-                                    '⭐ Premium Pet Parent',
+                                    _displayName.isNotEmpty ? _displayName[0].toUpperCase() : 'U',
                                     style: TextStyle(
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.w600,
-                                      color: colorScheme.primary,
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold,
+                                      color: colorScheme.onPrimary,
                                     ),
+                                  ),
+                                ),
+                                Positioned(
+                                  bottom: 0,
+                                  right: 0,
+                                  child: Container(
+                                    padding: const EdgeInsets.all(4),
+                                    decoration: BoxDecoration(
+                                      color: colorScheme.primary,
+                                      shape: BoxShape.circle,
+                                      border: Border.all(color: Colors.white, width: 1.5),
+                                    ),
+                                    child: const Icon(Icons.edit_rounded, size: 12, color: Colors.white),
                                   ),
                                 ),
                               ],
                             ),
-                          ),
-                        ],
+                            const SizedBox(width: 14),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    _displayName,
+                                    style: theme.textTheme.titleMedium?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    widget.userEmail,
+                                    style: theme.textTheme.bodySmall?.copyWith(
+                                      color: colorScheme.onSurfaceVariant,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  const SizedBox(height: 6),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                    decoration: BoxDecoration(
+                                      color: colorScheme.primary.withValues(alpha: 0.15),
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: Text(
+                                      '⭐ Premium Pet Parent',
+                                      style: TextStyle(
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.w600,
+                                        color: colorScheme.primary,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Icon(
+                              Icons.chevron_right_rounded,
+                              color: colorScheme.onSurfaceVariant,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                     const SizedBox(height: 24),
 
                     // Section 1: My Registered Pets
-                    _buildSectionHeader('MY PETS', theme),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _buildSectionHeader('MY PETS', theme),
+                        TextButton(
+                          onPressed: _navigateToPets,
+                          style: TextButton.styleFrom(
+                            padding: EdgeInsets.zero,
+                            minimumSize: Size.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
+                          child: Text(
+                            'View All',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: colorScheme.primary,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                     const SizedBox(height: 8),
                     _buildPetTile(
                       name: 'Buddy',
@@ -215,6 +267,7 @@ class _ProfileSideSheetState extends State<ProfileSideSheet> {
                       icon: Icons.pets_rounded,
                       color: Colors.amber,
                       theme: theme,
+                      onTap: _navigateToPets,
                     ),
                     _buildPetTile(
                       name: 'Luna',
@@ -222,9 +275,10 @@ class _ProfileSideSheetState extends State<ProfileSideSheet> {
                       icon: Icons.pets_rounded,
                       color: Colors.orange,
                       theme: theme,
+                      onTap: _navigateToPets,
                     ),
                     InkWell(
-                      onTap: () => _showActionSnackBar('Add New Pet clicked'),
+                      onTap: _navigateToPets,
                       borderRadius: BorderRadius.circular(12),
                       child: Container(
                         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
@@ -232,6 +286,7 @@ class _ProfileSideSheetState extends State<ProfileSideSheet> {
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
                             color: colorScheme.primary.withValues(alpha: 0.5),
+                            style: BorderStyle.solid,
                           ),
                         ),
                         child: Row(
@@ -260,7 +315,7 @@ class _ProfileSideSheetState extends State<ProfileSideSheet> {
                       icon: Icons.person_outline_rounded,
                       title: 'Personal Information',
                       subtitle: 'Edit contact & address details',
-                      onTap: () => _showActionSnackBar('Opening Personal Information'),
+                      onTap: _navigateToPersonalInfo,
                       theme: theme,
                     ),
                     _buildNavTile(
@@ -377,46 +432,51 @@ class _ProfileSideSheetState extends State<ProfileSideSheet> {
     required IconData icon,
     required MaterialColor color,
     required ThemeData theme,
+    VoidCallback? onTap,
   }) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: theme.colorScheme.outlineVariant.withValues(alpha: 0.4)),
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: color.shade50,
-              borderRadius: BorderRadius.circular(10),
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 8),
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: theme.colorScheme.outlineVariant.withValues(alpha: 0.4)),
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: color.shade50,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(icon, color: color.shade700, size: 20),
             ),
-            child: Icon(icon, color: color.shade700, size: 20),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  name,
-                  style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  breed,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
-                    fontSize: 11,
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    name,
+                    style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
                   ),
-                ),
-              ],
+                  Text(
+                    breed,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                      fontSize: 11,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          Icon(Icons.chevron_right_rounded, color: theme.colorScheme.onSurfaceVariant, size: 20),
-        ],
+            Icon(Icons.chevron_right_rounded, color: theme.colorScheme.onSurfaceVariant, size: 20),
+          ],
+        ),
       ),
     );
   }
@@ -488,4 +548,3 @@ class _ProfileSideSheetState extends State<ProfileSideSheet> {
     );
   }
 }
-
