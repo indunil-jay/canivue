@@ -400,9 +400,26 @@ class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProv
                               children: [
                                 Row(
                                   children: [
+                                    // Avatar with direct photo upload tap
                                     // Avatar with direct photo upload tap + Hero animation
                                     Stack(
                                       children: [
+                                        InkWell(
+                                          onTap: _showPhotoOptions,
+                                          borderRadius: BorderRadius.circular(24),
+                                          child: Container(
+                                            height: 84,
+                                            width: 84,
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius: BorderRadius.circular(24),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.black.withValues(alpha: 0.15),
+                                                  blurRadius: 16,
+                                                  offset: const Offset(0, 6),
+                                                ),
+                                              ],
                                         Hero(
                                           tag: 'pet-avatar-${_pet.id}',
                                           child: InkWell(
@@ -425,6 +442,8 @@ class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProv
                                               clipBehavior: Clip.antiAlias,
                                               child: _buildAvatarWidget(colorScheme),
                                             ),
+                                            clipBehavior: Clip.antiAlias,
+                                            child: _buildAvatarWidget(colorScheme),
                                           ),
                                         ),
                                         Positioned(

@@ -38,6 +38,35 @@ class _HomeScreenState extends State<HomeScreen> {
     return 'Pet Parent';
   }
 
+  void _handleLogout() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          title: const Text('Log Out'),
+          content: const Text('Are you sure you want to log out of Canivue?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            FilledButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (_) => const SignInScreen()),
+                  (route) => false,
+                );
+              },
+              style: FilledButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.error,
+              ),
+              child: const Text('Log Out'),
+            ),
+          ],
+        );
+      },
   void _handleLogout() async {
     final confirmed = await AppFeedback.showLuxuryDialog(
       context,
@@ -70,9 +99,11 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  void _navigateToHealthCheck() {
   void _navigateToHealthCheck({Pet? initialPet}) {
     Navigator.of(context).push(
       MaterialPageRoute(
+        builder: (_) => HealthCheckCaptureScreen(pets: Pet.samplePets),
         builder: (_) => HealthCheckCaptureScreen(
           pets: _pets,
           initialPet: initialPet ?? _pets.first,
@@ -114,19 +145,26 @@ class _HomeScreenState extends State<HomeScreen> {
         elevation: 0,
         title: InkWell(
           onTap: _openProfileSideSheet,
+          borderRadius: BorderRadius.circular(12),
           borderRadius: BorderRadius.circular(14),
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 2),
             child: Row(
               children: [
                 Container(
+                  height: 38,
+                  width: 38,
                   height: 40,
                   width: 40,
                   decoration: BoxDecoration(
+                    gradient: AppTheme.aquaGradient,
                     gradient: AppTheme.heroGradient,
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
+                        color: AppTheme.primaryBlue.withValues(alpha: 0.25),
+                        blurRadius: 8,
+                        offset: const Offset(0, 3),
                         color: AppTheme.primaryBlue.withValues(alpha: 0.3),
                         blurRadius: 10,
                         offset: const Offset(0, 4),
@@ -147,6 +185,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     Text(
+                      'Welcome to Canivue',
                       'Canine Health Intelligence',
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: colorScheme.onSurfaceVariant,
@@ -164,6 +203,12 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: const Icon(Icons.notifications_outlined),
             tooltip: 'Notifications',
             onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: const Text('No new notifications.'),
+                  behavior: SnackBarBehavior.floating,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                ),
               AppFeedback.showToast(
                 context,
                 title: 'All Caught Up! 🐾',
@@ -174,6 +219,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           IconButton(
             icon: CircleAvatar(
+              radius: 15,
               radius: 16,
               backgroundColor: AppTheme.primaryBlue.withValues(alpha: 0.12),
               child: const Icon(Icons.person_rounded, size: 18, color: AppTheme.primaryBlue),
@@ -235,6 +281,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Search / Filter Banner
             // Search / Filter Bar
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
@@ -276,6 +323,33 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(height: 20),
 
+            // Overview Blue Gradient Hero Banner
+            Container(
+              padding: const EdgeInsets.all(22),
+              decoration: BoxDecoration(
+                gradient: AppTheme.heroGradient,
+                borderRadius: BorderRadius.circular(24),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppTheme.primaryBlue.withValues(alpha: 0.35),
+                    blurRadius: 20,
+                    offset: const Offset(0, 8),
+                  ),
+                ],
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.22),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: Colors.white.withValues(alpha: 0.3),
             // AI Multimodal Diagnostic Hero Banner
             InkWell(
               onTap: () => _navigateToHealthCheck(),
@@ -332,16 +406,29 @@ class _HomeScreenState extends State<HomeScreen> {
                               ],
                             ),
                           ),
+                          child: const Text(
+                            '✨ Canine Health AI',
                           const SizedBox(height: 12),
                           const Text(
                             'Multimodal AI Health Detection',
                             style: TextStyle(
                               color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
                               fontSize: 19,
                               fontWeight: FontWeight.bold,
                               letterSpacing: -0.3,
                             ),
                           ),
+                        ),
+                        const SizedBox(height: 12),
+                        const Text(
+                          'Multimodal AI Health Detection',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 19,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: -0.3,
                           const SizedBox(height: 6),
                           Text(
                             'Fuse visual images, collar telemetry & symptom notes into real-time health scores.',
@@ -365,12 +452,31 @@ class _HomeScreenState extends State<HomeScreen> {
                           color: Colors.white.withValues(alpha: 0.4),
                           width: 1.5,
                         ),
+                        const SizedBox(height: 6),
+                        Text(
+                          'Fuse photos, collar data & symptoms to forecast health risks early.',
+                          style: TextStyle(
+                            color: Colors.white.withValues(alpha: 0.92),
+                            fontSize: 13,
                         boxShadow: [
                           BoxShadow(
                             color: AppTheme.cyanAccent.withValues(alpha: 0.4),
                             blurRadius: 14,
                             offset: const Offset(0, 4),
                           ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Container(
+                    height: 58,
+                    width: 58,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.2),
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.3),
                         ],
                       ),
                       child: const Icon(
@@ -378,6 +484,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         color: Colors.white,
                         size: 30,
                       ),
+                    ),
+                    child: const Icon(
+                      Icons.insights_rounded,
+                      color: Colors.white,
+                      size: 32,
                     ),
                   ],
                 ),
@@ -395,6 +506,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     fontWeight: FontWeight.bold,
                     fontSize: 17,
                   ),
+                ],
                 ),
                 TextButton(
                   onPressed: _navigateToPets,
@@ -443,8 +555,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   title: 'Health Check',
                   subtitle: 'AI Symptom Scan',
                   icon: Icons.health_and_safety_rounded,
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF0066FF), Color(0xFF00B4D8)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
                   gradient: AppTheme.primaryGradient,
                   theme: theme,
+                  onTap: _navigateToHealthCheck,
                   onTap: () => _navigateToHealthCheck(),
                 ),
                 _buildServiceCard(
@@ -482,6 +600,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   title: 'Appointments',
                   subtitle: 'Vet Consultations',
                   icon: Icons.calendar_month_rounded,
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF0F766E), Color(0xFF14B8A6)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
                   gradient: AppTheme.emeraldGradient,
                   theme: theme,
                   onTap: () {
