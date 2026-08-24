@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:canivue/core/theme/app_theme.dart';
+import 'package:canivue/features/health_check/screens/health_check_capture_screen.dart';
 import 'package:canivue/features/pets/models/pet_model.dart';
 import 'package:canivue/features/pets/screens/add_edit_pet_screen.dart';
 
@@ -272,6 +273,18 @@ class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProv
         ),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      ),
+    );
+  }
+
+  void _runAiHealthCheck() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => HealthCheckCaptureScreen(
+          pets: [_pet],
+          initialPet: _pet,
+          lockPetSelection: true,
+        ),
       ),
     );
   }
@@ -672,6 +685,51 @@ class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProv
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          InkWell(
+            onTap: _runAiHealthCheck,
+            borderRadius: BorderRadius.circular(20),
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                gradient: AppTheme.primaryGradient,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(color: AppTheme.primaryBlue.withValues(alpha: 0.3), blurRadius: 14, offset: const Offset(0, 6)),
+                ],
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.2),
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: const Icon(Icons.biotech_rounded, color: Colors.white, size: 24),
+                  ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Run AI Health Check',
+                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14.5),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          'Fuse a photo, collar data & symptoms into a DPRPE risk forecast',
+                          style: TextStyle(color: Colors.white.withValues(alpha: 0.9), fontSize: 11.5),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Icon(Icons.arrow_forward_ios_rounded, color: Colors.white, size: 14),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
           _buildCardSection(
             title: 'Primary Veterinarian',
             icon: Icons.local_hospital_outlined,

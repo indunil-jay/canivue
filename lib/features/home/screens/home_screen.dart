@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:canivue/core/theme/app_theme.dart';
 import 'package:canivue/features/auth/screens/signin_screen.dart';
+import 'package:canivue/features/health_check/screens/health_check_capture_screen.dart';
+import 'package:canivue/features/pets/models/pet_model.dart';
 import 'package:canivue/features/pets/screens/pet_list_screen.dart';
 import 'package:canivue/features/profile/widgets/profile_side_sheet.dart';
 
@@ -73,6 +75,14 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       _currentIndex = 1;
     });
+  }
+
+  void _navigateToHealthCheck() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => HealthCheckCaptureScreen(pets: Pet.samplePets),
+      ),
+    );
   }
 
   @override
@@ -360,6 +370,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     end: Alignment.bottomRight,
                   ),
                   theme: theme,
+                  onTap: _navigateToHealthCheck,
                 ),
                 _buildServiceCard(
                   title: 'Vaccinations',
