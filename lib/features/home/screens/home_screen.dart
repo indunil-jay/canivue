@@ -3,7 +3,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:canivue/core/theme/app_theme.dart';
 import 'package:canivue/core/widgets/app_feedback.dart';
 import 'package:canivue/core/widgets/luxury_biometric_ring.dart';
-import 'package:canivue/core/widgets/luxury_stat_card.dart';
 import 'package:canivue/features/health_check/screens/health_check_capture_screen.dart';
 import 'package:canivue/features/notifications/widgets/notification_badge_button.dart';
 import 'package:canivue/features/pets/models/pet_model.dart';
@@ -415,61 +414,6 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             const SizedBox(height: 24),
-
-            // Telemetry Grid Row (Carbit / AthletiQ Style)
-            Row(
-              children: [
-                Expanded(
-                  child: LuxuryStatCard(
-                    title: 'Active Steps',
-                    value: '8,450',
-                    unit: '/ 10k',
-                    icon: Icons.directions_walk_rounded,
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF0066FF), Color(0xFF38BDF8)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    badgeText: '+12% wk',
-                    progress: 0.84,
-                    onTap: () {
-                      AppFeedback.showToast(
-                        context,
-                        title: 'Daily Activity Telemetry 🏃',
-                        message: 'Max reached 8,450 / 10,000 steps today. 84% of daily goal completed!',
-                        type: ToastType.info,
-                      );
-                    },
-                  ),
-                ),
-                const SizedBox(width: 14),
-                Expanded(
-                  child: LuxuryStatCard(
-                    title: 'Deep Rest',
-                    value: '9.4',
-                    unit: 'hrs',
-                    icon: Icons.nightlight_round,
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF8B5CF6), Color(0xFFC084FC)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    badgeText: 'Optimal',
-                    badgeColor: const Color(0xFF10B981),
-                    progress: 0.94,
-                    onTap: () {
-                      AppFeedback.showToast(
-                        context,
-                        title: 'Sleep Telemetry 🌙',
-                        message: '9.4 hours of restful canine REM sleep tracked via smart collar.',
-                        type: ToastType.success,
-                      );
-                    },
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 28),
 
             // Pet Health Radar Header
             Row(
