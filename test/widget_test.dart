@@ -5,6 +5,7 @@ import 'package:canivue/features/auth/screens/forgot_password_screen.dart';
 import 'package:canivue/features/auth/screens/otp_verification_screen.dart';
 import 'package:canivue/features/auth/screens/reset_password_screen.dart';
 import 'package:canivue/features/auth/screens/signup_screen.dart';
+import 'package:canivue/features/health_check/screens/health_check_capture_screen.dart';
 import 'package:canivue/features/home/screens/home_screen.dart';
 import 'package:canivue/features/pets/models/pet_model.dart';
 import 'package:canivue/features/pets/screens/add_edit_pet_screen.dart';
@@ -189,5 +190,46 @@ void main() {
     expect(find.text('Pet Name'), findsOneWidget);
     expect(find.text('Breed'), findsOneWidget);
     expect(find.text('Save Pet Profile'), findsOneWidget);
+  });
+
+  testWidgets('HealthCheckCaptureScreen renders correctly smoke test', (WidgetTester tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: HealthCheckCaptureScreen(pets: Pet.samplePets),
+      ),
+    );
+    await tester.pump(const Duration(milliseconds: 500)); // flush flutter_animate's deferred effect scheduling
+
+    expect(find.text('AI Health Check'), findsOneWidget);
+    expect(find.text('1 · PHOTO EVIDENCE (OPTIONAL)'), findsOneWidget);
+    expect(find.text('2 · SMART COLLAR (OPTIONAL)'), findsOneWidget);
+    expect(find.text('Run AI Analysis'), findsOneWidget);
+  });
+
+  testWidgets('AI Health Check produces a fused, explainable result', (WidgetTester tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: HealthCheckCaptureScreen(pets: Pet.samplePets),
+      ),
+    );
+    await tester.pump(const Duration(milliseconds: 500)); // flush flutter_animate's deferred effect scheduling
+
+    await tester.enterText(
+      find.byType(TextFormField),
+      'Scratching a lot for 3 days, redness behind the ears, seems worse today',
+    );
+
+    final runButton = find.text('Run AI Analysis');
+    await tester.ensureVisible(runButton);
+    await tester.pump();
+    await tester.tap(runButton);
+    await tester.pump(); // start the analyzing overlay (has a repeating animation)
+    await tester.pump(const Duration(milliseconds: 1900)); // clear the simulated fusion delay
+    await tester.pump(const Duration(milliseconds: 500)); // let the page transition finish
+
+    expect(find.text('Health Check Results'), findsOneWidget);
+    expect(find.text('Confidence-Weighted Fusion'), findsOneWidget);
+    expect(find.text('Disease Progression Risk (DPRPE)'), findsOneWidget);
+    expect(find.text('Book Vet Consultation'), findsOneWidget);
   });
 }
