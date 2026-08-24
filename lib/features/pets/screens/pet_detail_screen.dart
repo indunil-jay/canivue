@@ -319,6 +319,21 @@ class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProv
       );
     }
 
+    if (_pet.assetImagePath != null) {
+      return Image.asset(
+        _pet.assetImagePath!,
+        width: 84,
+        height: 84,
+        fit: BoxFit.cover,
+        errorBuilder: (_, _, _) => Center(
+          child: Text(
+            _pet.avatarEmoji,
+            style: const TextStyle(fontSize: 44),
+          ),
+        ),
+      );
+    }
+
     return Center(
       child: Text(
         _pet.avatarEmoji,
@@ -385,28 +400,31 @@ class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProv
                               children: [
                                 Row(
                                   children: [
-                                    // Avatar with direct photo upload tap
+                                    // Avatar with direct photo upload tap + Hero animation
                                     Stack(
                                       children: [
-                                        InkWell(
-                                          onTap: _showPhotoOptions,
-                                          borderRadius: BorderRadius.circular(24),
-                                          child: Container(
-                                            height: 84,
-                                            width: 84,
-                                            decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              borderRadius: BorderRadius.circular(24),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Colors.black.withValues(alpha: 0.15),
-                                                  blurRadius: 16,
-                                                  offset: const Offset(0, 6),
-                                                ),
-                                              ],
+                                        Hero(
+                                          tag: 'pet-avatar-${_pet.id}',
+                                          child: InkWell(
+                                            onTap: _showPhotoOptions,
+                                            borderRadius: BorderRadius.circular(24),
+                                            child: Container(
+                                              height: 84,
+                                              width: 84,
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius: BorderRadius.circular(24),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Colors.black.withValues(alpha: 0.15),
+                                                    blurRadius: 16,
+                                                    offset: const Offset(0, 6),
+                                                  ),
+                                                ],
+                                              ),
+                                              clipBehavior: Clip.antiAlias,
+                                              child: _buildAvatarWidget(colorScheme),
                                             ),
-                                            clipBehavior: Clip.antiAlias,
-                                            child: _buildAvatarWidget(colorScheme),
                                           ),
                                         ),
                                         Positioned(
