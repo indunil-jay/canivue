@@ -6,6 +6,7 @@ import 'package:canivue/features/auth/screens/otp_verification_screen.dart';
 import 'package:canivue/features/auth/screens/reset_password_screen.dart';
 import 'package:canivue/features/auth/screens/signup_screen.dart';
 import 'package:canivue/features/home/screens/home_screen.dart';
+import 'package:canivue/features/pets/screens/pet_list_screen.dart';
 import 'package:canivue/features/profile/screens/personal_information_screen.dart';
 import 'package:canivue/features/profile/widgets/profile_side_sheet.dart';
 import 'package:canivue/main.dart';
@@ -128,5 +129,19 @@ void main() {
     expect(find.text('Email Address'), findsOneWidget);
     expect(find.text('Change Password'), findsOneWidget);
     expect(find.text('Save Changes'), findsOneWidget);
+  });
+
+  testWidgets('PetListScreen renders correctly smoke test', (WidgetTester tester) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: PetListScreen(),
+      ),
+    );
+
+    expect(find.textContaining('My Pets'), findsOneWidget);
+    expect(find.text('Buddy'), findsOneWidget);
+    expect(find.text('Golden Retriever'), findsOneWidget);
+    expect(find.text('Luna'), findsOneWidget);
+    expect(find.text('Charlie'), findsOneWidget);
   });
 }
