@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:canivue/features/auth/screens/signin_screen.dart';
-import 'package:canivue/features/profile/screens/personal_information_screen.dart';
 
 class ProfileSideSheet extends StatefulWidget {
   const ProfileSideSheet({
@@ -63,18 +62,6 @@ class _ProfileSideSheetState extends State<ProfileSideSheet> {
     );
   }
 
-  void _navigateToPersonalInfo() {
-    Navigator.of(context).pop();
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => PersonalInformationScreen(
-          userEmail: widget.userEmail,
-          userName: widget.userName,
-        ),
-      ),
-    );
-  }
-
   void _showActionSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -129,100 +116,92 @@ class _ProfileSideSheetState extends State<ProfileSideSheet> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Profile Card
-                    InkWell(
-                      onTap: _navigateToPersonalInfo,
-                      borderRadius: BorderRadius.circular(20),
-                      child: Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              colorScheme.primaryContainer,
-                              colorScheme.surfaceContainerHighest,
-                            ],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(
-                            color: colorScheme.outlineVariant.withValues(alpha: 0.5),
-                          ),
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            colorScheme.primaryContainer,
+                            colorScheme.surfaceContainerHighest,
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
                         ),
-                        child: Row(
-                          children: [
-                            Stack(
-                              children: [
-                                CircleAvatar(
-                                  radius: 30,
-                                  backgroundColor: colorScheme.primary,
-                                  child: Text(
-                                    _displayName.isNotEmpty ? _displayName[0].toUpperCase() : 'U',
-                                    style: TextStyle(
-                                      fontSize: 24,
-                                      fontWeight: FontWeight.bold,
-                                      color: colorScheme.onPrimary,
-                                    ),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: colorScheme.outlineVariant.withValues(alpha: 0.5),
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Stack(
+                            children: [
+                              CircleAvatar(
+                                radius: 30,
+                                backgroundColor: colorScheme.primary,
+                                child: Text(
+                                  _displayName.isNotEmpty ? _displayName[0].toUpperCase() : 'U',
+                                  style: TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                    color: colorScheme.onPrimary,
                                   ),
                                 ),
-                                Positioned(
-                                  bottom: 0,
-                                  right: 0,
-                                  child: Container(
-                                    padding: const EdgeInsets.all(4),
-                                    decoration: BoxDecoration(
+                              ),
+                              Positioned(
+                                bottom: 0,
+                                right: 0,
+                                child: Container(
+                                  padding: const EdgeInsets.all(4),
+                                  decoration: BoxDecoration(
+                                    color: colorScheme.primary,
+                                    shape: BoxShape.circle,
+                                    border: Border.all(color: Colors.white, width: 1.5),
+                                  ),
+                                  child: const Icon(Icons.edit_rounded, size: 12, color: Colors.white),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(width: 14),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  _displayName,
+                                  style: theme.textTheme.titleMedium?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  widget.userEmail,
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    color: colorScheme.onSurfaceVariant,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                const SizedBox(height: 6),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color: colorScheme.primary.withValues(alpha: 0.15),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Text(
+                                    '⭐ Premium Pet Parent',
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w600,
                                       color: colorScheme.primary,
-                                      shape: BoxShape.circle,
-                                      border: Border.all(color: Colors.white, width: 1.5),
                                     ),
-                                    child: const Icon(Icons.edit_rounded, size: 12, color: Colors.white),
                                   ),
                                 ),
                               ],
                             ),
-                            const SizedBox(width: 14),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    _displayName,
-                                    style: theme.textTheme.titleMedium?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 2),
-                                  Text(
-                                    widget.userEmail,
-                                    style: theme.textTheme.bodySmall?.copyWith(
-                                      color: colorScheme.onSurfaceVariant,
-                                    ),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  const SizedBox(height: 6),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                    decoration: BoxDecoration(
-                                      color: colorScheme.primary.withValues(alpha: 0.15),
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: Text(
-                                      '⭐ Premium Pet Parent',
-                                      style: TextStyle(
-                                        fontSize: 11,
-                                        fontWeight: FontWeight.w600,
-                                        color: colorScheme.primary,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Icon(
-                              Icons.chevron_right_rounded,
-                              color: colorScheme.onSurfaceVariant,
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                     const SizedBox(height: 24),
@@ -281,7 +260,7 @@ class _ProfileSideSheetState extends State<ProfileSideSheet> {
                       icon: Icons.person_outline_rounded,
                       title: 'Personal Information',
                       subtitle: 'Edit contact & address details',
-                      onTap: _navigateToPersonalInfo,
+                      onTap: () => _showActionSnackBar('Opening Personal Information'),
                       theme: theme,
                     ),
                     _buildNavTile(

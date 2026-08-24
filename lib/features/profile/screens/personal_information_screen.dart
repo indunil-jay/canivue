@@ -1,4 +1,6 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:canivue/features/auth/widgets/custom_text_field.dart';
 
 class PersonalInformationScreen extends StatefulWidget {
@@ -17,6 +19,7 @@ class PersonalInformationScreen extends StatefulWidget {
 
 class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
   final _profileFormKey = GlobalKey<FormState>();
+  final ImagePicker _picker = ImagePicker();
 
   late final TextEditingController _nameController;
   late final TextEditingController _emailController;
@@ -24,7 +27,11 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
   late final TextEditingController _addressController;
   late final TextEditingController _emergencyContactController;
 
+  File? _imageFile;
+  String? _selectedAvatarEmoji;
   bool _isSaving = false;
+
+  final List<String> _presetAvatars = ['🐶', '🐱', '🧑‍⚕️', '🐾', '🐕', '🦊', '🦁', '🐻'];
 
   @override
   void initState() {
@@ -44,6 +51,215 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
     _addressController.dispose();
     _emergencyContactController.dispose();
     super.dispose();
+  }
+
+  Future<void> _pickImage(ImageSource source) async {
+    try {
+      final XFile? pickedFile = await _picker.pickImage(
+        source: source,
+        maxWidth: 800,
+        maxHeight: 800,
+        imageQuality: 85,
+      );
+
+      if (pickedFile != null) {
+        setState(() {
+          _imageFile = File(pickedFile.path);
+          _selectedAvatarEmoji = null;
+        });
+
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Row(
+                children: [
+                  Icon(Icons.check_circle_outline, color: Colors.white, size: 20),
+                  SizedBox(width: 8),
+                  Text('Profile photo updated!'),
+                ],
+              ),
+              backgroundColor: Colors.green,
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Could not access image: $e'),
+            backgroundColor: Theme.of(context).colorScheme.error,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    }
+  }
+
+  void _showPhotoOptions() {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (context) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Profile Photo',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close_rounded),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+
+                // Camera & Gallery options
+                Row(
+                  children: [
+                    Expanded(
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          _pickImage(ImageSource.camera);
+                        },
+                        borderRadius: BorderRadius.circular(16),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.5),
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.4),
+                            ),
+                          ),
+                          child: Column(
+                            children: [
+                              Icon(Icons.camera_alt_rounded, size: 28, color: Theme.of(context).colorScheme.primary),
+                              const SizedBox(height: 8),
+                              const Text('Take Photo', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          _pickImage(ImageSource.gallery);
+                        },
+                        borderRadius: BorderRadius.circular(16),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.5),
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.4),
+                            ),
+                          ),
+                          child: Column(
+                            children: [
+                              Icon(Icons.photo_library_rounded, size: 28, color: Theme.of(context).colorScheme.primary),
+                              const SizedBox(height: 8),
+                              const Text('From Gallery', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+
+                // Preset Emojis / Avatars
+                Text(
+                  'CHOOSE PRESET AVATAR',
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1.1,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                ),
+                const SizedBox(height: 10),
+                SizedBox(
+                  height: 52,
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: _presetAvatars.length,
+                    separatorBuilder: (_, _) => const SizedBox(width: 10),
+                    itemBuilder: (context, index) {
+                      final emoji = _presetAvatars[index];
+                      final isSelected = _selectedAvatarEmoji == emoji;
+                      return InkWell(
+                        onTap: () {
+                          setState(() {
+                            _selectedAvatarEmoji = emoji;
+                            _imageFile = null;
+                          });
+                          Navigator.of(context).pop();
+                        },
+                        borderRadius: BorderRadius.circular(26),
+                        child: Container(
+                          width: 52,
+                          height: 52,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: isSelected
+                                ? Theme.of(context).colorScheme.primaryContainer
+                                : Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.4),
+                            border: Border.all(
+                              color: isSelected
+                                  ? Theme.of(context).colorScheme.primary
+                                  : Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.5),
+                              width: isSelected ? 2 : 1,
+                            ),
+                          ),
+                          child: Text(emoji, style: const TextStyle(fontSize: 24)),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+
+                if (_imageFile != null || _selectedAvatarEmoji != null) ...[
+                  const SizedBox(height: 16),
+                  TextButton.icon(
+                    onPressed: () {
+                      setState(() {
+                        _imageFile = null;
+                        _selectedAvatarEmoji = null;
+                      });
+                      Navigator.of(context).pop();
+                    },
+                    icon: const Icon(Icons.delete_outline_rounded, color: Colors.red, size: 20),
+                    label: const Text('Remove Photo', style: TextStyle(color: Colors.red)),
+                  ),
+                ],
+                const SizedBox(height: 8),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   void _handleSaveProfile() async {
@@ -87,6 +303,43 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (context) => _ChangePasswordModal(),
+    );
+  }
+
+  Widget _buildAvatarWidget(ColorScheme colorScheme) {
+    if (_imageFile != null) {
+      return ClipOval(
+        child: Image.file(
+          _imageFile!,
+          width: 96,
+          height: 96,
+          fit: BoxFit.cover,
+        ),
+      );
+    }
+
+    if (_selectedAvatarEmoji != null) {
+      return CircleAvatar(
+        radius: 48,
+        backgroundColor: colorScheme.primaryContainer,
+        child: Text(
+          _selectedAvatarEmoji!,
+          style: const TextStyle(fontSize: 48),
+        ),
+      );
+    }
+
+    return CircleAvatar(
+      radius: 48,
+      backgroundColor: colorScheme.primaryContainer,
+      child: Text(
+        _nameController.text.isNotEmpty ? _nameController.text[0].toUpperCase() : 'U',
+        style: TextStyle(
+          fontSize: 36,
+          fontWeight: FontWeight.bold,
+          color: colorScheme.primary,
+        ),
+      ),
     );
   }
 
@@ -134,32 +387,12 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                     Center(
                       child: Stack(
                         children: [
-                          CircleAvatar(
-                            radius: 48,
-                            backgroundColor: colorScheme.primaryContainer,
-                            child: Text(
-                              _nameController.text.isNotEmpty
-                                  ? _nameController.text[0].toUpperCase()
-                                  : 'U',
-                              style: TextStyle(
-                                fontSize: 36,
-                                fontWeight: FontWeight.bold,
-                                color: colorScheme.primary,
-                              ),
-                            ),
-                          ),
+                          _buildAvatarWidget(colorScheme),
                           Positioned(
                             bottom: 0,
                             right: 0,
                             child: InkWell(
-                              onTap: () {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Photo picker opened.'),
-                                    behavior: SnackBarBehavior.floating,
-                                  ),
-                                );
-                              },
+                              onTap: _showPhotoOptions,
                               borderRadius: BorderRadius.circular(20),
                               child: Container(
                                 padding: const EdgeInsets.all(8),
@@ -181,10 +414,15 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                     ),
                     const SizedBox(height: 12),
                     Center(
-                      child: Text(
-                        'Tap camera icon to change photo',
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: colorScheme.onSurfaceVariant,
+                      child: GestureDetector(
+                        onTap: _showPhotoOptions,
+                        child: Text(
+                          'Change Profile Photo',
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: colorScheme.primary,
+                          ),
                         ),
                       ),
                     ),
