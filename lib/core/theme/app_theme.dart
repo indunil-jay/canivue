@@ -7,17 +7,20 @@ class AppTheme {
   static const Color oceanBlue = Color(0xFF0052CC);
   static const Color skyBlue = Color(0xFF00B4D8);
   static const Color cyanAccent = Color(0xFF38BDF8);
-  static const Color lightBlueBackground = Color(0xFFF4F8FC);
-  static const Color darkBlueSurface = Color(0xFF0A192F);
+  static const Color turquoiseAccent = Color(0xFF22D3EE);
+  static const Color indigoAccent = Color(0xFF818CF8);
+  static const Color emeraldAccent = Color(0xFF34D399);
+  static const Color darkBlueSurface = Color(0xFF061126);
+  static const Color darkNavyCard = Color(0xFF0A2540);
 
   // Semantic Accents
   static const Color successGreen = Color(0xFF16A34A);
   static const Color warningAmber = Color(0xFFF59E0B);
   static const Color softPink = Color(0xFFEC4899);
 
-  // Modern Gradients
+  // Modern Slider & App Gradients
   static const LinearGradient primaryGradient = LinearGradient(
-    colors: [Color(0xFF0052CC), Color(0xFF0088FF)],
+    colors: [Color(0xFF0066FF), Color(0xFF00B4D8)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
@@ -29,7 +32,19 @@ class AppTheme {
   );
 
   static const LinearGradient aquaGradient = LinearGradient(
-    colors: [Color(0xFF0072FF), Color(0xFF00C6FF)],
+    colors: [Color(0xFF0284C7), Color(0xFF06B6D4)],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  static const LinearGradient indigoGradient = LinearGradient(
+    colors: [Color(0xFF4F46E5), Color(0xFF38BDF8)],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  static const LinearGradient emeraldGradient = LinearGradient(
+    colors: [Color(0xFF0066FF), Color(0xFF10B981)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
@@ -40,14 +55,59 @@ class AppTheme {
     end: Alignment.bottomRight,
   );
 
+  static const LinearGradient midnightBackgroundGradient = LinearGradient(
+    colors: [
+      Color(0xFF061126), // Midnight Slate Blue
+      Color(0xFF0A2540), // Deep Navy
+      Color(0xFF003882), // Royal Indigo
+    ],
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+  );
+
+  static const LinearGradient oceanBackgroundGradient = LinearGradient(
+    colors: [
+      Color(0xFF041926), // Marine Midnight
+      Color(0xFF06334D), // Deep Cyan Teal
+      Color(0xFF0369A1), // Ocean Cyan
+    ],
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+  );
+
   static const LinearGradient glassCardGradient = LinearGradient(
     colors: [
-      Color(0x330066FF),
-      Color(0x0F00B4D8),
+      Color(0x28FFFFFF), // 16% Frosted White Glass
+      Color(0x140066FF), // Soft Blue tint
     ],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
+
+  static const LinearGradient darkGlassCardGradient = LinearGradient(
+    colors: [
+      Color(0x38FFFFFF),
+      Color(0x1A0066FF),
+    ],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  static BoxDecoration get glassCardDecoration => BoxDecoration(
+        gradient: glassCardGradient,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(
+          color: Colors.white.withValues(alpha: 0.22),
+          width: 1.2,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.18),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      );
 
   static ThemeData get lightTheme {
     final colorScheme = ColorScheme.fromSeed(
@@ -56,9 +116,9 @@ class AppTheme {
       onPrimary: Colors.white,
       primaryContainer: const Color(0xFFD6E4FF),
       onPrimaryContainer: const Color(0xFF001B3F),
-      secondary: const Color(0xFF00A3E0),
+      secondary: const Color(0xFF00B4D8),
       secondaryContainer: const Color(0xFFCBE6FF),
-      tertiary: const Color(0xFF009688),
+      tertiary: const Color(0xFF06B6D4),
       surface: Colors.white,
       surfaceContainerHighest: const Color(0xFFF0F4F9),
       outlineVariant: const Color(0xFFD3E0EA),
