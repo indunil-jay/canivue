@@ -5,6 +5,7 @@ import 'package:canivue/features/auth/screens/forgot_password_screen.dart';
 import 'package:canivue/features/auth/screens/otp_verification_screen.dart';
 import 'package:canivue/features/auth/screens/reset_password_screen.dart';
 import 'package:canivue/features/auth/screens/signup_screen.dart';
+import 'package:canivue/features/home/screens/home_screen.dart';
 import 'package:canivue/main.dart';
 
 void main() {
@@ -43,7 +44,7 @@ void main() {
 
     expect(find.text('Forgot Password?'), findsOneWidget);
     expect(find.text('Email Address'), findsOneWidget);
-    expect(find.text('Send Verification Code'), findsOneWidget);
+    expect(find.text('Send Reset Link'), findsOneWidget);
   });
 
   testWidgets('OtpVerificationScreen renders correctly smoke test', (WidgetTester tester) async {
@@ -69,5 +70,21 @@ void main() {
     expect(find.text('New Password'), findsOneWidget);
     expect(find.text('Confirm New Password'), findsOneWidget);
     expect(find.text('Reset Password'), findsOneWidget);
+  });
+
+  testWidgets('HomeScreen renders correctly smoke test', (WidgetTester tester) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: HomeScreen(
+          userEmail: 'alex@canivue.com',
+          userName: 'Alex',
+        ),
+      ),
+    );
+
+    expect(find.text('Hello, Alex 👋'), findsOneWidget);
+    expect(find.text('Quick Services'), findsOneWidget);
+    expect(find.text('Health Check'), findsOneWidget);
+    expect(find.text('Vaccinations'), findsOneWidget);
   });
 }

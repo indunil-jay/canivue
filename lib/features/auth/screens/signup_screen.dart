@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:canivue/features/auth/screens/signin_screen.dart';
 import 'package:canivue/features/auth/widgets/custom_text_field.dart';
+import 'package:canivue/features/home/screens/home_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -60,7 +61,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       _isLoading = true;
     });
 
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(milliseconds: 800));
 
     if (!mounted) return;
 
@@ -68,23 +69,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
       _isLoading = false;
     });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Row(
-          children: [
-            const Icon(Icons.check_circle_outline, color: Colors.white, size: 20),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(
-                'Welcome, ${_nameController.text.trim()}! Account created successfully.',
-              ),
-            ),
-          ],
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(
+        builder: (_) => HomeScreen(
+          userEmail: _emailController.text.trim(),
+          userName: _nameController.text.trim(),
         ),
-        backgroundColor: Colors.green.shade700,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
+      (route) => false,
     );
   }
 
@@ -410,7 +402,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                     const SizedBox(height: 28),
 
-                    // Already have an account Footer -> Navigates to SignInScreen
+                    // Footer Link to Sign In
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -430,7 +422,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             );
                           },
                           style: TextButton.styleFrom(
-                            padding: EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
                             minimumSize: Size.zero,
                             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           ),
