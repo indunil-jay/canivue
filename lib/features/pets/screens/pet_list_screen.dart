@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:canivue/core/theme/app_theme.dart';
+import 'package:canivue/core/widgets/luxury_segmented_bar.dart';
+import 'package:canivue/features/health_check/screens/health_check_capture_screen.dart';
 import 'package:canivue/features/pets/models/pet_model.dart';
 import 'package:canivue/features/pets/screens/add_edit_pet_screen.dart';
 import 'package:canivue/features/pets/screens/pet_detail_screen.dart';
@@ -15,9 +18,9 @@ class PetListScreen extends StatefulWidget {
 class _PetListScreenState extends State<PetListScreen> {
   final List<Pet> _pets = List.from(Pet.samplePets);
   String _searchQuery = '';
-  String _selectedCategory = 'All';
+  int _selectedCategoryIndex = 0;
 
-  final List<String> _categories = ['All', 'Dogs', 'Cats', 'Senior Pets'];
+  final List<String> _categories = ['All Pets', 'Dogs', 'Cats', 'Senior Pets'];
 
   List<Pet> get _filteredPets {
     return _pets.where((pet) {
@@ -25,11 +28,11 @@ class _PetListScreenState extends State<PetListScreen> {
           pet.breed.toLowerCase().contains(_searchQuery.toLowerCase());
       if (!matchesSearch) return false;
 
-      if (_selectedCategory == 'Dogs') {
+      if (_selectedCategoryIndex == 1) {
         return pet.species.toLowerCase() == 'dog';
-      } else if (_selectedCategory == 'Cats') {
+      } else if (_selectedCategoryIndex == 2) {
         return pet.species.toLowerCase() == 'cat';
-      } else if (_selectedCategory == 'Senior Pets') {
+      } else if (_selectedCategoryIndex == 3) {
         return pet.ageYears >= 5;
       }
       return true;
@@ -67,26 +70,42 @@ class _PetListScreenState extends State<PetListScreen> {
     }
   }
 
+  void _navigateToScan(Pet pet) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => HealthCheckCaptureScreen(
+          pets: _pets,
+          initialPet: pet,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
+    final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
       appBar: AppBar(
         title: Text(
           'My Pets (${_pets.length})',
-          style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+          style: GoogleFonts.plusJakartaSans(
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+            color: isDark ? Colors.white : const Color(0xFF0F172A),
+          ),
         ),
-        backgroundColor: colorScheme.surface,
+        backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
           IconButton(
-            icon: const Icon(Icons.add_circle_outline_rounded),
+            icon: const Icon(Icons.add_circle_outline_rounded, size: 26),
             tooltip: 'Add Pet',
+            color: isDark ? AppTheme.cyanAccent : AppTheme.primaryBlue,
             onPressed: _handleAddPet,
           ),
-          const SizedBox(width: 4),
+          const SizedBox(width: 8),
         ],
       ),
       body: SafeArea(
@@ -99,137 +118,89 @@ class _PetListScreenState extends State<PetListScreen> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 14),
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
                     decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
+                      color: isDark ? const Color(0xFF131D2D).withValues(alpha: 0.8) : Colors.white,
+                      borderRadius: BorderRadius.circular(18),
                       border: Border.all(
-                        color: colorScheme.outlineVariant.withValues(alpha: 0.5),
+                        color: isDark ? Colors.white.withValues(alpha: 0.12) : const Color(0xFFE2E8F0),
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.03),
+                          color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
                           blurRadius: 10,
                           offset: const Offset(0, 4),
                         ),
                       ],
                     ),
                     child: TextField(
-                      onChanged: (val) {
-                        setState(() {
-                          _searchQuery = val;
-                        });
-                      },
+                      onChanged: (val) => setState(() => _searchQuery = val),
+                      style: GoogleFonts.plusJakartaSans(
+                        color: isDark ? Colors.white : const Color(0xFF0F172A),
+                        fontSize: 14,
+                      ),
                       decoration: InputDecoration(
-                        icon: Icon(Icons.search_rounded, color: colorScheme.onSurfaceVariant),
+                        icon: Icon(Icons.search_rounded, color: isDark ? Colors.white60 : const Color(0xFF94A3B8)),
                         hintText: 'Search by pet name, breed...',
                         border: InputBorder.none,
                         enabledBorder: InputBorder.none,
                         focusedBorder: InputBorder.none,
-                        hintStyle: TextStyle(
-                          color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+                        hintStyle: GoogleFonts.plusJakartaSans(
+                          color: isDark ? Colors.white54 : const Color(0xFF94A3B8),
                           fontSize: 14,
                         ),
                       ),
                     ),
                   ),
                 ),
+                const SizedBox(height: 6),
 
-                // Category filter chips
-                SizedBox(
-                  height: 44,
-                  child: ListView.separated(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    scrollDirection: Axis.horizontal,
-                    itemCount: _categories.length,
-                    separatorBuilder: (_, _) => const SizedBox(width: 8),
-                    itemBuilder: (context, index) {
-                      final category = _categories[index];
-                      final isSelected = _selectedCategory == category;
-                      return ChoiceChip(
-                        label: Text(category),
-                        selected: isSelected,
-                        onSelected: (selected) {
-                          if (selected) {
-                            setState(() {
-                              _selectedCategory = category;
-                            });
-                          }
-                        },
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      );
-                    },
+                // Luxury Segmented Control
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: LuxurySegmentedBar(
+                    segments: _categories,
+                    selectedIndex: _selectedCategoryIndex,
+                    onChanged: (index) => setState(() => _selectedCategoryIndex = index),
                   ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 14),
 
-                // Pet List
+                // Pet List Feed
                 Expanded(
                   child: _filteredPets.isEmpty
                       ? Center(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.pets_rounded, size: 48, color: colorScheme.onSurfaceVariant.withValues(alpha: 0.5)),
-                              const SizedBox(height: 12),
+                              Icon(Icons.pets_rounded, size: 54, color: isDark ? Colors.white30 : const Color(0xFFCBD5E1)),
+                              const SizedBox(height: 14),
                               Text(
                                 'No pets found matching "$_searchQuery"',
-                                style: theme.textTheme.bodyMedium?.copyWith(
-                                  color: colorScheme.onSurfaceVariant,
+                                style: GoogleFonts.plusJakartaSans(
+                                  color: isDark ? Colors.white70 : const Color(0xFF64748B),
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
                             ],
                           ),
                         )
                       : ListView.builder(
+                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
                           physics: const BouncingScrollPhysics(),
-                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                           itemCount: _filteredPets.length,
                           itemBuilder: (context, index) {
                             final pet = _filteredPets[index];
                             return PetCard(
                               pet: pet,
                               onTap: () => _handlePetTap(pet),
+                              onScanTap: () => _navigateToScan(pet),
                             );
                           },
                         ),
                 ),
               ],
-            ),
-          ),
-        ),
-      ),
-      floatingActionButton: Container(
-        height: 48,
-        decoration: BoxDecoration(
-          gradient: AppTheme.primaryGradient,
-          borderRadius: BorderRadius.circular(24),
-          boxShadow: [
-            BoxShadow(
-              color: AppTheme.primaryBlue.withValues(alpha: 0.35),
-              blurRadius: 12,
-              offset: const Offset(0, 5),
-            ),
-          ],
-        ),
-        child: ElevatedButton.icon(
-          onPressed: _handleAddPet,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.transparent,
-            shadowColor: Colors.transparent,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(24),
-            ),
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-          ),
-          icon: const Icon(Icons.add_rounded, color: Colors.white),
-          label: const Text(
-            'Add Pet',
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
             ),
           ),
         ),
