@@ -1,7 +1,7 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:canivue/core/theme/app_theme.dart';
 import 'package:canivue/core/utils/page_transitions.dart';
 import 'package:canivue/features/auth/screens/signin_screen.dart';
 import 'package:canivue/features/onboarding/models/onboarding_slide.dart';
@@ -18,6 +18,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   int _currentPage = 0;
 
   bool get _isLastPage => _currentPage == onboardingSlides.length - 1;
+  OnboardingSlide get _currentSlide => onboardingSlides[_currentPage];
 
   @override
   void dispose() {
@@ -35,120 +36,504 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       return;
     }
     _pageController.nextPage(
-      duration: const Duration(milliseconds: 420),
-      curve: Curves.easeOutCubic,
+      duration: const Duration(milliseconds: 450),
+      curve: Curves.easeInOutCubic,
     );
   }
 
   void _handleBack() {
     if (_currentPage == 0) return;
     _pageController.previousPage(
-      duration: const Duration(milliseconds: 380),
-      curve: Curves.easeOutCubic,
+      duration: const Duration(milliseconds: 400),
+      curve: Curves.easeInOutCubic,
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final size = MediaQuery.sizeOf(context);
-    final imageHeight = size.height * 0.5;
 
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: PageView.builder(
-              controller: _pageController,
-              itemCount: onboardingSlides.length,
-              onPageChanged: (index) => setState(() => _currentPage = index),
-              itemBuilder: (context, index) {
-                final slide = onboardingSlides[index];
-                return _OnboardingPage(
-                  slide: slide,
-                  imageHeight: imageHeight,
-                  isActive: index == _currentPage,
-                );
-              },
+      body: AnimatedContainer(
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+        decoration: BoxDecoration(
+          gradient: _currentSlide.backgroundGradient,
+        ),
+        child: Stack(
+          children: [
+            // Ambient Luminous Background Orbs for Depth
+            Positioned(
+              top: -80,
+              right: -60,
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 600),
+                height: 280,
+                width: 280,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: RadialGradient(
+                    colors: [
+                      _currentSlide.accentColor.withValues(alpha: 0.35),
+                      Colors.transparent,
+                    ],
+                  ),
+                ),
+              ),
             ),
-          ),
+            Positioned(
+              bottom: size.height * 0.25,
+              left: -80,
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 600),
+                height: 260,
+                width: 260,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: RadialGradient(
+                    colors: [
+                      _currentSlide.accentColor.withValues(alpha: 0.2),
+                      Colors.transparent,
+                    ],
+                  ),
+                ),
+              ),
+            ),
 
-          // Skip button
-          Positioned(
-            top: 0,
-            right: 0,
-            child: SafeArea(
-              child: AnimatedOpacity(
-                opacity: _isLastPage ? 0 : 1,
-                duration: const Duration(milliseconds: 250),
+            // Page View with Slides
+            Positioned.fill(
+              child: PageView.builder(
+                controller: _pageController,
+                itemCount: onboardingSlides.length,
+                onPageChanged: (index) => setState(() => _currentPage = index),
+                itemBuilder: (context, index) {
+                  final slide = onboardingSlides[index];
+                  return _OnboardingPage(
+                    slide: slide,
+                    isActive: index == _currentPage,
+                  );
+                },
+              ),
+            ),
+
+            // Top Header: Brand Badge & Step Pill & Skip Button
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: SafeArea(
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 8, right: 16),
-                  child: TextButton(
-                    onPressed: _isLastPage ? null : _goToSignIn,
-                    style: TextButton.styleFrom(
-                      backgroundColor: Colors.black.withValues(alpha: 0.28),
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // Canivue Logo & Step Counter
+                      Row(
+                        children: [
+                          Container(
+                            height: 38,
+                            width: 38,
+                            decoration: BoxDecoration(
+                              gradient: _currentSlide.primaryGradient,
+                              borderRadius: BorderRadius.circular(12),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: _currentSlide.accentColor.withValues(alpha: 0.3),
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 3),
+                                ),
+                              ],
+                            ),
+                            child: const Icon(
+                              Icons.pets_rounded,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.12),
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(
+                                color: Colors.white.withValues(alpha: 0.2),
+                              ),
+                            ),
+                            child: Text(
+                              _currentSlide.stepLabel,
+                              style: TextStyle(
+                                color: _currentSlide.accentColor,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 0.5,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                    ),
-                    child: const Text(
-                      'Skip',
-                      style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
+
+                      // Skip Button
+                      AnimatedOpacity(
+                        opacity: _isLastPage ? 0 : 1,
+                        duration: const Duration(milliseconds: 250),
+                        child: TextButton(
+                          onPressed: _isLastPage ? null : _goToSignIn,
+                          style: TextButton.styleFrom(
+                            backgroundColor: Colors.white.withValues(alpha: 0.14),
+                            foregroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                              side: BorderSide(
+                                color: Colors.white.withValues(alpha: 0.2),
+                              ),
+                            ),
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          ),
+                          child: const Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                'Skip',
+                                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
+                              ),
+                              SizedBox(width: 4),
+                              Icon(Icons.chevron_right_rounded, size: 16),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+
+            // Bottom Navigation Controls
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: SafeArea(
+                top: false,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 0, 24, 20),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(28),
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(28),
+                          border: Border.all(
+                            color: Colors.white.withValues(alpha: 0.2),
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.2),
+                              blurRadius: 20,
+                              offset: const Offset(0, 8),
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          children: [
+                            // Back Button
+                            AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 250),
+                              child: _currentPage > 0
+                                  ? _RoundIconButton(
+                                      key: const ValueKey('back'),
+                                      icon: Icons.arrow_back_rounded,
+                                      onTap: _handleBack,
+                                      gradient: null,
+                                      accentColor: _currentSlide.accentColor,
+                                    )
+                                  : const SizedBox(key: ValueKey('no-back'), width: 0),
+                            ),
+                            if (_currentPage > 0) const SizedBox(width: 14),
+
+                            // Indicator
+                            Expanded(
+                              child: Center(
+                                child: SmoothPageIndicator(
+                                  controller: _pageController,
+                                  count: onboardingSlides.length,
+                                  effect: ExpandingDotsEffect(
+                                    activeDotColor: _currentSlide.accentColor,
+                                    dotColor: Colors.white.withValues(alpha: 0.3),
+                                    dotHeight: 8,
+                                    dotWidth: 8,
+                                    expansionFactor: 3.5,
+                                    spacing: 6,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 14),
+
+                            // Next / Get Started Button
+                            _RoundIconButton(
+                              icon: _isLastPage ? Icons.rocket_launch_rounded : Icons.arrow_forward_rounded,
+                              onTap: _handleNext,
+                              gradient: _currentSlide.primaryGradient,
+                              accentColor: _currentSlide.accentColor,
+                              wide: _isLastPage,
+                              label: _isLastPage ? 'Get Started' : null,
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
-          ),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
-          // Bottom controls: indicator + CTA
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: SafeArea(
-              top: false,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(24, 0, 24, 20),
-                child: Row(
-                  children: [
-                    AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 250),
-                      child: _currentPage > 0
-                          ? _RoundIconButton(
-                              key: const ValueKey('back'),
-                              icon: Icons.arrow_back_rounded,
-                              onTap: _handleBack,
-                              filled: false,
-                            )
-                          : const SizedBox(key: ValueKey('no-back'), width: 0),
-                    ),
-                    if (_currentPage > 0) const SizedBox(width: 14),
-                    Expanded(
-                      child: SmoothPageIndicator(
-                        controller: _pageController,
-                        count: onboardingSlides.length,
-                        effect: ExpandingDotsEffect(
-                          activeDotColor: AppTheme.primaryBlue,
-                          dotColor: theme.colorScheme.outlineVariant,
-                          dotHeight: 8,
-                          dotWidth: 8,
-                          expansionFactor: 3.6,
-                          spacing: 6,
-                        ),
+class _OnboardingPage extends StatelessWidget {
+  const _OnboardingPage({
+    required this.slide,
+    required this.isActive,
+  });
+
+  final OnboardingSlide slide;
+  final bool isActive;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final size = MediaQuery.sizeOf(context);
+    final isCompact = size.height < 700;
+
+    return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
+      padding: EdgeInsets.fromLTRB(20, isCompact ? 70 : 85, 20, 100),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Hero Image Glass Container
+          Container(
+            height: isCompact ? size.height * 0.38 : size.height * 0.44,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(32),
+              border: Border.all(
+                color: Colors.white.withValues(alpha: 0.25),
+                width: 1.5,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: slide.accentColor.withValues(alpha: 0.25),
+                  blurRadius: 30,
+                  offset: const Offset(0, 12),
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(30),
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  // Image
+                  Image.asset(
+                    slide.imageAsset,
+                    fit: BoxFit.cover,
+                  ),
+
+                  // Gradient Scrim Layer for Smooth Blending
+                  DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.transparent,
+                          Colors.black.withValues(alpha: 0.2),
+                          Colors.black.withValues(alpha: 0.75),
+                        ],
+                        stops: const [0.4, 0.7, 1.0],
                       ),
                     ),
-                    const SizedBox(width: 14),
-                    _RoundIconButton(
-                      icon: _isLastPage ? Icons.check_rounded : Icons.arrow_forward_rounded,
-                      onTap: _handleNext,
-                      filled: true,
-                      wide: _isLastPage,
-                      label: _isLastPage ? 'Get Started' : null,
+                  ),
+
+                  // Top-Right Glowing Icon Medallion
+                  Positioned(
+                    top: 16,
+                    right: 16,
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        gradient: slide.primaryGradient,
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.4),
+                          width: 1.5,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.25),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Icon(
+                        slide.icon,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                    ).animate(target: isActive ? 1 : 0).scale(duration: 400.ms, curve: Curves.easeOutBack),
+                  ),
+
+                  // Bottom Floating Badge
+                  Positioned(
+                    left: 18,
+                    bottom: 18,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.2),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: Colors.white.withValues(alpha: 0.35),
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                slide.badge,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ).animate(target: isActive ? 1 : 0).fadeIn(duration: 380.ms).slideY(begin: 0.3, end: 0),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 18),
+
+          // Enhanced Glassmorphism Content Card
+          ClipRRect(
+            borderRadius: BorderRadius.circular(28),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+              child: Container(
+                padding: const EdgeInsets.all(22),
+                decoration: BoxDecoration(
+                  gradient: slide.cardGradient,
+                  borderRadius: BorderRadius.circular(28),
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.2),
+                    width: 1.2,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.15),
+                      blurRadius: 20,
+                      offset: const Offset(0, 8),
                     ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Title
+                    Text(
+                      slide.title,
+                      style: theme.textTheme.headlineMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        height: 1.18,
+                        letterSpacing: -0.5,
+                        shadows: [
+                          Shadow(
+                            color: Colors.black.withValues(alpha: 0.3),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                    )
+                        .animate(target: isActive ? 1 : 0)
+                        .fadeIn(duration: 400.ms, delay: 80.ms)
+                        .slideY(begin: 0.25, end: 0, curve: Curves.easeOutCubic),
+                    const SizedBox(height: 10),
+
+                    // Description
+                    Text(
+                      slide.description,
+                      style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.88),
+                        fontSize: 14,
+                        height: 1.45,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    )
+                        .animate(target: isActive ? 1 : 0)
+                        .fadeIn(duration: 400.ms, delay: 140.ms)
+                        .slideY(begin: 0.25, end: 0, curve: Curves.easeOutCubic),
+                    const SizedBox(height: 16),
+
+                    // Feature Pill Chips
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: slide.featureTags.map((tag) {
+                        return Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.12),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: slide.accentColor.withValues(alpha: 0.35),
+                              width: 1,
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.check_circle_rounded,
+                                color: slide.accentColor,
+                                size: 13,
+                              ),
+                              const SizedBox(width: 5),
+                              Text(
+                                tag,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                    )
+                        .animate(target: isActive ? 1 : 0)
+                        .fadeIn(duration: 400.ms, delay: 200.ms)
+                        .slideY(begin: 0.2, end: 0),
                   ],
                 ),
               ),
@@ -160,156 +545,48 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 }
 
-class _OnboardingPage extends StatelessWidget {
-  const _OnboardingPage({
-    required this.slide,
-    required this.imageHeight,
-    required this.isActive,
-  });
-
-  final OnboardingSlide slide;
-  final double imageHeight;
-  final bool isActive;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        SizedBox(
-          height: imageHeight,
-          width: double.infinity,
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              ClipRRect(
-                borderRadius: const BorderRadius.only(
-                  bottomLeft: Radius.circular(36),
-                  bottomRight: Radius.circular(36),
-                ),
-                child: Image.asset(
-                  slide.imageAsset,
-                  fit: BoxFit.cover,
-                ),
-              ),
-              // Scrim for legibility + brand tint
-              Positioned.fill(
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.only(
-                      bottomLeft: Radius.circular(36),
-                      bottomRight: Radius.circular(36),
-                    ),
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        AppTheme.oceanBlue.withValues(alpha: 0.25),
-                        Colors.black.withValues(alpha: 0.05),
-                        Colors.black.withValues(alpha: 0.55),
-                      ],
-                      stops: const [0, 0.55, 1],
-                    ),
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 20,
-                bottom: 20,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.22),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: Colors.white.withValues(alpha: 0.35)),
-                  ),
-                  child: Text(
-                    slide.badge,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ).animate(target: isActive ? 1 : 0).fadeIn(duration: 380.ms).slideY(begin: 0.3, end: 0),
-              ),
-            ],
-          ),
-        ),
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(28, 28, 28, 0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  slide.title,
-                  style: theme.textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    height: 1.15,
-                    letterSpacing: -0.5,
-                  ),
-                )
-                    .animate(target: isActive ? 1 : 0)
-                    .fadeIn(duration: 420.ms, delay: 80.ms)
-                    .slideY(begin: 0.25, end: 0, curve: Curves.easeOutCubic),
-                const SizedBox(height: 12),
-                Text(
-                  slide.description,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
-                    height: 1.5,
-                  ),
-                )
-                    .animate(target: isActive ? 1 : 0)
-                    .fadeIn(duration: 420.ms, delay: 160.ms)
-                    .slideY(begin: 0.25, end: 0, curve: Curves.easeOutCubic),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
 class _RoundIconButton extends StatelessWidget {
   const _RoundIconButton({
     super.key,
     required this.icon,
     required this.onTap,
-    required this.filled,
+    required this.gradient,
+    required this.accentColor,
     this.wide = false,
     this.label,
   });
 
   final IconData icon;
   final VoidCallback onTap;
-  final bool filled;
+  final LinearGradient? gradient;
+  final Color accentColor;
   final bool wide;
   final String? label;
 
   @override
   Widget build(BuildContext context) {
+    final isFilled = gradient != null;
+
     final child = AnimatedContainer(
       duration: const Duration(milliseconds: 250),
       curve: Curves.easeOut,
-      height: 52,
-      width: wide ? null : 52,
-      padding: wide ? const EdgeInsets.symmetric(horizontal: 20) : null,
+      height: 48,
+      width: wide ? null : 48,
+      padding: wide ? const EdgeInsets.symmetric(horizontal: 22) : null,
       decoration: BoxDecoration(
-        gradient: filled ? AppTheme.primaryGradient : null,
-        color: filled ? null : const Color(0xFFF1F5F9),
+        gradient: gradient,
+        color: isFilled ? null : Colors.white.withValues(alpha: 0.15),
         shape: wide ? BoxShape.rectangle : BoxShape.circle,
-        borderRadius: wide ? BorderRadius.circular(26) : null,
-        boxShadow: filled
+        borderRadius: wide ? BorderRadius.circular(24) : null,
+        border: Border.all(
+          color: Colors.white.withValues(alpha: isFilled ? 0.3 : 0.2),
+        ),
+        boxShadow: isFilled
             ? [
                 BoxShadow(
-                  color: AppTheme.primaryBlue.withValues(alpha: 0.35),
+                  color: accentColor.withValues(alpha: 0.4),
                   blurRadius: 14,
-                  offset: const Offset(0, 6),
+                  offset: const Offset(0, 5),
                 ),
               ]
             : null,
@@ -318,7 +595,7 @@ class _RoundIconButton extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, color: filled ? Colors.white : const Color(0xFF334155), size: 22),
+          Icon(icon, color: Colors.white, size: 20),
           if (wide && label != null) ...[
             const SizedBox(width: 8),
             Text(
@@ -327,6 +604,7 @@ class _RoundIconButton extends StatelessWidget {
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
                 fontSize: 14,
+                letterSpacing: 0.2,
               ),
             ),
           ],
