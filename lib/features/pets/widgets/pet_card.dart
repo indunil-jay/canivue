@@ -56,10 +56,16 @@ class PetCard extends StatelessWidget {
                       ],
                     ),
                     clipBehavior: Clip.antiAlias,
-                    child: pet.imagePath != null
+                    child: pet.imagePath != null && File(pet.imagePath!).existsSync()
                         ? Image.file(
                             File(pet.imagePath!),
                             fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) => Center(
+                              child: Text(
+                                pet.avatarEmoji,
+                                style: const TextStyle(fontSize: 32),
+                              ),
+                            ),
                           )
                         : Center(
                             child: Text(
@@ -225,3 +231,4 @@ class PetCard extends StatelessWidget {
     );
   }
 }
+

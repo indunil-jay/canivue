@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:canivue/features/pets/models/pet_model.dart';
 import 'package:canivue/features/pets/screens/add_edit_pet_screen.dart';
 
@@ -19,6 +20,9 @@ class PetDetailScreen extends StatefulWidget {
 class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   late Pet _pet;
+  final ImagePicker _picker = ImagePicker();
+
+  final List<String> _presetPetEmojis = ['🐶', '🐕', '🐩', '🦮', '🐾', '🐱', '🐈', '🦊', '🦁', '🐻'];
 
   @override
   void initState() {
@@ -31,6 +35,227 @@ class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProv
   void dispose() {
     _tabController.dispose();
     super.dispose();
+  }
+
+  Future<void> _pickImage(ImageSource source) async {
+    try {
+      final XFile? pickedFile = await _picker.pickImage(
+        source: source,
+        maxWidth: 1000,
+        maxHeight: 1000,
+        imageQuality: 85,
+      );
+
+      if (pickedFile != null) {
+        setState(() {
+          _pet = _pet.copyWith(imagePath: pickedFile.path);
+        });
+
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Row(
+                children: [
+                  const Icon(Icons.check_circle_outline, color: Colors.white, size: 20),
+                  const SizedBox(width: 8),
+                  Text('Photo for ${_pet.name} updated!'),
+                ],
+              ),
+              backgroundColor: Colors.green.shade700,
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Could not access image: $e'),
+            backgroundColor: Theme.of(context).colorScheme.error,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    }
+  }
+
+  void _showPhotoOptions() {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (context) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Change Photo for ${_pet.name}',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close_rounded),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          _pickImage(ImageSource.camera);
+                        },
+                        borderRadius: BorderRadius.circular(16),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.5),
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.4),
+                            ),
+                          ),
+                          child: Column(
+                            children: [
+                              Icon(Icons.camera_alt_rounded, size: 28, color: Theme.of(context).colorScheme.primary),
+                              const SizedBox(height: 8),
+                              const Text('Take Photo', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          _pickImage(ImageSource.gallery);
+                        },
+                        borderRadius: BorderRadius.circular(16),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.5),
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.4),
+                            ),
+                          ),
+                          child: Column(
+                            children: [
+                              Icon(Icons.photo_library_rounded, size: 28, color: Theme.of(context).colorScheme.primary),
+                              const SizedBox(height: 8),
+                              const Text('Upload Image', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'CHOOSE PRESET AVATAR',
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1.1,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                ),
+                const SizedBox(height: 8),
+                SizedBox(
+                  height: 52,
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: _presetPetEmojis.length,
+                    separatorBuilder: (_, _) => const SizedBox(width: 8),
+                    itemBuilder: (context, index) {
+                      final emoji = _presetPetEmojis[index];
+                      final isSelected = _pet.avatarEmoji == emoji && _pet.imagePath == null;
+                      return InkWell(
+                        onTap: () {
+                          setState(() {
+                            _pet = _pet.copyWith(avatarEmoji: emoji, imagePath: null);
+                          });
+                          Navigator.of(context).pop();
+                        },
+                        borderRadius: BorderRadius.circular(26),
+                        child: Container(
+                          width: 52,
+                          height: 52,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: isSelected
+                                ? Theme.of(context).colorScheme.primaryContainer
+                                : Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.4),
+                            border: Border.all(
+                              color: isSelected
+                                  ? Theme.of(context).colorScheme.primary
+                                  : Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.5),
+                              width: isSelected ? 2 : 1,
+                            ),
+                          ),
+                          child: Text(emoji, style: const TextStyle(fontSize: 24)),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                if (_pet.imagePath != null) ...[
+                  const SizedBox(height: 12),
+                  TextButton.icon(
+                    onPressed: () {
+                      setState(() {
+                        _pet = Pet(
+                          id: _pet.id,
+                          name: _pet.name,
+                          breed: _pet.breed,
+                          species: _pet.species,
+                          ageYears: _pet.ageYears,
+                          ageMonths: _pet.ageMonths,
+                          gender: _pet.gender,
+                          weightKg: _pet.weightKg,
+                          color: _pet.color,
+                          microchipId: _pet.microchipId,
+                          avatarEmoji: _pet.avatarEmoji,
+                          imagePath: null,
+                          birthDate: _pet.birthDate,
+                          isNeutered: _pet.isNeutered,
+                          bloodGroup: _pet.bloodGroup,
+                          allergies: _pet.allergies,
+                          primaryVet: _pet.primaryVet,
+                          specialNotes: _pet.specialNotes,
+                        );
+                      });
+                      Navigator.of(context).pop();
+                    },
+                    icon: const Icon(Icons.delete_outline_rounded, color: Colors.red, size: 20),
+                    label: const Text('Remove Photo', style: TextStyle(color: Colors.red)),
+                  ),
+                ],
+                const SizedBox(height: 8),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   void _copyMicrochip() {
@@ -64,6 +289,30 @@ class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProv
     }
   }
 
+  Widget _buildAvatarWidget(ColorScheme colorScheme) {
+    if (_pet.imagePath != null && File(_pet.imagePath!).existsSync()) {
+      return Image.file(
+        File(_pet.imagePath!),
+        width: 84,
+        height: 84,
+        fit: BoxFit.cover,
+        errorBuilder: (_, _, _) => Center(
+          child: Text(
+            _pet.avatarEmoji,
+            style: const TextStyle(fontSize: 44),
+          ),
+        ),
+      );
+    }
+
+    return Center(
+      child: Text(
+        _pet.avatarEmoji,
+        style: const TextStyle(fontSize: 44),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -77,7 +326,7 @@ class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProv
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios_new_rounded, color: colorScheme.onSurface),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => Navigator.of(context).pop(_pet),
         ),
         title: Text(
           pet.name,
@@ -126,33 +375,52 @@ class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProv
                               children: [
                                 Row(
                                   children: [
-                                    // Avatar
-                                    Container(
-                                      height: 80,
-                                      width: 80,
-                                      decoration: BoxDecoration(
-                                        color: colorScheme.surface,
-                                        borderRadius: BorderRadius.circular(24),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: colorScheme.primary.withValues(alpha: 0.15),
-                                            blurRadius: 16,
-                                            offset: const Offset(0, 6),
+                                    // Avatar with direct photo upload tap
+                                    Stack(
+                                      children: [
+                                        InkWell(
+                                          onTap: _showPhotoOptions,
+                                          borderRadius: BorderRadius.circular(24),
+                                          child: Container(
+                                            height: 84,
+                                            width: 84,
+                                            decoration: BoxDecoration(
+                                              color: colorScheme.surface,
+                                              borderRadius: BorderRadius.circular(24),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: colorScheme.primary.withValues(alpha: 0.15),
+                                                  blurRadius: 16,
+                                                  offset: const Offset(0, 6),
+                                                ),
+                                              ],
+                                            ),
+                                            clipBehavior: Clip.antiAlias,
+                                            child: _buildAvatarWidget(colorScheme),
                                           ),
-                                        ],
-                                      ),
-                                      clipBehavior: Clip.antiAlias,
-                                      child: pet.imagePath != null
-                                          ? Image.file(
-                                              File(pet.imagePath!),
-                                              fit: BoxFit.cover,
-                                            )
-                                          : Center(
-                                              child: Text(
-                                                pet.avatarEmoji,
-                                                style: const TextStyle(fontSize: 44),
+                                        ),
+                                        Positioned(
+                                          bottom: 0,
+                                          right: 0,
+                                          child: InkWell(
+                                            onTap: _showPhotoOptions,
+                                            borderRadius: BorderRadius.circular(16),
+                                            child: Container(
+                                              padding: const EdgeInsets.all(6),
+                                              decoration: BoxDecoration(
+                                                color: colorScheme.primary,
+                                                shape: BoxShape.circle,
+                                                border: Border.all(color: Colors.white, width: 2),
+                                              ),
+                                              child: const Icon(
+                                                Icons.camera_alt_rounded,
+                                                size: 14,
+                                                color: Colors.white,
                                               ),
                                             ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                     const SizedBox(width: 16),
 

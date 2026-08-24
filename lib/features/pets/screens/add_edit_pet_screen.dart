@@ -250,6 +250,19 @@ class _AddEditPetScreenState extends State<AddEditPetScreen> {
                     },
                   ),
                 ),
+                if (_imageFile != null) ...[
+                  const SizedBox(height: 12),
+                  TextButton.icon(
+                    onPressed: () {
+                      setState(() {
+                        _imageFile = null;
+                      });
+                      Navigator.of(context).pop();
+                    },
+                    icon: const Icon(Icons.delete_outline_rounded, color: Colors.red, size: 20),
+                    label: const Text('Remove Photo', style: TextStyle(color: Colors.red)),
+                  ),
+                ],
                 const SizedBox(height: 8),
               ],
             ),
@@ -378,8 +391,17 @@ class _AddEditPetScreenState extends State<AddEditPetScreen> {
                               ],
                             ),
                             clipBehavior: Clip.antiAlias,
-                            child: _imageFile != null
-                                ? Image.file(_imageFile!, fit: BoxFit.cover)
+                            child: _imageFile != null && _imageFile!.existsSync()
+                                ? Image.file(
+                                    _imageFile!,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) => Center(
+                                      child: Text(
+                                        _selectedAvatarEmoji,
+                                        style: const TextStyle(fontSize: 48),
+                                      ),
+                                    ),
+                                  )
                                 : Center(
                                     child: Text(
                                       _selectedAvatarEmoji,

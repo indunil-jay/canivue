@@ -49,12 +49,21 @@ class _PetListScreenState extends State<PetListScreen> {
     }
   }
 
-  void _handlePetTap(Pet pet) {
-    Navigator.of(context).push(
+  void _handlePetTap(Pet pet) async {
+    final updatedPet = await Navigator.of(context).push<Pet>(
       MaterialPageRoute(
         builder: (_) => PetDetailScreen(pet: pet),
       ),
     );
+
+    if (updatedPet != null) {
+      final index = _pets.indexWhere((p) => p.id == updatedPet.id);
+      if (index != -1) {
+        setState(() {
+          _pets[index] = updatedPet;
+        });
+      }
+    }
   }
 
   @override
