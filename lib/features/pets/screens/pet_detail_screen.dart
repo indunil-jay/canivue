@@ -1,9 +1,11 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:canivue/core/theme/app_theme.dart';
 import 'package:canivue/core/widgets/app_feedback.dart';
+import 'package:canivue/core/widgets/luxury_biometric_ring.dart';
 import 'package:canivue/features/health_check/screens/health_check_capture_screen.dart';
 import 'package:canivue/features/pets/models/pet_model.dart';
 import 'package:canivue/features/pets/screens/add_edit_pet_screen.dart';
@@ -370,12 +372,12 @@ class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProv
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          // Pet Hero Card
+                          // Pet Hero Cockpit Card
                           Container(
                             padding: const EdgeInsets.all(22),
                             decoration: BoxDecoration(
                               gradient: AppTheme.heroGradient,
-                              borderRadius: BorderRadius.circular(24),
+                              borderRadius: BorderRadius.circular(28),
                               boxShadow: [
                                 BoxShadow(
                                   color: AppTheme.primaryBlue.withValues(alpha: 0.35),
@@ -395,8 +397,8 @@ class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProv
                                           onTap: _showPhotoOptions,
                                           borderRadius: BorderRadius.circular(24),
                                           child: Container(
-                                            height: 84,
-                                            width: 84,
+                                            height: 82,
+                                            width: 82,
                                             decoration: BoxDecoration(
                                               color: Colors.white,
                                               borderRadius: BorderRadius.circular(24),
@@ -447,9 +449,11 @@ class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProv
                                               Expanded(
                                                 child: Text(
                                                   pet.name,
-                                                  style: theme.textTheme.headlineSmall?.copyWith(
+                                                  style: GoogleFonts.plusJakartaSans(
                                                     fontWeight: FontWeight.bold,
+                                                    fontSize: 22,
                                                     color: Colors.white,
+                                                    letterSpacing: -0.3,
                                                   ),
                                                 ),
                                               ),
@@ -462,8 +466,8 @@ class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProv
                                                 ),
                                                 child: Text(
                                                   pet.gender,
-                                                  style: const TextStyle(
-                                                    fontSize: 12,
+                                                  style: GoogleFonts.plusJakartaSans(
+                                                    fontSize: 11.5,
                                                     fontWeight: FontWeight.bold,
                                                     color: Colors.white,
                                                   ),
@@ -471,10 +475,10 @@ class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProv
                                               ),
                                             ],
                                           ),
-                                          const SizedBox(height: 4),
+                                          const SizedBox(height: 3),
                                           Text(
                                             '${pet.breed} • ${pet.species}',
-                                            style: TextStyle(
+                                            style: GoogleFonts.plusJakartaSans(
                                               color: Colors.white.withValues(alpha: 0.9),
                                               fontWeight: FontWeight.w500,
                                               fontSize: 13,
@@ -494,14 +498,17 @@ class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProv
                                               child: Row(
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: [
-                                                  const Icon(Icons.qr_code_2_rounded, size: 14, color: Colors.white),
+                                                  const Icon(Icons.qr_code_2_rounded, size: 13, color: Colors.white),
                                                   const SizedBox(width: 4),
-                                                  Text(
-                                                    'Microchip: ${pet.microchipId}',
-                                                    style: const TextStyle(
-                                                      fontSize: 11,
-                                                      fontWeight: FontWeight.w600,
-                                                      color: Colors.white,
+                                                  Flexible(
+                                                    child: Text(
+                                                      'Microchip: ${pet.microchipId}',
+                                                      style: GoogleFonts.plusJakartaSans(
+                                                        fontSize: 11,
+                                                        fontWeight: FontWeight.w600,
+                                                        color: Colors.white,
+                                                      ),
+                                                      overflow: TextOverflow.ellipsis,
                                                     ),
                                                   ),
                                                   const SizedBox(width: 4),
@@ -515,10 +522,55 @@ class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProv
                                     ),
                                   ],
                                 ),
+                                const SizedBox(height: 16),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withValues(alpha: 0.16),
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(color: Colors.white.withValues(alpha: 0.25)),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      const LuxuryBiometricRing(
+                                        percentage: 98,
+                                        size: 52,
+                                        strokeWidth: 5,
+                                        glow: false,
+                                        valueText: '98',
+                                        unitText: '%',
+                                      ),
+                                      const SizedBox(width: 14),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              'Overall Vitality Index: Optimal',
+                                              style: GoogleFonts.plusJakartaSans(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 13,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 2),
+                                            Text(
+                                              'Smart bio-collar synced • Normal rhythm',
+                                              style: GoogleFonts.plusJakartaSans(
+                                                color: Colors.white.withValues(alpha: 0.85),
+                                                fontSize: 11.5,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ],
                             ),
                           ),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 12),
 
                           // Quick Vitals 4-Grid
                           Row(
@@ -528,7 +580,7 @@ class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProv
                               Expanded(child: _buildVitalTile('Weight', '${pet.weightKg} kg', Icons.monitor_weight_outlined, theme)),
                             ],
                           ),
-                          const SizedBox(height: 10),
+                          const SizedBox(height: 8),
                           Row(
                             children: [
                               Expanded(child: _buildVitalTile('Blood Type', pet.bloodGroup, Icons.bloodtype_outlined, theme)),
@@ -536,7 +588,7 @@ class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProv
                               Expanded(child: _buildVitalTile('Neutered', pet.isNeutered ? 'Yes' : 'No', Icons.health_and_safety_outlined, theme)),
                             ],
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 8),
                         ],
                       ),
                     ),
@@ -641,6 +693,76 @@ class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProv
     );
   }
 
+  Widget _buildTelemetryPill({
+    required IconData icon,
+    required String value,
+    required String unit,
+    required String label,
+    required Color color,
+    required ThemeData theme,
+  }) {
+    final isDark = theme.brightness == Brightness.dark;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF131D2D).withValues(alpha: 0.85) : Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: isDark ? Colors.white.withValues(alpha: 0.1) : const Color(0xFFE2E8F0),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          Icon(icon, size: 18, color: color),
+          const SizedBox(height: 6),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.baseline,
+            textBaseline: TextBaseline.alphabetic,
+            children: [
+              Text(
+                value,
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 14.5,
+                  fontWeight: FontWeight.bold,
+                  color: isDark ? Colors.white : const Color(0xFF0F172A),
+                ),
+              ),
+              const SizedBox(width: 1),
+              Text(
+                unit,
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                  color: color,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 2),
+          Text(
+            label,
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 10,
+              color: isDark ? Colors.white60 : const Color(0xFF64748B),
+              fontWeight: FontWeight.w500,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildVitalTile(String label, String value, IconData icon, ThemeData theme) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
@@ -688,6 +810,56 @@ class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProv
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Live Biometrics Telemetry Row (Carbit / AthletiQ style)
+          Row(
+            children: [
+              Expanded(
+                child: _buildTelemetryPill(
+                  icon: Icons.favorite_rounded,
+                  value: '72',
+                  unit: 'bpm',
+                  label: 'Heart Rate',
+                  color: const Color(0xFFF43F5E),
+                  theme: theme,
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: _buildTelemetryPill(
+                  icon: Icons.thermostat_rounded,
+                  value: '38.5',
+                  unit: '°C',
+                  label: 'Body Temp',
+                  color: const Color(0xFFF59E0B),
+                  theme: theme,
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: _buildTelemetryPill(
+                  icon: Icons.directions_walk_rounded,
+                  value: '8.4k',
+                  unit: 'steps',
+                  label: 'Activity',
+                  color: const Color(0xFF0066FF),
+                  theme: theme,
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: _buildTelemetryPill(
+                  icon: Icons.nightlight_round,
+                  value: '94',
+                  unit: '%',
+                  label: 'Sleep Score',
+                  color: const Color(0xFF10B981),
+                  theme: theme,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+
           InkWell(
             onTap: _runAiHealthCheck,
             borderRadius: BorderRadius.circular(20),
