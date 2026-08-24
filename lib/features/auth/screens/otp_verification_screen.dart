@@ -2,7 +2,9 @@ import 'dart:async';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:canivue/core/theme/app_theme.dart';
+import 'package:canivue/core/widgets/app_feedback.dart';
 import 'package:canivue/features/auth/screens/reset_password_screen.dart';
 
 class OtpVerificationScreen extends StatefulWidget {
@@ -75,21 +77,11 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
   void _handleVerify() async {
     final code = _otpCode;
     if (code.length < _codeLength) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Row(
-            children: [
-              Icon(Icons.info_outline, color: Colors.white, size: 20),
-              SizedBox(width: 8),
-              Expanded(
-                child: Text('Please enter the full 6-digit verification code.'),
-              ),
-            ],
-          ),
-          backgroundColor: Theme.of(context).colorScheme.error,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        ),
+      AppFeedback.showToast(
+        context,
+        title: 'Incomplete Code',
+        message: 'Please enter the full 6-digit verification code.',
+        type: ToastType.warning,
       );
       return;
     }
@@ -117,19 +109,11 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     if (_timerSeconds > 0) return;
     _startTimer();
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Row(
-          children: [
-            Icon(Icons.mark_email_read_outlined, color: Colors.white, size: 20),
-            SizedBox(width: 8),
-            Text('A new verification code has been sent.'),
-          ],
-        ),
-        backgroundColor: Colors.green.shade700,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      ),
+    AppFeedback.showToast(
+      context,
+      title: 'Code Resent 📨',
+      message: 'A new 6-digit code has been sent to ${widget.email}',
+      type: ToastType.success,
     );
   }
 
@@ -207,34 +191,34 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                             height: 80,
                             width: 80,
                             decoration: BoxDecoration(
-                              gradient: AppTheme.heroGradient,
+                              gradient: AppTheme.primaryGradient,
                               borderRadius: BorderRadius.circular(24),
                               border: Border.all(
-                                color: Colors.white.withValues(alpha: 0.3),
+                                color: Colors.white.withValues(alpha: 0.4),
                                 width: 1.5,
                               ),
                               boxShadow: [
                                 BoxShadow(
-                                  color: AppTheme.cyanAccent.withValues(alpha: 0.35),
+                                  color: AppTheme.cyanAccent.withValues(alpha: 0.4),
                                   blurRadius: 22,
                                   offset: const Offset(0, 8),
                                 ),
                               ],
                             ),
                             child: const Icon(
-                              Icons.mark_email_unread_rounded,
-                              size: 44,
+                              Icons.mark_email_read_outlined,
+                              size: 40,
                               color: Colors.white,
                             ),
                           ),
                         ),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 18),
 
                         // Title
-                        const Text(
+                        Text(
                           'Enter Verification Code',
                           textAlign: TextAlign.center,
-                          style: TextStyle(
+                          style: GoogleFonts.plusJakartaSans(
                             fontSize: 26,
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
@@ -243,65 +227,51 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                         ),
                         const SizedBox(height: 8),
 
-                        // Subtitle with Email
-                        Text.rich(
-                          TextSpan(
-                            style: TextStyle(
-                              color: Colors.white.withValues(alpha: 0.82),
-                              fontSize: 14,
-                              height: 1.4,
-                            ),
-                            children: [
-                              const TextSpan(text: 'We sent a 6-digit verification code to\n'),
-                              TextSpan(
-                                text: widget.email.isNotEmpty ? widget.email : 'your email',
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: AppTheme.cyanAccent,
+                        // Description with email highlight
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: Text.rich(
+                            TextSpan(
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 14,
+                                color: Colors.white.withValues(alpha: 0.85),
+                                height: 1.45,
+                              ),
+                              children: [
+                                const TextSpan(text: 'We sent a 6-digit verification code to\n'),
+                                TextSpan(
+                                  text: widget.email,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: AppTheme.cyanAccent,
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 20),
-
-                        // Quick Demo Helper Chip
-                        Center(
-                          child: ActionChip(
-                            avatar: const Icon(Icons.flash_on_rounded, size: 16, color: AppTheme.cyanAccent),
-                            label: const Text(
-                              'Autofill 123456 for Testing',
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white,
-                              ),
+                              ],
                             ),
-                            backgroundColor: Colors.white.withValues(alpha: 0.12),
-                            side: BorderSide(
-                              color: AppTheme.cyanAccent.withValues(alpha: 0.4),
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            onPressed: _fillDemoCode,
+                            textAlign: TextAlign.center,
                           ),
                         ),
                         const SizedBox(height: 24),
 
-                        // Frosted Glass OTP Container
+                        // Frosted Glass Card for OTP digits
                         ClipRRect(
                           borderRadius: BorderRadius.circular(28),
                           child: BackdropFilter(
-                            filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+                            filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
                             child: Container(
                               padding: const EdgeInsets.all(22),
                               decoration: BoxDecoration(
-                                gradient: AppTheme.glassCardGradient,
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Colors.white.withValues(alpha: 0.15),
+                                    Colors.white.withValues(alpha: 0.08),
+                                  ],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
                                 borderRadius: BorderRadius.circular(28),
                                 border: Border.all(
-                                  color: Colors.white.withValues(alpha: 0.2),
+                                  color: Colors.white.withValues(alpha: 0.25),
                                   width: 1.2,
                                 ),
                                 boxShadow: [
@@ -313,87 +283,46 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                                 ],
                               ),
                               child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: [
-                                  // 6-digit OTP Inputs
+                                  // 6 Digit OTP Fields
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: List.generate(_codeLength, (index) {
-                                      return SizedBox(
-                                        width: 44,
-                                        height: 54,
-                                        child: TextFormField(
-                                          controller: _controllers[index],
-                                          focusNode: _focusNodes[index],
-                                          keyboardType: TextInputType.number,
-                                          textAlign: TextAlign.center,
-                                          maxLength: 1,
-                                          style: const TextStyle(
-                                            fontSize: 22,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white,
-                                          ),
-                                          inputFormatters: [
-                                            FilteringTextInputFormatter.digitsOnly,
-                                          ],
-                                          decoration: InputDecoration(
-                                            counterText: '',
-                                            filled: true,
-                                            fillColor: Colors.white.withValues(alpha: 0.12),
-                                            contentPadding: EdgeInsets.zero,
-                                            border: OutlineInputBorder(
-                                              borderRadius: BorderRadius.circular(12),
-                                              borderSide: BorderSide(
-                                                color: Colors.white.withValues(alpha: 0.25),
-                                              ),
-                                            ),
-                                            enabledBorder: OutlineInputBorder(
-                                              borderRadius: BorderRadius.circular(12),
-                                              borderSide: BorderSide(
-                                                color: Colors.white.withValues(alpha: 0.25),
-                                              ),
-                                            ),
-                                            focusedBorder: OutlineInputBorder(
-                                              borderRadius: BorderRadius.circular(12),
-                                              borderSide: const BorderSide(
-                                                color: AppTheme.cyanAccent,
-                                                width: 2,
-                                              ),
-                                            ),
-                                          ),
-                                          onChanged: (value) {
-                                            if (value.isNotEmpty) {
-                                              if (index < _codeLength - 1) {
-                                                _focusNodes[index + 1].requestFocus();
-                                              } else {
-                                                _focusNodes[index].unfocus();
-                                                _handleVerify();
-                                              }
+                                    children: List.generate(
+                                      _codeLength,
+                                      (index) => _OtpDigitField(
+                                        controller: _controllers[index],
+                                        focusNode: _focusNodes[index],
+                                        onChanged: (value) {
+                                          if (value.isNotEmpty) {
+                                            if (index < _codeLength - 1) {
+                                              _focusNodes[index + 1].requestFocus();
                                             } else {
-                                              if (index > 0) {
-                                                _focusNodes[index - 1].requestFocus();
-                                              }
+                                              _focusNodes[index].unfocus();
+                                              _handleVerify();
                                             }
-                                          },
-                                        ),
-                                      );
-                                    }),
+                                          } else if (value.isEmpty && index > 0) {
+                                            _focusNodes[index - 1].requestFocus();
+                                          }
+                                        },
+                                      ),
+                                    ),
                                   ),
-                                  const SizedBox(height: 24),
+                                  const SizedBox(height: 20),
 
-                                  // Verify Code Submit Button
+                                  // Verify Submit Button
                                   Container(
                                     height: 52,
+                                    width: double.infinity,
                                     decoration: BoxDecoration(
                                       gradient: AppTheme.primaryGradient,
                                       borderRadius: BorderRadius.circular(16),
                                       border: Border.all(
-                                        color: Colors.white.withValues(alpha: 0.3),
+                                        color: Colors.white.withValues(alpha: 0.35),
                                       ),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: AppTheme.cyanAccent.withValues(alpha: 0.35),
-                                          blurRadius: 16,
+                                          color: AppTheme.cyanAccent.withValues(alpha: 0.4),
+                                          blurRadius: 18,
                                           offset: const Offset(0, 5),
                                         ),
                                       ],
@@ -416,9 +345,9 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                                                 color: Colors.white,
                                               ),
                                             )
-                                          : const Text(
+                                          : Text(
                                               'Verify Code',
-                                              style: TextStyle(
+                                              style: GoogleFonts.plusJakartaSans(
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.bold,
                                                 color: Colors.white,
@@ -432,49 +361,123 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                             ),
                           ),
                         ),
-                          const SizedBox(height: 24),
+                        const SizedBox(height: 24),
 
-                          // Resend Code Timer
-                          Wrap(
-                            alignment: WrapAlignment.center,
-                            crossAxisAlignment: WrapCrossAlignment.center,
-                            children: [
-                              Text(
-                                "Didn't receive the code? ",
-                                style: TextStyle(
-                                  color: Colors.white.withValues(alpha: 0.75),
-                                  fontSize: 14,
+                        // Resend Code and Auto-Fill Row
+                        Wrap(
+                          alignment: WrapAlignment.center,
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          children: [
+                            Text(
+                              "Didn't receive the code? ",
+                              style: GoogleFonts.plusJakartaSans(
+                                color: Colors.white.withValues(alpha: 0.8),
+                                fontSize: 13.5,
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: _timerSeconds == 0 ? _handleResend : null,
+                              style: TextButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                                minimumSize: Size.zero,
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              ),
+                              child: Text(
+                                _timerSeconds > 0 ? 'Resend in ${_timerSeconds}s' : 'Resend Code',
+                                style: GoogleFonts.plusJakartaSans(
+                                  fontWeight: FontWeight.bold,
+                                  color: _timerSeconds == 0 ? AppTheme.cyanAccent : Colors.white54,
                                 ),
                               ),
-                              TextButton(
-                                onPressed: _timerSeconds == 0 ? _handleResend : null,
-                                style: TextButton.styleFrom(
-                                  padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-                                  minimumSize: Size.zero,
-                                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                ),
-                                child: Text(
-                                  _timerSeconds > 0
-                                      ? 'Resend in ${_timerSeconds}s'
-                                      : 'Resend Code',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: _timerSeconds > 0
-                                        ? Colors.white.withValues(alpha: 0.45)
-                                        : AppTheme.cyanAccent,
-                                  ),
-                                ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+
+                        // Demo Fill Button
+                        Center(
+                          child: TextButton.icon(
+                            onPressed: _fillDemoCode,
+                            icon: const Icon(Icons.auto_awesome, size: 16, color: AppTheme.cyanAccent),
+                            label: Text(
+                              'Auto-fill Demo OTP (123456)',
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 12.5,
+                                color: AppTheme.cyanAccent,
+                                fontWeight: FontWeight.w600,
                               ),
-                            ],
+                            ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
               ),
+            ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _OtpDigitField extends StatelessWidget {
+  const _OtpDigitField({
+    required this.controller,
+    required this.focusNode,
+    required this.onChanged,
+  });
+
+  final TextEditingController controller;
+  final FocusNode focusNode;
+  final ValueChanged<String> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 46,
+      height: 58,
+      child: TextField(
+        controller: controller,
+        focusNode: focusNode,
+        keyboardType: TextInputType.number,
+        textAlign: TextAlign.center,
+        maxLength: 1,
+        style: GoogleFonts.plusJakartaSans(
+          fontSize: 22,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+        inputFormatters: [
+          FilteringTextInputFormatter.digitsOnly,
+        ],
+        decoration: InputDecoration(
+          counterText: '',
+          filled: true,
+          fillColor: Colors.white.withValues(alpha: 0.12),
+          contentPadding: EdgeInsets.zero,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(14),
+            borderSide: BorderSide(
+              color: Colors.white.withValues(alpha: 0.25),
+            ),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(14),
+            borderSide: BorderSide(
+              color: Colors.white.withValues(alpha: 0.25),
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(14),
+            borderSide: const BorderSide(
+              color: AppTheme.cyanAccent,
+              width: 2,
+            ),
+          ),
+        ),
+        onChanged: onChanged,
       ),
     );
   }

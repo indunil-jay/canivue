@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:canivue/core/theme/app_theme.dart';
 import 'package:canivue/core/widgets/app_feedback.dart';
 import 'package:canivue/features/auth/screens/forgot_password_screen.dart';
@@ -85,13 +86,13 @@ class _SignInScreenState extends State<SignInScreen> {
               top: -80,
               right: -60,
               child: Container(
-                height: 300,
-                width: 300,
+                height: 320,
+                width: 320,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
                     colors: [
-                      AppTheme.cyanAccent.withValues(alpha: 0.3),
+                      AppTheme.cyanAccent.withValues(alpha: 0.35),
                       Colors.transparent,
                     ],
                   ),
@@ -102,13 +103,13 @@ class _SignInScreenState extends State<SignInScreen> {
               bottom: size.height * 0.15,
               left: -80,
               child: Container(
-                height: 280,
-                width: 280,
+                height: 300,
+                width: 300,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
                     colors: [
-                      AppTheme.primaryBlue.withValues(alpha: 0.28),
+                      AppTheme.primaryBlue.withValues(alpha: 0.35),
                       Colors.transparent,
                     ],
                   ),
@@ -134,13 +135,13 @@ class _SignInScreenState extends State<SignInScreen> {
                               alignment: Alignment.center,
                               children: [
                                 Container(
-                                  height: 94,
-                                  width: 94,
+                                  height: 96,
+                                  width: 96,
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     gradient: RadialGradient(
                                       colors: [
-                                        AppTheme.cyanAccent.withValues(alpha: 0.35),
+                                        AppTheme.cyanAccent.withValues(alpha: 0.4),
                                         Colors.transparent,
                                       ],
                                     ),
@@ -150,15 +151,15 @@ class _SignInScreenState extends State<SignInScreen> {
                                   height: 76,
                                   width: 76,
                                   decoration: BoxDecoration(
-                                    gradient: AppTheme.heroGradient,
+                                    gradient: AppTheme.primaryGradient,
                                     borderRadius: BorderRadius.circular(24),
                                     border: Border.all(
-                                      color: Colors.white.withValues(alpha: 0.35),
+                                      color: Colors.white.withValues(alpha: 0.4),
                                       width: 1.5,
                                     ),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: AppTheme.cyanAccent.withValues(alpha: 0.4),
+                                        color: AppTheme.cyanAccent.withValues(alpha: 0.45),
                                         blurRadius: 24,
                                         offset: const Offset(0, 8),
                                       ),
@@ -173,13 +174,13 @@ class _SignInScreenState extends State<SignInScreen> {
                               ],
                             ),
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 18),
 
-                          // Header Text
-                          const Text(
+                          // Header Text with enhanced typography
+                          Text(
                             'Welcome Back',
                             textAlign: TextAlign.center,
-                            style: TextStyle(
+                            style: GoogleFonts.plusJakartaSans(
                               fontSize: 28,
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
@@ -190,9 +191,10 @@ class _SignInScreenState extends State<SignInScreen> {
                           Text(
                             'Sign in to manage your pets and AI health telemetry',
                             textAlign: TextAlign.center,
-                            style: TextStyle(
+                            style: GoogleFonts.plusJakartaSans(
                               fontSize: 14,
-                              color: Colors.white.withValues(alpha: 0.82),
+                              color: Colors.white.withValues(alpha: 0.85),
+                              height: 1.4,
                             ),
                           ),
                           const SizedBox(height: 24),
@@ -201,14 +203,21 @@ class _SignInScreenState extends State<SignInScreen> {
                           ClipRRect(
                             borderRadius: BorderRadius.circular(28),
                             child: BackdropFilter(
-                              filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+                              filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
                               child: Container(
                                 padding: const EdgeInsets.all(22),
                                 decoration: BoxDecoration(
-                                  gradient: AppTheme.glassCardGradient,
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Colors.white.withValues(alpha: 0.15),
+                                      Colors.white.withValues(alpha: 0.08),
+                                    ],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                  ),
                                   borderRadius: BorderRadius.circular(28),
                                   border: Border.all(
-                                    color: Colors.white.withValues(alpha: 0.2),
+                                    color: Colors.white.withValues(alpha: 0.25),
                                     width: 1.2,
                                   ),
                                   boxShadow: [
@@ -298,9 +307,9 @@ class _SignInScreenState extends State<SignInScreen> {
                                               ),
                                             ),
                                             const SizedBox(width: 8),
-                                            const Text(
+                                            Text(
                                               'Remember me',
-                                              style: TextStyle(
+                                              style: GoogleFonts.plusJakartaSans(
                                                 fontSize: 13,
                                                 color: Colors.white70,
                                               ),
@@ -314,9 +323,9 @@ class _SignInScreenState extends State<SignInScreen> {
                                             minimumSize: Size.zero,
                                             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                           ),
-                                          child: const Text(
+                                          child: Text(
                                             'Forgot Password?',
-                                            style: TextStyle(
+                                            style: GoogleFonts.plusJakartaSans(
                                               fontSize: 13,
                                               fontWeight: FontWeight.w600,
                                               color: AppTheme.cyanAccent,
@@ -334,12 +343,12 @@ class _SignInScreenState extends State<SignInScreen> {
                                         gradient: AppTheme.primaryGradient,
                                         borderRadius: BorderRadius.circular(16),
                                         border: Border.all(
-                                          color: Colors.white.withValues(alpha: 0.3),
+                                          color: Colors.white.withValues(alpha: 0.35),
                                         ),
                                         boxShadow: [
                                           BoxShadow(
-                                            color: AppTheme.cyanAccent.withValues(alpha: 0.35),
-                                            blurRadius: 16,
+                                            color: AppTheme.cyanAccent.withValues(alpha: 0.4),
+                                            blurRadius: 18,
                                             offset: const Offset(0, 5),
                                           ),
                                         ],
@@ -362,9 +371,9 @@ class _SignInScreenState extends State<SignInScreen> {
                                                   color: Colors.white,
                                                 ),
                                               )
-                                            : const Text(
+                                            : Text(
                                                 'Log In',
-                                                style: TextStyle(
+                                                style: GoogleFonts.plusJakartaSans(
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.bold,
                                                   color: Colors.white,
@@ -392,8 +401,8 @@ class _SignInScreenState extends State<SignInScreen> {
                                 padding: const EdgeInsets.symmetric(horizontal: 14),
                                 child: Text(
                                   'or continue with',
-                                  style: TextStyle(
-                                    color: Colors.white.withValues(alpha: 0.65),
+                                  style: GoogleFonts.plusJakartaSans(
+                                    color: Colors.white.withValues(alpha: 0.7),
                                     fontSize: 13,
                                   ),
                                 ),
@@ -449,8 +458,8 @@ class _SignInScreenState extends State<SignInScreen> {
                             children: [
                               Text(
                                 "Don't have an account? ",
-                                style: TextStyle(
-                                  color: Colors.white.withValues(alpha: 0.75),
+                                style: GoogleFonts.plusJakartaSans(
+                                  color: Colors.white.withValues(alpha: 0.8),
                                   fontSize: 14,
                                 ),
                               ),
@@ -467,9 +476,9 @@ class _SignInScreenState extends State<SignInScreen> {
                                   minimumSize: Size.zero,
                                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                 ),
-                                child: const Text(
+                                child: Text(
                                   'Sign Up',
-                                  style: TextStyle(
+                                  style: GoogleFonts.plusJakartaSans(
                                     fontWeight: FontWeight.bold,
                                     color: AppTheme.cyanAccent,
                                   ),
@@ -510,10 +519,10 @@ class _SocialLoginButton extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 13),
         decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.1),
+          color: Colors.white.withValues(alpha: 0.12),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: Colors.white.withValues(alpha: 0.22),
+            color: Colors.white.withValues(alpha: 0.25),
           ),
         ),
         child: Row(
@@ -523,7 +532,7 @@ class _SocialLoginButton extends StatelessWidget {
             const SizedBox(width: 8),
             Text(
               label,
-              style: const TextStyle(
+              style: GoogleFonts.plusJakartaSans(
                 color: Colors.white,
                 fontWeight: FontWeight.w600,
                 fontSize: 14,

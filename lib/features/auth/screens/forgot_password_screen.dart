@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:canivue/core/theme/app_theme.dart';
 import 'package:canivue/core/widgets/app_feedback.dart';
 import 'package:canivue/features/auth/screens/otp_verification_screen.dart';
@@ -87,7 +88,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
                     colors: [
-                      AppTheme.cyanAccent.withValues(alpha: 0.28),
+                      AppTheme.cyanAccent.withValues(alpha: 0.3),
                       Colors.transparent,
                     ],
                   ),
@@ -104,7 +105,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
                     colors: [
-                      AppTheme.primaryBlue.withValues(alpha: 0.22),
+                      AppTheme.primaryBlue.withValues(alpha: 0.25),
                       Colors.transparent,
                     ],
                   ),
@@ -130,15 +131,15 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                               height: 76,
                               width: 76,
                               decoration: BoxDecoration(
-                                gradient: AppTheme.heroGradient,
+                                gradient: AppTheme.primaryGradient,
                                 borderRadius: BorderRadius.circular(24),
                                 border: Border.all(
-                                  color: Colors.white.withValues(alpha: 0.35),
+                                  color: Colors.white.withValues(alpha: 0.4),
                                   width: 1.5,
                                 ),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: AppTheme.cyanAccent.withValues(alpha: 0.35),
+                                    color: AppTheme.cyanAccent.withValues(alpha: 0.4),
                                     blurRadius: 22,
                                     offset: const Offset(0, 8),
                                   ),
@@ -151,13 +152,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                               ),
                             ),
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 18),
 
                           // Header Text
-                          const Text(
+                          Text(
                             'Forgot Password?',
                             textAlign: TextAlign.center,
-                            style: TextStyle(
+                            style: GoogleFonts.plusJakartaSans(
                               fontSize: 28,
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
@@ -168,10 +169,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                           Text(
                             "Don't worry! It happens. Please enter the email address linked with your account.",
                             textAlign: TextAlign.center,
-                            style: TextStyle(
+                            style: GoogleFonts.plusJakartaSans(
                               fontSize: 14,
-                              color: Colors.white.withValues(alpha: 0.82),
-                              height: 1.35,
+                              color: Colors.white.withValues(alpha: 0.85),
+                              height: 1.4,
                             ),
                           ),
                           const SizedBox(height: 24),
@@ -180,14 +181,21 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                           ClipRRect(
                             borderRadius: BorderRadius.circular(28),
                             child: BackdropFilter(
-                              filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+                              filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
                               child: Container(
                                 padding: const EdgeInsets.all(22),
                                 decoration: BoxDecoration(
-                                  gradient: AppTheme.glassCardGradient,
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Colors.white.withValues(alpha: 0.15),
+                                      Colors.white.withValues(alpha: 0.08),
+                                    ],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                  ),
                                   borderRadius: BorderRadius.circular(28),
                                   border: Border.all(
-                                    color: Colors.white.withValues(alpha: 0.2),
+                                    color: Colors.white.withValues(alpha: 0.25),
                                     width: 1.2,
                                   ),
                                   boxShadow: [
@@ -228,12 +236,12 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                         gradient: AppTheme.primaryGradient,
                                         borderRadius: BorderRadius.circular(16),
                                         border: Border.all(
-                                          color: Colors.white.withValues(alpha: 0.3),
+                                          color: Colors.white.withValues(alpha: 0.35),
                                         ),
                                         boxShadow: [
                                           BoxShadow(
-                                            color: AppTheme.cyanAccent.withValues(alpha: 0.35),
-                                            blurRadius: 16,
+                                            color: AppTheme.cyanAccent.withValues(alpha: 0.4),
+                                            blurRadius: 18,
                                             offset: const Offset(0, 5),
                                           ),
                                         ],
@@ -256,9 +264,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                                   color: Colors.white,
                                                 ),
                                               )
-                                            : const Text(
+                                            : Text(
                                                 'Send Reset Link',
-                                                style: TextStyle(
+                                                style: GoogleFonts.plusJakartaSans(
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.bold,
                                                   color: Colors.white,
@@ -280,8 +288,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                             children: [
                               Text(
                                 'Remember your password? ',
-                                style: TextStyle(
-                                  color: Colors.white.withValues(alpha: 0.75),
+                                style: GoogleFonts.plusJakartaSans(
+                                  color: Colors.white.withValues(alpha: 0.8),
                                   fontSize: 14,
                                 ),
                               ),
@@ -292,9 +300,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                   minimumSize: Size.zero,
                                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                 ),
-                                child: const Text(
+                                child: Text(
                                   'Log In',
-                                  style: TextStyle(
+                                  style: GoogleFonts.plusJakartaSans(
                                     fontWeight: FontWeight.bold,
                                     color: AppTheme.cyanAccent,
                                   ),
