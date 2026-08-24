@@ -11,11 +11,18 @@ class CanivueApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Canivue',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme,
-      home: const OnboardingScreen(),
+    return ValueListenableBuilder<ThemeMode>(
+      valueListenable: AppTheme.themeModeNotifier,
+      builder: (context, themeMode, _) {
+        return MaterialApp(
+          title: 'Canivue',
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.darkTheme,
+          themeMode: themeMode,
+          home: const OnboardingScreen(),
+        );
+      },
     );
   }
 }

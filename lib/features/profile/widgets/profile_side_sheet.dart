@@ -330,6 +330,23 @@ class _ProfileSideSheetState extends State<ProfileSideSheet> {
                     _buildSectionHeader('PREFERENCES & AI', theme),
                     const SizedBox(height: 8),
                     _buildSwitchTile(
+                      icon: AppTheme.isDarkMode ? Icons.dark_mode_rounded : Icons.light_mode_rounded,
+                      title: 'Dark Mode',
+                      subtitle: AppTheme.isDarkMode ? 'Midnight Royal active' : 'Sapphire Light active',
+                      value: AppTheme.isDarkMode,
+                      onChanged: (val) {
+                        AppTheme.toggleTheme();
+                        setState(() {});
+                        AppFeedback.showToast(
+                          context,
+                          title: val ? 'Dark Mode Active 🌙' : 'Light Mode Active ☀️',
+                          message: val ? 'Switched to Midnight Royal theme.' : 'Switched to Sapphire Light theme.',
+                          type: ToastType.info,
+                        );
+                      },
+                      theme: theme,
+                    ),
+                    _buildSwitchTile(
                       icon: Icons.notifications_outlined,
                       title: 'Care Notifications',
                       subtitle: 'Medication & vaccine reminders',
