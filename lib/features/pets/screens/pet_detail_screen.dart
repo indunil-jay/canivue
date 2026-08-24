@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:canivue/core/theme/app_theme.dart';
 import 'package:canivue/core/widgets/app_feedback.dart';
+import 'package:canivue/core/widgets/aura_canvas_background.dart';
 import 'package:canivue/core/widgets/luxury_biometric_ring.dart';
 import 'package:canivue/features/health_check/screens/health_check_capture_screen.dart';
 import 'package:canivue/features/pets/models/pet_model.dart';
@@ -359,11 +360,12 @@ class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProv
           const SizedBox(width: 4),
         ],
       ),
-      body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 600),
-            child: NestedScrollView(
+      body: AuraCanvasBackground(
+        child: SafeArea(
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 600),
+              child: NestedScrollView(
               headerSliverBuilder: (context, innerBoxIsScrolled) {
                 return [
                   SliverToBoxAdapter(
@@ -627,6 +629,7 @@ class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProv
           ),
         ),
       ),
+    ),
       bottomNavigationBar: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
