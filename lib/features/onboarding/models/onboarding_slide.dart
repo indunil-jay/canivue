@@ -35,7 +35,7 @@ const List<OnboardingSlide> onboardingSlides = [
     stepLabel: '01 / 04',
     title: 'All Your Pets,\nOne Loving Home',
     description:
-        'Canivue brings every one of your pet\'s details, photos, and medical milestones together in a single, secure sanctuary.',
+        'Canivue is your adaptive multimodal AI companion for canine care — uniting photos, smart-collar activity, symptoms and medical history in one secure home.',
     icon: Icons.pets_rounded,
     accentColor: Color(0xFF38BDF8), // Sky Blue Accent
     primaryGradient: LinearGradient(
@@ -64,12 +64,12 @@ const List<OnboardingSlide> onboardingSlides = [
   ),
   OnboardingSlide(
     imageAsset: 'assets/images/onboarding/onboard_track.jpg',
-    badge: '📊 Vital Analytics',
+    badge: '🧠 Multimodal AI',
     stepLabel: '02 / 04',
-    title: 'Monitor Health\n& Activity Daily',
+    title: 'Snap, Speak &\nLet AI Fuse the Clues',
     description:
-        'Log vitals, track weight trajectories, record exercise routines, and monitor moods so you always stay ahead of their wellbeing.',
-    icon: Icons.monitor_heart_rounded,
+        'Photograph a symptom, sync your smart collar\'s motion data, and describe what you\'re seeing. Our confidence-weighted adaptive fusion engine analyses all three together for a far more reliable read than any single input alone.',
+    icon: Icons.biotech_rounded,
     accentColor: Color(0xFF22D3EE), // Cyan / Turquoise Accent
     primaryGradient: LinearGradient(
       colors: [Color(0xFF0284C7), Color(0xFF06B6D4)],
@@ -93,16 +93,16 @@ const List<OnboardingSlide> onboardingSlides = [
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
     ),
-    featureTags: ['Weight Curves', 'Daily Activity', 'Symptom Log'],
+    featureTags: ['Photo Analysis', 'Smart Collar Sync', 'Confidence-Weighted Fusion'],
   ),
   OnboardingSlide(
     imageAsset: 'assets/images/onboarding/onboard_records.jpg',
-    badge: '💉 Care Schedule',
+    badge: '📈 Risk Forecast',
     stepLabel: '03 / 04',
-    title: 'Never Miss a\nVaccination Again',
+    title: 'Know What\'s Coming,\nNot Just What\'s Wrong',
     description:
-        'Intelligent alerts for scheduled vaccines, recurring medications, deworming, and vet appointments keep your pet protected.',
-    icon: Icons.vaccines_rounded,
+        'Our Disease Progression & Risk Prediction Engine (DPRPE) studies behavioural trends, breed, age and history to forecast a 7-day risk score — with plain-language reasons and clear vet-urgency guidance.',
+    icon: Icons.timeline_rounded,
     accentColor: Color(0xFF818CF8), // Periwinkle / Violet Indigo Accent
     primaryGradient: LinearGradient(
       colors: [Color(0xFF4F46E5), Color(0xFF38BDF8)],
@@ -126,7 +126,7 @@ const List<OnboardingSlide> onboardingSlides = [
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
     ),
-    featureTags: ['Vaccine Reminders', 'Medication Alerts', 'Vet Sync'],
+    featureTags: ['7-Day Risk Score', 'Explainable Factors', 'Vet Urgency Guidance'],
   ),
   OnboardingSlide(
     imageAsset: 'assets/images/onboarding/onboard_join.jpg',
@@ -134,7 +134,7 @@ const List<OnboardingSlide> onboardingSlides = [
     stepLabel: '04 / 04',
     title: 'Join Thousands of\nHappy Pet Parents',
     description:
-        'Become part of a passionate family of pet lovers. Unlock full health histories, emergency access, and premium care today.',
+        'Join pet parents using AI-assisted, explainable insights to catch problems early and bridge the gap to trusted tele-veterinary care.',
     icon: Icons.auto_awesome_rounded,
     accentColor: Color(0xFF34D399), // Emerald Mint Accent
     primaryGradient: LinearGradient(

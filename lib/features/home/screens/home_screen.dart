@@ -291,7 +291,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         const SizedBox(height: 12),
                         const Text(
-                          'Smart Pet Health Monitoring',
+                          'Multimodal AI Health Detection',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 19,
@@ -301,7 +301,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         const SizedBox(height: 6),
                         Text(
-                          'Track vital stats, vaccinations, and daily activities easily.',
+                          'Fuse photos, collar data & symptoms to forecast health risks early.',
                           style: TextStyle(
                             color: Colors.white.withValues(alpha: 0.92),
                             fontSize: 13,
