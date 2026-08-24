@@ -25,11 +25,22 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   bool _isLoading = false;
 
   @override
+  void initState() {
+    super.initState();
+    _passwordController.addListener(() {
+      setState(() {});
+    });
+  }
+
+  @override
   void dispose() {
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     super.dispose();
   }
+
+  bool get _hasMinLength => _passwordController.text.length >= 8;
+  bool get _hasNumberOrSpecial => RegExp(r'[0-9!@#\$%^&*(),.?":{}|<>]').hasMatch(_passwordController.text);
 
   void _handleResetPassword() async {
     if (!_formKey.currentState!.validate()) {
@@ -41,7 +52,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     });
 
     // Simulate password update
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 1));
 
     if (!mounted) return;
 
@@ -93,14 +104,42 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
                 ),
-                child: const Text('Back to Log In'),
+                child: const Text(
+                  'Back to Log In',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
               ),
             ),
           ],
         );
       },
+    );
+  }
+
+  Widget _buildRequirementItem(String text, bool met, ThemeData theme, ColorScheme colorScheme) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2),
+      child: Row(
+        children: [
+          Icon(
+            met ? Icons.check_circle_rounded : Icons.radio_button_unchecked_rounded,
+            size: 16,
+            color: met ? Colors.green.shade600 : colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              text,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: met ? Colors.green.shade700 : colorScheme.onSurfaceVariant,
+                fontWeight: met ? FontWeight.w600 : FontWeight.normal,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -208,6 +247,22 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                         }
                         return null;
                       },
+                    ),
+                    const SizedBox(height: 12),
+
+                    // Requirements Checklist
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.25),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Column(
+                        children: [
+                          _buildRequirementItem('At least 8 characters', _hasMinLength, theme, colorScheme),
+                          _buildRequirementItem('Contains a number or special character', _hasNumberOrSpecial, theme, colorScheme),
+                        ],
+                      ),
                     ),
                     const SizedBox(height: 16),
 

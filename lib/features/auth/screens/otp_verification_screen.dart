@@ -62,6 +62,14 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
 
   String get _otpCode => _controllers.map((c) => c.text).join();
 
+  void _fillDemoCode() {
+    const demo = '123456';
+    for (int i = 0; i < _codeLength; i++) {
+      _controllers[i].text = demo[i];
+    }
+    _handleVerify();
+  }
+
   void _handleVerify() async {
     final code = _otpCode;
     if (code.length < _codeLength) {
@@ -88,8 +96,8 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
       _isLoading = true;
     });
 
-    // Simulate OTP verification
-    await Future.delayed(const Duration(seconds: 2));
+    // Simulated verification delay
+    await Future.delayed(const Duration(milliseconds: 600));
 
     if (!mounted) return;
 
@@ -206,9 +214,22 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 36),
+                  const SizedBox(height: 28),
 
-                  // 6 Digit Code Input Boxes using Expanded for responsive layout
+                  // Quick Demo Helper Chip
+                  Center(
+                    child: ActionChip(
+                      avatar: const Icon(Icons.flash_on_rounded, size: 18, color: Colors.amber),
+                      label: const Text('Fill Test Code: 123456'),
+                      onPressed: _fillDemoCode,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+
+                  // 6 Digit Code Input Boxes
                   Row(
                     children: List.generate(_codeLength, (index) {
                       return Expanded(

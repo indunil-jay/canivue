@@ -43,7 +43,7 @@ void main() {
 
     expect(find.text('Forgot Password?'), findsOneWidget);
     expect(find.text('Email Address'), findsOneWidget);
-    expect(find.text('Send Reset Link'), findsOneWidget);
+    expect(find.text('Send Verification Code'), findsOneWidget);
   });
 
   testWidgets('OtpVerificationScreen renders correctly smoke test', (WidgetTester tester) async {
