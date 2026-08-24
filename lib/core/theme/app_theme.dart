@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
   // Core Brand Blues
@@ -8,6 +9,11 @@ class AppTheme {
   static const Color cyanAccent = Color(0xFF38BDF8);
   static const Color lightBlueBackground = Color(0xFFF4F8FC);
   static const Color darkBlueSurface = Color(0xFF0A192F);
+
+  // Semantic Accents
+  static const Color successGreen = Color(0xFF16A34A);
+  static const Color warningAmber = Color(0xFFF59E0B);
+  static const Color softPink = Color(0xFFEC4899);
 
   // Modern Gradients
   static const LinearGradient primaryGradient = LinearGradient(
@@ -59,21 +65,29 @@ class AppTheme {
       brightness: Brightness.light,
     );
 
+    final baseTextTheme = GoogleFonts.plusJakartaSansTextTheme(
+      ThemeData(brightness: Brightness.light).textTheme,
+    );
+
     return ThemeData(
       useMaterial3: true,
       colorScheme: colorScheme,
       scaffoldBackgroundColor: const Color(0xFFF8FAFC),
-      appBarTheme: const AppBarTheme(
+      textTheme: baseTextTheme.apply(
+        bodyColor: const Color(0xFF0F172A),
+        displayColor: const Color(0xFF0F172A),
+      ),
+      appBarTheme: AppBarTheme(
         backgroundColor: Colors.white,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         centerTitle: false,
-        titleTextStyle: TextStyle(
-          color: Color(0xFF0F172A),
+        titleTextStyle: GoogleFonts.plusJakartaSans(
+          color: const Color(0xFF0F172A),
           fontSize: 18,
           fontWeight: FontWeight.bold,
         ),
-        iconTheme: IconThemeData(color: Color(0xFF0F172A)),
+        iconTheme: const IconThemeData(color: Color(0xFF0F172A)),
       ),
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
