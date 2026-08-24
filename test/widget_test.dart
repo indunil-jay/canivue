@@ -7,6 +7,7 @@ import 'package:canivue/features/auth/screens/reset_password_screen.dart';
 import 'package:canivue/features/auth/screens/signup_screen.dart';
 import 'package:canivue/features/home/screens/home_screen.dart';
 import 'package:canivue/features/pets/models/pet_model.dart';
+import 'package:canivue/features/pets/screens/add_edit_pet_screen.dart';
 import 'package:canivue/features/pets/screens/pet_detail_screen.dart';
 import 'package:canivue/features/pets/screens/pet_list_screen.dart';
 import 'package:canivue/features/profile/screens/personal_information_screen.dart';
@@ -162,5 +163,19 @@ void main() {
     expect(find.text('Diet & Routine'), findsOneWidget);
     expect(find.text('Notes & Info'), findsOneWidget);
     expect(find.text('Book Vet'), findsOneWidget);
+  });
+
+  testWidgets('AddEditPetScreen renders correctly smoke test', (WidgetTester tester) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: AddEditPetScreen(),
+      ),
+    );
+
+    expect(find.text('Add New Pet'), findsOneWidget);
+    expect(find.text('PET DETAILS'), findsOneWidget);
+    expect(find.text('Pet Name'), findsOneWidget);
+    expect(find.text('Breed'), findsOneWidget);
+    expect(find.text('Save Pet Profile'), findsOneWidget);
   });
 }

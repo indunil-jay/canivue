@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:canivue/features/pets/models/pet_model.dart';
+import 'package:canivue/features/pets/screens/add_edit_pet_screen.dart';
 
 class PetDetailScreen extends StatefulWidget {
   const PetDetailScreen({
@@ -17,10 +18,12 @@ class PetDetailScreen extends StatefulWidget {
 
 class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  late Pet _pet;
 
   @override
   void initState() {
     super.initState();
+    _pet = widget.pet;
     _tabController = TabController(length: 3, vsync: this);
   }
 
@@ -31,14 +34,14 @@ class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProv
   }
 
   void _copyMicrochip() {
-    Clipboard.setData(ClipboardData(text: widget.pet.microchipId));
+    Clipboard.setData(ClipboardData(text: _pet.microchipId));
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Row(
           children: [
             const Icon(Icons.check_circle_outline, color: Colors.white, size: 18),
             const SizedBox(width: 8),
-            Text('Microchip ID ${widget.pet.microchipId} copied!'),
+            Text('Microchip ID ${_pet.microchipId} copied!'),
           ],
         ),
         behavior: SnackBarBehavior.floating,
@@ -47,20 +50,25 @@ class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProv
     );
   }
 
-  void _handleEditPet() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Edit Pet Profile will open in the next step!'),
-        behavior: SnackBarBehavior.floating,
+  void _handleEditPet() async {
+    final updatedPet = await Navigator.of(context).push<Pet>(
+      MaterialPageRoute(
+        builder: (_) => AddEditPetScreen(pet: _pet),
       ),
     );
+
+    if (updatedPet != null) {
+      setState(() {
+        _pet = updatedPet;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final pet = widget.pet;
+    final pet = _pet;
     final isMale = pet.gender.toLowerCase() == 'male';
 
     return Scaffold(
@@ -390,7 +398,7 @@ class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProv
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(widget.pet.primaryVet, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                      Text(_pet.primaryVet, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
                       const SizedBox(height: 2),
                       Text('Emergency: (555) 987-6543', style: TextStyle(color: colorScheme.onSurfaceVariant, fontSize: 12)),
                     ],
@@ -429,7 +437,7 @@ class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProv
             theme: theme,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: widget.pet.allergies.map((allergy) {
+              children: _pet.allergies.map((allergy) {
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 4),
                   child: Row(
@@ -512,9 +520,9 @@ class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProv
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Coat Color: ${widget.pet.color}', style: const TextStyle(fontSize: 13)),
+                Text('Coat Color: ${_pet.color}', style: const TextStyle(fontSize: 13)),
                 const SizedBox(height: 4),
-                Text('Birth Date: ${widget.pet.birthDate.year}-${widget.pet.birthDate.month.toString().padLeft(2, '0')}-${widget.pet.birthDate.day.toString().padLeft(2, '0')}', style: const TextStyle(fontSize: 13)),
+                Text('Birth Date: ${_pet.birthDate.year}-${_pet.birthDate.month.toString().padLeft(2, '0')}-${_pet.birthDate.day.toString().padLeft(2, '0')}', style: const TextStyle(fontSize: 13)),
               ],
             ),
           ),
@@ -525,7 +533,7 @@ class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProv
             icon: Icons.notes_rounded,
             theme: theme,
             child: Text(
-              widget.pet.specialNotes,
+              _pet.specialNotes,
               style: theme.textTheme.bodyMedium?.copyWith(height: 1.5),
             ),
           ),

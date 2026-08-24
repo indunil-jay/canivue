@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:canivue/features/pets/models/pet_model.dart';
+import 'package:canivue/features/pets/screens/add_edit_pet_screen.dart';
 import 'package:canivue/features/pets/screens/pet_detail_screen.dart';
 import 'package:canivue/features/pets/widgets/pet_card.dart';
 
@@ -11,7 +12,7 @@ class PetListScreen extends StatefulWidget {
 }
 
 class _PetListScreenState extends State<PetListScreen> {
-  final List<Pet> _pets = Pet.samplePets;
+  final List<Pet> _pets = List.from(Pet.samplePets);
   String _searchQuery = '';
   String _selectedCategory = 'All';
 
@@ -34,13 +35,18 @@ class _PetListScreenState extends State<PetListScreen> {
     }).toList();
   }
 
-  void _handleAddPet() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Add Pet form will open in the next step!'),
-        behavior: SnackBarBehavior.floating,
+  void _handleAddPet() async {
+    final newPet = await Navigator.of(context).push<Pet>(
+      MaterialPageRoute(
+        builder: (_) => const AddEditPetScreen(),
       ),
     );
+
+    if (newPet != null) {
+      setState(() {
+        _pets.insert(0, newPet);
+      });
+    }
   }
 
   void _handlePetTap(Pet pet) {
