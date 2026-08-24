@@ -60,7 +60,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
       _isLoading = true;
     });
 
-    // Simulate authentication network call
     await Future.delayed(const Duration(seconds: 2));
 
     if (!mounted) return;
@@ -107,7 +106,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // App Logo / Badge
+                    // App Logo Badge
                     Center(
                       child: Container(
                         height: 72,
@@ -132,7 +131,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                     const SizedBox(height: 24),
 
-                    // Header Texts
+                    // Header Text
                     Text(
                       'Create an Account',
                       textAlign: TextAlign.center,
@@ -411,7 +410,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                     const SizedBox(height: 28),
 
-                    // Already have an account Footer
+                    // Already have an account Footer -> Navigates to SignInScreen
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -431,7 +430,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             );
                           },
                           style: TextButton.styleFrom(
-                            padding: EdgeInsets.zero,
+                            padding: EdgeInsets.symmetric(horizontal: 4, vertical: 4),
                             minimumSize: Size.zero,
                             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           ),

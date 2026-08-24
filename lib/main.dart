@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:canivue/features/auth/screens/signup_screen.dart';
+import 'package:canivue/features/auth/screens/signin_screen.dart';
 
 void main() {
   runApp(const CanivueApp());
@@ -24,8 +24,9 @@ class CanivueApp extends StatelessWidget {
           fillColor: Colors.grey.shade50,
         ),
       ),
-      home: const SignUpScreen(),
+      home: const SignInScreen(),
     );
   }
 }
+
 

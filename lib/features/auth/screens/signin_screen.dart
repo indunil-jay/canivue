@@ -35,7 +35,6 @@ class _SignInScreenState extends State<SignInScreen> {
       _isLoading = true;
     });
 
-    // Simulate login API call
     await Future.delayed(const Duration(seconds: 2));
 
     if (!mounted) return;
@@ -299,7 +298,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         TextButton(
                           onPressed: _handleForgotPassword,
                           style: TextButton.styleFrom(
-                            padding: EdgeInsets.zero,
+                            padding: EdgeInsets.symmetric(horizontal: 4, vertical: 4),
                             minimumSize: Size.zero,
                             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           ),
@@ -427,7 +426,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             );
                           },
                           style: TextButton.styleFrom(
-                            padding: EdgeInsets.zero,
+                            padding: EdgeInsets.symmetric(horizontal: 4, vertical: 4),
                             minimumSize: Size.zero,
                             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           ),
