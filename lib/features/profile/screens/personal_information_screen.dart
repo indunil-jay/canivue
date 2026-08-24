@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:canivue/core/theme/app_theme.dart';
+import 'package:canivue/core/widgets/app_feedback.dart';
 import 'package:canivue/features/auth/widgets/custom_text_field.dart';
 
 class PersonalInformationScreen extends StatefulWidget {
@@ -70,18 +71,11 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
         });
 
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Row(
-                children: [
-                  Icon(Icons.check_circle_outline, color: Colors.white, size: 20),
-                  SizedBox(width: 8),
-                  Text('Profile photo updated!'),
-                ],
-              ),
-              backgroundColor: Colors.green,
-              behavior: SnackBarBehavior.floating,
-            ),
+          AppFeedback.showToast(
+            context,
+            title: 'Photo Updated 📸',
+            message: 'Your profile avatar has been updated.',
+            type: ToastType.success,
           );
         }
       }
@@ -280,19 +274,11 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
       _isSaving = false;
     });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Row(
-          children: [
-            Icon(Icons.check_circle_outline, color: Colors.white, size: 20),
-            SizedBox(width: 8),
-            Text('Personal details updated successfully!'),
-          ],
-        ),
-        backgroundColor: Colors.green.shade700,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      ),
+    AppFeedback.showToast(
+      context,
+      title: 'Profile Updated ✨',
+      message: 'Your personal details and emergency contact have been saved.',
+      type: ToastType.success,
     );
   }
 

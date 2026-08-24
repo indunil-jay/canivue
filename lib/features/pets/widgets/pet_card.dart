@@ -51,38 +51,52 @@ class PetCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Avatar with gradient border / background
-                    Container(
-                      height: 68,
-                      width: 68,
-                      decoration: BoxDecoration(
-                        gradient: AppTheme.aquaGradient,
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppTheme.primaryBlue.withValues(alpha: 0.25),
-                            blurRadius: 10,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      clipBehavior: Clip.antiAlias,
-                      child: pet.imagePath != null && File(pet.imagePath!).existsSync()
-                          ? Image.file(
-                              File(pet.imagePath!),
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) => Center(
-                                child: Text(
-                                  pet.avatarEmoji,
-                                  style: const TextStyle(fontSize: 34),
-                                ),
-                              ),
-                            )
-                          : Center(
-                              child: Text(
-                                pet.avatarEmoji,
-                                style: const TextStyle(fontSize: 34),
-                              ),
+                    Hero(
+                      tag: 'pet-avatar-${pet.id}',
+                      child: Container(
+                        height: 68,
+                        width: 68,
+                        decoration: BoxDecoration(
+                          gradient: AppTheme.aquaGradient,
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppTheme.primaryBlue.withValues(alpha: 0.25),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
                             ),
+                          ],
+                        ),
+                        clipBehavior: Clip.antiAlias,
+                        child: pet.imagePath != null && File(pet.imagePath!).existsSync()
+                            ? Image.file(
+                                File(pet.imagePath!),
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) => Center(
+                                  child: Text(
+                                    pet.avatarEmoji,
+                                    style: const TextStyle(fontSize: 34),
+                                  ),
+                                ),
+                              )
+                            : pet.assetImagePath != null
+                                ? Image.asset(
+                                    pet.assetImagePath!,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) => Center(
+                                      child: Text(
+                                        pet.avatarEmoji,
+                                        style: const TextStyle(fontSize: 34),
+                                      ),
+                                    ),
+                                  )
+                                : Center(
+                                    child: Text(
+                                      pet.avatarEmoji,
+                                      style: const TextStyle(fontSize: 34),
+                                    ),
+                                  ),
+                      ),
                     ),
                     const SizedBox(width: 14),
 
