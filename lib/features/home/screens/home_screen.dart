@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:canivue/core/theme/app_theme.dart';
 import 'package:canivue/core/widgets/app_feedback.dart';
 import 'package:canivue/features/health_check/screens/health_check_capture_screen.dart';
+import 'package:canivue/features/notifications/widgets/notification_badge_button.dart';
 import 'package:canivue/features/pets/models/pet_model.dart';
 import 'package:canivue/features/pets/screens/pet_detail_screen.dart';
 import 'package:canivue/features/pets/screens/pet_list_screen.dart';
@@ -132,20 +133,9 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications_outlined),
-            tooltip: 'Notifications',
-            onPressed: () {
-              AppFeedback.showToast(
-                context,
-                title: 'All Caught Up! 🐾',
-                message: 'All pet health trackers and vaccines are up to date.',
-                type: ToastType.success,
-              );
-            },
-          ),
-          const SizedBox(width: 8),
+        actions: const [
+          NotificationBadgeButton(),
+          SizedBox(width: 8),
         ],
       ),
       body: _currentIndex == 1 ? const PetListScreen() : _buildDashboardBody(theme, colorScheme),
