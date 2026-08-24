@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:canivue/core/theme/app_theme.dart';
+import 'package:canivue/core/widgets/app_feedback.dart';
 import 'package:canivue/features/health_check/screens/health_check_capture_screen.dart';
 import 'package:canivue/features/pets/models/pet_model.dart';
 import 'package:canivue/features/pets/screens/add_edit_pet_screen.dart';
@@ -54,19 +55,11 @@ class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProv
         });
 
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Row(
-                children: [
-                  const Icon(Icons.check_circle_outline, color: Colors.white, size: 20),
-                  const SizedBox(width: 8),
-                  Text('Photo for ${_pet.name} updated!'),
-                ],
-              ),
-              backgroundColor: Colors.green.shade700,
-              behavior: SnackBarBehavior.floating,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            ),
+          AppFeedback.showToast(
+            context,
+            title: 'Photo Updated 📸',
+            message: 'Photo for ${_pet.name} updated successfully.',
+            type: ToastType.success,
           );
         }
       }
@@ -262,18 +255,11 @@ class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProv
 
   void _copyMicrochip() {
     Clipboard.setData(ClipboardData(text: _pet.microchipId));
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Row(
-          children: [
-            const Icon(Icons.check_circle_outline, color: Colors.white, size: 18),
-            const SizedBox(width: 8),
-            Text('Microchip ID ${_pet.microchipId} copied!'),
-          ],
-        ),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      ),
+    AppFeedback.showToast(
+      context,
+      title: 'Copied to Clipboard 📋',
+      message: 'Microchip ID ${_pet.microchipId} copied.',
+      type: ToastType.info,
     );
   }
 
@@ -304,25 +290,42 @@ class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProv
   }
 
   Widget _buildAvatarWidget(ColorScheme colorScheme) {
-    if (_pet.imagePath != null && File(_pet.imagePath!).existsSync()) {
-      return Image.file(
-        File(_pet.imagePath!),
-        width: 84,
-        height: 84,
-        fit: BoxFit.cover,
-        errorBuilder: (_, _, _) => Center(
-          child: Text(
-            _pet.avatarEmoji,
-            style: const TextStyle(fontSize: 44),
-          ),
-        ),
-      );
-    }
-
-    return Center(
-      child: Text(
-        _pet.avatarEmoji,
-        style: const TextStyle(fontSize: 44),
+    return Hero(
+      tag: 'pet-avatar-${_pet.id}',
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(24),
+        child: _pet.imagePath != null && File(_pet.imagePath!).existsSync()
+            ? Image.file(
+                File(_pet.imagePath!),
+                width: 84,
+                height: 84,
+                fit: BoxFit.cover,
+                errorBuilder: (_, _, _) => Center(
+                  child: Text(
+                    _pet.avatarEmoji,
+                    style: const TextStyle(fontSize: 44),
+                  ),
+                ),
+              )
+            : _pet.assetImagePath != null
+                ? Image.asset(
+                    _pet.assetImagePath!,
+                    width: 84,
+                    height: 84,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => Center(
+                      child: Text(
+                        _pet.avatarEmoji,
+                        style: const TextStyle(fontSize: 44),
+                      ),
+                    ),
+                  )
+                : Center(
+                    child: Text(
+                      _pet.avatarEmoji,
+                      style: const TextStyle(fontSize: 44),
+                    ),
+                  ),
       ),
     );
   }
