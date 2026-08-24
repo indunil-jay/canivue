@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:canivue/core/theme/app_theme.dart';
+import 'package:canivue/core/widgets/app_feedback.dart';
 import 'package:canivue/features/auth/screens/signin_screen.dart';
 import 'package:canivue/features/pets/screens/pet_list_screen.dart';
 import 'package:canivue/features/profile/screens/personal_information_screen.dart';
@@ -33,36 +34,27 @@ class _ProfileSideSheetState extends State<ProfileSideSheet> {
     return 'Pet Parent';
   }
 
-  void _handleLogout() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          title: const Text('Log Out'),
-          content: const Text('Are you sure you want to log out of Canivue?'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancel'),
-            ),
-            FilledButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (_) => const SignInScreen()),
-                  (route) => false,
-                );
-              },
-              style: FilledButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.error,
-              ),
-              child: const Text('Log Out'),
-            ),
-          ],
-        );
-      },
+  void _handleLogout() async {
+    final confirmed = await AppFeedback.showLuxuryDialog(
+      context,
+      title: 'Log Out',
+      message: 'Are you sure you want to log out of Canivue?',
+      confirmText: 'Log Out',
+      cancelText: 'Cancel',
+      icon: Icons.logout_rounded,
+      accentColor: const Color(0xFFF43F5E),
+      iconGradient: const LinearGradient(
+        colors: [Color(0xFFE11D48), Color(0xFFFB7185)],
+      ),
     );
+
+    if (confirmed == true && mounted) {
+      Navigator.of(context).pop(); // Close drawer
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (_) => const SignInScreen()),
+        (route) => false,
+      );
+    }
   }
 
   void _navigateToPersonalInfo() {
