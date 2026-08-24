@@ -6,6 +6,7 @@ import 'package:canivue/features/auth/screens/otp_verification_screen.dart';
 import 'package:canivue/features/auth/screens/reset_password_screen.dart';
 import 'package:canivue/features/auth/screens/signup_screen.dart';
 import 'package:canivue/features/home/screens/home_screen.dart';
+import 'package:canivue/features/profile/screens/personal_information_screen.dart';
 import 'package:canivue/features/profile/widgets/profile_side_sheet.dart';
 import 'package:canivue/main.dart';
 
@@ -109,5 +110,23 @@ void main() {
     expect(find.text('Luna'), findsOneWidget);
     expect(find.text('Add Another Pet'), findsOneWidget);
     expect(find.text('Log Out'), findsOneWidget);
+  });
+
+  testWidgets('PersonalInformationScreen renders correctly smoke test', (WidgetTester tester) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: PersonalInformationScreen(
+          userEmail: 'alex@canivue.com',
+          userName: 'Alex Taylor',
+        ),
+      ),
+    );
+
+    expect(find.text('Personal Information'), findsOneWidget);
+    expect(find.text('BASIC DETAILS'), findsOneWidget);
+    expect(find.text('Full Name'), findsOneWidget);
+    expect(find.text('Email Address'), findsOneWidget);
+    expect(find.text('Change Password'), findsOneWidget);
+    expect(find.text('Save Changes'), findsOneWidget);
   });
 }
