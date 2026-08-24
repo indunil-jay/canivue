@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:canivue/features/auth/screens/forgot_password_screen.dart';
 import 'package:canivue/features/auth/screens/signup_screen.dart';
 import 'package:canivue/main.dart';
 
@@ -29,5 +30,17 @@ void main() {
     expect(find.text('Password'), findsOneWidget);
     expect(find.text('Confirm Password'), findsOneWidget);
     expect(find.byType(FilledButton), findsOneWidget);
+  });
+
+  testWidgets('ForgotPasswordScreen renders correctly smoke test', (WidgetTester tester) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: ForgotPasswordScreen(),
+      ),
+    );
+
+    expect(find.text('Forgot Password?'), findsOneWidget);
+    expect(find.text('Email Address'), findsOneWidget);
+    expect(find.text('Send Reset Link'), findsOneWidget);
   });
 }
