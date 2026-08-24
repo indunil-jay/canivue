@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:canivue/core/theme/app_theme.dart';
+import 'package:canivue/core/widgets/app_feedback.dart';
 import 'package:canivue/features/auth/screens/signin_screen.dart';
 import 'package:canivue/features/auth/widgets/custom_text_field.dart';
 
@@ -19,30 +20,19 @@ class ResetPasswordScreen extends StatefulWidget {
 class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  final _passwordController = TextEditingController();
+  final _newPasswordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
-  bool _obscurePassword = true;
+  bool _obscureNewPassword = true;
   bool _obscureConfirmPassword = true;
   bool _isLoading = false;
 
   @override
-  void initState() {
-    super.initState();
-    _passwordController.addListener(() {
-      setState(() {});
-    });
-  }
-
-  @override
   void dispose() {
-    _passwordController.dispose();
+    _newPasswordController.dispose();
     _confirmPasswordController.dispose();
     super.dispose();
   }
-
-  bool get _hasMinLength => _passwordController.text.length >= 8;
-  bool get _hasNumberOrSpecial => RegExp(r'[0-9!@#\$%^&*(),.?":{}|<>]').hasMatch(_passwordController.text);
 
   void _handleResetPassword() async {
     if (!_formKey.currentState!.validate()) {
@@ -53,7 +43,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       _isLoading = true;
     });
 
-    await Future.delayed(const Duration(seconds: 1));
+    await Future.delayed(const Duration(milliseconds: 800));
 
     if (!mounted) return;
 
@@ -61,83 +51,16 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       _isLoading = false;
     });
 
-    // Show success dialog
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) {
-        return AlertDialog(
-          backgroundColor: const Color(0xFF0A2540),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(24),
-            side: BorderSide(color: Colors.white.withValues(alpha: 0.2)),
-          ),
-          icon: Container(
-            height: 64,
-            width: 64,
-            decoration: BoxDecoration(
-              gradient: AppTheme.emeraldGradient,
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: AppTheme.emeraldAccent.withValues(alpha: 0.4),
-                  blurRadius: 16,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
-            child: const Icon(
-              Icons.check_circle_rounded,
-              color: Colors.white,
-              size: 38,
-            ),
-          ),
-          title: const Text(
-            'Password Reset Successful',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-          content: Text(
-            'Your password has been reset successfully. You can now log in with your new credentials.',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.85),
-            ),
-          ),
-          actionsAlignment: MainAxisAlignment.center,
-          actions: [
-            SizedBox(
-              width: double.infinity,
-              height: 48,
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(builder: (_) => const SignInScreen()),
-                    (route) => false,
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.primaryBlue,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                ),
-                child: const Text(
-                  'Back to Log In',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                    fontSize: 15,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        );
-      },
+    AppFeedback.showToast(
+      context,
+      title: 'Password Updated 🎉',
+      message: 'Your password has been reset successfully. Please log in with your new credentials.',
+      type: ToastType.success,
+    );
+
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (_) => const SignInScreen()),
+      (route) => false,
     );
   }
 
@@ -174,7 +97,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
                     colors: [
-                      AppTheme.indigoAccent.withValues(alpha: 0.3),
+                      AppTheme.emeraldAccent.withValues(alpha: 0.28),
                       Colors.transparent,
                     ],
                   ),
@@ -211,21 +134,21 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          // Icon Badge
+                          // Key Brand Icon Badge
                           Center(
                             child: Container(
-                              height: 80,
-                              width: 80,
+                              height: 76,
+                              width: 76,
                               decoration: BoxDecoration(
-                                gradient: AppTheme.heroGradient,
+                                gradient: AppTheme.emeraldGradient,
                                 borderRadius: BorderRadius.circular(24),
                                 border: Border.all(
-                                  color: Colors.white.withValues(alpha: 0.3),
+                                  color: Colors.white.withValues(alpha: 0.35),
                                   width: 1.5,
                                 ),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: AppTheme.cyanAccent.withValues(alpha: 0.35),
+                                    color: AppTheme.emeraldAccent.withValues(alpha: 0.35),
                                     blurRadius: 22,
                                     offset: const Offset(0, 8),
                                   ),
@@ -233,12 +156,12 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                               ),
                               child: const Icon(
                                 Icons.key_rounded,
-                                size: 44,
+                                size: 40,
                                 color: Colors.white,
                               ),
                             ),
                           ),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 16),
 
                           // Header Text
                           const Text(
@@ -251,19 +174,18 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                               letterSpacing: -0.5,
                             ),
                           ),
-                          const SizedBox(height: 8),
+                          const SizedBox(height: 6),
                           Text(
-                            'Your new password must be different from previous used passwords.',
+                            'Create a strong new password for your Canivue account',
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 14,
                               color: Colors.white.withValues(alpha: 0.82),
-                              height: 1.4,
                             ),
                           ),
                           const SizedBox(height: 24),
 
-                          // Frosted Glass Form Container
+                          // Frosted Acrylic Card
                           ClipRRect(
                             borderRadius: BorderRadius.circular(28),
                             child: BackdropFilter(
@@ -288,24 +210,22 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.stretch,
                                   children: [
-                                    // New Password Field
+                                    // New Password Input
                                     CustomTextField(
-                                      controller: _passwordController,
                                       label: 'New Password',
-                                      hintText: 'Enter new password',
+                                      hintText: 'Enter new password (min 6 chars)',
                                       prefixIcon: Icons.lock_outline_rounded,
-                                      obscureText: _obscurePassword,
+                                      controller: _newPasswordController,
+                                      obscureText: _obscureNewPassword,
+                                      isGlass: true,
                                       suffixIcon: IconButton(
                                         icon: Icon(
-                                          _obscurePassword
-                                              ? Icons.visibility_off_outlined
-                                              : Icons.visibility_outlined,
-                                          color: Colors.white.withValues(alpha: 0.7),
-                                          size: 20,
+                                          _obscureNewPassword ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+                                          color: Colors.white70,
                                         ),
                                         onPressed: () {
                                           setState(() {
-                                            _obscurePassword = !_obscurePassword;
+                                            _obscureNewPassword = !_obscureNewPassword;
                                           });
                                         },
                                       ),
@@ -313,29 +233,26 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                                         if (value == null || value.isEmpty) {
                                           return 'Please enter a new password';
                                         }
-                                        if (value.length < 8) {
-                                          return 'Password must be at least 8 characters';
+                                        if (value.length < 6) {
+                                          return 'Password must be at least 6 characters';
                                         }
                                         return null;
                                       },
                                     ),
                                     const SizedBox(height: 16),
 
-                                    // Confirm New Password Field
+                                    // Confirm New Password Input
                                     CustomTextField(
-                                      controller: _confirmPasswordController,
                                       label: 'Confirm New Password',
-                                      hintText: 'Repeat new password',
+                                      hintText: 'Re-enter new password',
                                       prefixIcon: Icons.lock_reset_rounded,
+                                      controller: _confirmPasswordController,
                                       obscureText: _obscureConfirmPassword,
-                                      textInputAction: TextInputAction.done,
+                                      isGlass: true,
                                       suffixIcon: IconButton(
                                         icon: Icon(
-                                          _obscureConfirmPassword
-                                              ? Icons.visibility_off_outlined
-                                              : Icons.visibility_outlined,
-                                          color: Colors.white.withValues(alpha: 0.7),
-                                          size: 20,
+                                          _obscureConfirmPassword ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+                                          color: Colors.white70,
                                         ),
                                         onPressed: () {
                                           setState(() {
@@ -347,38 +264,11 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                                         if (value == null || value.isEmpty) {
                                           return 'Please confirm your new password';
                                         }
-                                        if (value != _passwordController.text) {
+                                        if (value != _newPasswordController.text) {
                                           return 'Passwords do not match';
                                         }
                                         return null;
                                       },
-                                      onFieldSubmitted: (_) => _handleResetPassword(),
-                                    ),
-                                    const SizedBox(height: 16),
-
-                                    // Password Requirements Checklist
-                                    Container(
-                                      padding: const EdgeInsets.all(12),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white.withValues(alpha: 0.08),
-                                        borderRadius: BorderRadius.circular(12),
-                                        border: Border.all(
-                                          color: Colors.white.withValues(alpha: 0.15),
-                                        ),
-                                      ),
-                                      child: Column(
-                                        children: [
-                                          _RequirementRow(
-                                            isValid: _hasMinLength,
-                                            text: 'At least 8 characters long',
-                                          ),
-                                          const SizedBox(height: 6),
-                                          _RequirementRow(
-                                            isValid: _hasNumberOrSpecial,
-                                            text: 'Contains a number or symbol',
-                                          ),
-                                        ],
-                                      ),
                                     ),
                                     const SizedBox(height: 20),
 
@@ -386,14 +276,14 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                                     Container(
                                       height: 52,
                                       decoration: BoxDecoration(
-                                        gradient: AppTheme.primaryGradient,
+                                        gradient: AppTheme.emeraldGradient,
                                         borderRadius: BorderRadius.circular(16),
                                         border: Border.all(
                                           color: Colors.white.withValues(alpha: 0.3),
                                         ),
                                         boxShadow: [
                                           BoxShadow(
-                                            color: AppTheme.cyanAccent.withValues(alpha: 0.35),
+                                            color: AppTheme.emeraldAccent.withValues(alpha: 0.35),
                                             blurRadius: 16,
                                             offset: const Offset(0, 5),
                                           ),
@@ -443,38 +333,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
           ],
         ),
       ),
-    );
-  }
-}
-
-class _RequirementRow extends StatelessWidget {
-  const _RequirementRow({
-    required this.isValid,
-    required this.text,
-  });
-
-  final bool isValid;
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Icon(
-          isValid ? Icons.check_circle_rounded : Icons.radio_button_unchecked_rounded,
-          color: isValid ? AppTheme.cyanAccent : Colors.white.withValues(alpha: 0.4),
-          size: 16,
-        ),
-        const SizedBox(width: 8),
-        Text(
-          text,
-          style: TextStyle(
-            fontSize: 12,
-            color: isValid ? Colors.white : Colors.white.withValues(alpha: 0.6),
-            fontWeight: isValid ? FontWeight.w600 : FontWeight.normal,
-          ),
-        ),
-      ],
     );
   }
 }

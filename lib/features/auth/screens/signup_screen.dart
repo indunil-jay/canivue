@@ -1,7 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:canivue/core/theme/app_theme.dart';
-import 'package:canivue/features/auth/screens/signin_screen.dart';
+import 'package:canivue/core/widgets/app_feedback.dart';
 import 'package:canivue/features/auth/widgets/custom_text_field.dart';
 import 'package:canivue/features/home/screens/home_screen.dart';
 
@@ -22,7 +22,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
-  bool _agreeToTerms = false;
+  bool _acceptTerms = false;
   bool _isLoading = false;
 
   @override
@@ -39,22 +39,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
       return;
     }
 
-    if (!_agreeToTerms) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Row(
-            children: [
-              Icon(Icons.info_outline, color: Colors.white, size: 20),
-              SizedBox(width: 8),
-              Expanded(
-                child: Text('Please accept the Terms of Service & Privacy Policy.'),
-              ),
-            ],
-          ),
-          backgroundColor: Theme.of(context).colorScheme.error,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        ),
+    if (!_acceptTerms) {
+      AppFeedback.showToast(
+        context,
+        title: 'Terms of Service',
+        message: 'Please accept the Terms of Service & Privacy Policy to continue.',
+        type: ToastType.warning,
       );
       return;
     }
@@ -75,7 +65,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       MaterialPageRoute(
         builder: (_) => HomeScreen(
           userEmail: _emailController.text.trim(),
-          userName: _nameController.text.trim(),
+          userName: _nameController.text.trim().isNotEmpty ? _nameController.text.trim() : 'Alex',
         ),
       ),
       (route) => false,
@@ -87,6 +77,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
     final size = MediaQuery.sizeOf(context);
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
       body: Container(
         width: double.infinity,
         height: double.infinity,
@@ -100,13 +99,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
               top: -60,
               right: -40,
               child: Container(
-                height: 260,
-                width: 260,
+                height: 280,
+                width: 280,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
                     colors: [
-                      AppTheme.emeraldAccent.withValues(alpha: 0.25),
+                      AppTheme.emeraldAccent.withValues(alpha: 0.28),
                       Colors.transparent,
                     ],
                   ),
@@ -117,13 +116,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
               bottom: size.height * 0.15,
               left: -60,
               child: Container(
-                height: 240,
-                width: 240,
+                height: 260,
+                width: 260,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
                     colors: [
-                      AppTheme.cyanAccent.withValues(alpha: 0.22),
+                      AppTheme.cyanAccent.withValues(alpha: 0.25),
                       Colors.transparent,
                     ],
                   ),
@@ -135,7 +134,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               child: Center(
                 child: SingleChildScrollView(
                   physics: const BouncingScrollPhysics(),
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                   child: ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: 480),
                     child: Form(
@@ -143,34 +142,34 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          // App Logo Badge
+                          // Brand Aura Icon Badge
                           Center(
                             child: Container(
                               height: 76,
                               width: 76,
                               decoration: BoxDecoration(
-                                gradient: AppTheme.heroGradient,
+                                gradient: AppTheme.emeraldGradient,
                                 borderRadius: BorderRadius.circular(24),
                                 border: Border.all(
-                                  color: Colors.white.withValues(alpha: 0.3),
+                                  color: Colors.white.withValues(alpha: 0.35),
                                   width: 1.5,
                                 ),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: AppTheme.cyanAccent.withValues(alpha: 0.35),
+                                    color: AppTheme.emeraldAccent.withValues(alpha: 0.35),
                                     blurRadius: 22,
                                     offset: const Offset(0, 8),
                                   ),
                                 ],
                               ),
                               child: const Icon(
-                                Icons.pets_rounded,
+                                Icons.person_add_alt_1_rounded,
                                 size: 40,
                                 color: Colors.white,
                               ),
                             ),
                           ),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 16),
 
                           // Header Text
                           const Text(
@@ -183,19 +182,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               letterSpacing: -0.5,
                             ),
                           ),
-                          const SizedBox(height: 8),
+                          const SizedBox(height: 6),
                           Text(
-                            'Join Canivue to protect, manage and track your pets with smart insights.',
+                            'Join Canivue to protect your canine companion with AI',
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 14,
                               color: Colors.white.withValues(alpha: 0.82),
-                              height: 1.4,
                             ),
                           ),
                           const SizedBox(height: 24),
 
-                          // Frosted Glass Form Container
+                          // Frosted Acrylic Form Container
                           ClipRRect(
                             borderRadius: BorderRadius.circular(28),
                             child: BackdropFilter(
@@ -220,12 +218,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.stretch,
                                   children: [
-                                    // Full Name Field
+                                    // Full Name Input
                                     CustomTextField(
-                                      controller: _nameController,
                                       label: 'Full Name',
-                                      hintText: 'John Doe',
+                                      hintText: 'Enter your full name',
                                       prefixIcon: Icons.person_outline_rounded,
+                                      controller: _nameController,
+                                      isGlass: true,
                                       validator: (value) {
                                         if (value == null || value.trim().isEmpty) {
                                           return 'Please enter your name';
@@ -235,42 +234,38 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     ),
                                     const SizedBox(height: 16),
 
-                                    // Email Field
+                                    // Email Address Input
                                     CustomTextField(
-                                      controller: _emailController,
                                       label: 'Email Address',
-                                      hintText: 'name@example.com',
+                                      hintText: 'Enter your email address',
                                       prefixIcon: Icons.email_outlined,
+                                      controller: _emailController,
                                       keyboardType: TextInputType.emailAddress,
+                                      isGlass: true,
                                       validator: (value) {
                                         if (value == null || value.trim().isEmpty) {
-                                          return 'Please enter your email address';
+                                          return 'Please enter your email';
                                         }
-                                        final emailRegex = RegExp(
-                                          r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
-                                        );
-                                        if (!emailRegex.hasMatch(value.trim())) {
-                                          return 'Please enter a valid email address';
+                                        if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value.trim())) {
+                                          return 'Please enter a valid email';
                                         }
                                         return null;
                                       },
                                     ),
                                     const SizedBox(height: 16),
 
-                                    // Password Field
+                                    // Password Input
                                     CustomTextField(
-                                      controller: _passwordController,
                                       label: 'Password',
-                                      hintText: 'Create a strong password',
+                                      hintText: 'Create a password (min 6 chars)',
                                       prefixIcon: Icons.lock_outline_rounded,
+                                      controller: _passwordController,
                                       obscureText: _obscurePassword,
+                                      isGlass: true,
                                       suffixIcon: IconButton(
                                         icon: Icon(
-                                          _obscurePassword
-                                              ? Icons.visibility_off_outlined
-                                              : Icons.visibility_outlined,
-                                          color: Colors.white.withValues(alpha: 0.7),
-                                          size: 20,
+                                          _obscurePassword ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+                                          color: Colors.white70,
                                         ),
                                         onPressed: () {
                                           setState(() {
@@ -280,7 +275,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       ),
                                       validator: (value) {
                                         if (value == null || value.isEmpty) {
-                                          return 'Please enter a password';
+                                          return 'Please create a password';
                                         }
                                         if (value.length < 6) {
                                           return 'Password must be at least 6 characters';
@@ -290,21 +285,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     ),
                                     const SizedBox(height: 16),
 
-                                    // Confirm Password Field
+                                    // Confirm Password Input
                                     CustomTextField(
-                                      controller: _confirmPasswordController,
                                       label: 'Confirm Password',
-                                      hintText: 'Repeat your password',
+                                      hintText: 'Re-enter your password',
                                       prefixIcon: Icons.lock_reset_rounded,
+                                      controller: _confirmPasswordController,
                                       obscureText: _obscureConfirmPassword,
-                                      textInputAction: TextInputAction.done,
+                                      isGlass: true,
                                       suffixIcon: IconButton(
                                         icon: Icon(
-                                          _obscureConfirmPassword
-                                              ? Icons.visibility_off_outlined
-                                              : Icons.visibility_outlined,
-                                          color: Colors.white.withValues(alpha: 0.7),
-                                          size: 20,
+                                          _obscureConfirmPassword ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+                                          color: Colors.white70,
                                         ),
                                         onPressed: () {
                                           setState(() {
@@ -321,67 +313,58 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                         }
                                         return null;
                                       },
-                                      onFieldSubmitted: (_) => _handleSignUp(),
                                     ),
-                                    const SizedBox(height: 16),
+                                    const SizedBox(height: 14),
 
-                                    // Terms & Conditions Checkbox
+                                    // Terms & Privacy Checkbox
                                     Row(
-                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         SizedBox(
                                           height: 24,
                                           width: 24,
                                           child: Checkbox(
-                                            value: _agreeToTerms,
-                                            activeColor: AppTheme.cyanAccent,
-                                            checkColor: const Color(0xFF0A2540),
-                                            side: BorderSide(
-                                              color: Colors.white.withValues(alpha: 0.4),
-                                            ),
+                                            value: _acceptTerms,
+                                            activeColor: AppTheme.emeraldAccent,
+                                            checkColor: const Color(0xFF061126),
+                                            side: const BorderSide(color: Colors.white70),
                                             shape: RoundedRectangleBorder(
                                               borderRadius: BorderRadius.circular(4),
                                             ),
                                             onChanged: (val) {
                                               setState(() {
-                                                _agreeToTerms = val ?? false;
+                                                _acceptTerms = val ?? false;
                                               });
                                             },
                                           ),
                                         ),
                                         const SizedBox(width: 8),
                                         Expanded(
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              setState(() {
-                                                _agreeToTerms = !_agreeToTerms;
-                                              });
-                                            },
-                                            child: Text.rich(
-                                              TextSpan(
-                                                text: 'I agree to the ',
-                                                style: TextStyle(
-                                                  fontSize: 12,
-                                                  color: Colors.white.withValues(alpha: 0.85),
-                                                ),
-                                                children: const [
-                                                  TextSpan(
-                                                    text: 'Terms of Service',
-                                                    style: TextStyle(
-                                                      color: AppTheme.cyanAccent,
-                                                      fontWeight: FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                  TextSpan(text: ' & '),
-                                                  TextSpan(
-                                                    text: 'Privacy Policy',
-                                                    style: TextStyle(
-                                                      color: AppTheme.cyanAccent,
-                                                      fontWeight: FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                ],
+                                          child: Text.rich(
+                                            TextSpan(
+                                              style: TextStyle(
+                                                fontSize: 12.5,
+                                                color: Colors.white.withValues(alpha: 0.82),
+                                                height: 1.3,
                                               ),
+                                              children: const [
+                                                TextSpan(text: 'I agree to the '),
+                                                TextSpan(
+                                                  text: 'Terms of Service',
+                                                  style: TextStyle(
+                                                    color: AppTheme.cyanAccent,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                                TextSpan(text: ' and '),
+                                                TextSpan(
+                                                  text: 'Privacy Policy',
+                                                  style: TextStyle(
+                                                    color: AppTheme.cyanAccent,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ),
                                         ),
@@ -393,14 +376,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     Container(
                                       height: 52,
                                       decoration: BoxDecoration(
-                                        gradient: AppTheme.primaryGradient,
+                                        gradient: AppTheme.emeraldGradient,
                                         borderRadius: BorderRadius.circular(16),
                                         border: Border.all(
                                           color: Colors.white.withValues(alpha: 0.3),
                                         ),
                                         boxShadow: [
                                           BoxShadow(
-                                            color: AppTheme.cyanAccent.withValues(alpha: 0.35),
+                                            color: AppTheme.emeraldAccent.withValues(alpha: 0.35),
                                             blurRadius: 16,
                                             offset: const Offset(0, 5),
                                           ),
@@ -442,7 +425,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           ),
                           const SizedBox(height: 24),
 
-                          // Footer Link to Sign In
+                          // Already Have Account Link
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -454,14 +437,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 ),
                               ),
                               TextButton(
-                                onPressed: () {
-                                  Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => const SignInScreen(),
-                                    ),
-                                  );
-                                },
+                                onPressed: () => Navigator.of(context).pop(),
                                 style: TextButton.styleFrom(
                                   padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
                                   minimumSize: Size.zero,
@@ -472,7 +448,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: AppTheme.cyanAccent,
-                                    fontSize: 14,
                                   ),
                                 ),
                               ),
