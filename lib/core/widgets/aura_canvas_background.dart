@@ -132,3 +132,4 @@ class AuraCanvasBackground extends StatelessWidget {
     );
   }
 }
+
