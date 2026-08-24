@@ -119,7 +119,12 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.sizeOf(context);
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    final backgroundGradient = isDark ? AppTheme.obsidianAuthGradient : AppTheme.porcelainAuthGradient;
+    final titleColor = isDark ? Colors.white : const Color(0xFF0F172A);
+    final subtitleColor = isDark ? Colors.white.withValues(alpha: 0.8) : const Color(0xFF64748B);
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -127,53 +132,41 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
+          icon: Icon(
+            Icons.arrow_back_ios_new_rounded,
+            color: isDark ? Colors.white : const Color(0xFF0F172A),
+          ),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: AppTheme.midnightBackgroundGradient,
+        decoration: BoxDecoration(
+          gradient: backgroundGradient,
         ),
         child: Stack(
           children: [
             // Ambient Luminous Orbs
-            Positioned(
-              top: -60,
-              right: -40,
-              child: Container(
-                height: 260,
-                width: 260,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: RadialGradient(
-                    colors: [
-                      AppTheme.indigoAccent.withValues(alpha: 0.28),
-                      Colors.transparent,
-                    ],
+            if (isDark) ...[
+              Positioned(
+                top: -60,
+                right: -40,
+                child: Container(
+                  height: 260,
+                  width: 260,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: RadialGradient(
+                      colors: [
+                        AppTheme.indigoAccent.withValues(alpha: 0.15),
+                        Colors.transparent,
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-            Positioned(
-              bottom: size.height * 0.2,
-              left: -60,
-              child: Container(
-                height: 240,
-                width: 240,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: RadialGradient(
-                    colors: [
-                      AppTheme.cyanAccent.withValues(alpha: 0.22),
-                      Colors.transparent,
-                    ],
-                  ),
-                ),
-              ),
-            ),
+            ],
 
             SafeArea(
               child: Center(
@@ -188,26 +181,26 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                         // Icon Badge
                         Center(
                           child: Container(
-                            height: 80,
-                            width: 80,
+                            height: 74,
+                            width: 74,
                             decoration: BoxDecoration(
                               gradient: AppTheme.primaryGradient,
-                              borderRadius: BorderRadius.circular(24),
+                              borderRadius: BorderRadius.circular(22),
                               border: Border.all(
-                                color: Colors.white.withValues(alpha: 0.4),
+                                color: Colors.white.withValues(alpha: isDark ? 0.35 : 0.6),
                                 width: 1.5,
                               ),
                               boxShadow: [
                                 BoxShadow(
-                                  color: AppTheme.cyanAccent.withValues(alpha: 0.4),
-                                  blurRadius: 22,
-                                  offset: const Offset(0, 8),
+                                  color: AppTheme.primaryBlue.withValues(alpha: isDark ? 0.35 : 0.25),
+                                  blurRadius: 20,
+                                  offset: const Offset(0, 6),
                                 ),
                               ],
                             ),
                             child: const Icon(
                               Icons.mark_email_read_outlined,
-                              size: 40,
+                              size: 38,
                               color: Colors.white,
                             ),
                           ),
@@ -221,7 +214,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                           style: GoogleFonts.plusJakartaSans(
                             fontSize: 26,
                             fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                            color: titleColor,
                             letterSpacing: -0.5,
                           ),
                         ),
@@ -234,16 +227,16 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                             TextSpan(
                               style: GoogleFonts.plusJakartaSans(
                                 fontSize: 14,
-                                color: Colors.white.withValues(alpha: 0.85),
+                                color: subtitleColor,
                                 height: 1.45,
                               ),
                               children: [
                                 const TextSpan(text: 'We sent a 6-digit verification code to\n'),
                                 TextSpan(
                                   text: widget.email,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    color: AppTheme.cyanAccent,
+                                    color: isDark ? AppTheme.cyanAccent : AppTheme.primaryBlue,
                                   ),
                                 ),
                               ],
@@ -253,31 +246,30 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                         ),
                         const SizedBox(height: 24),
 
-                        // Frosted Glass Card for OTP digits
+                        // Glass Card for OTP digits
                         ClipRRect(
                           borderRadius: BorderRadius.circular(28),
                           child: BackdropFilter(
-                            filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+                            filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
                             child: Container(
                               padding: const EdgeInsets.all(22),
                               decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    Colors.white.withValues(alpha: 0.15),
-                                    Colors.white.withValues(alpha: 0.08),
-                                  ],
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                ),
+                                color: isDark
+                                    ? const Color(0xFF141D2B).withValues(alpha: 0.85)
+                                    : Colors.white.withValues(alpha: 0.92),
                                 borderRadius: BorderRadius.circular(28),
                                 border: Border.all(
-                                  color: Colors.white.withValues(alpha: 0.25),
+                                  color: isDark
+                                      ? Colors.white.withValues(alpha: 0.12)
+                                      : const Color(0xFFE2E8F0),
                                   width: 1.2,
                                 ),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.black.withValues(alpha: 0.2),
-                                    blurRadius: 20,
+                                    color: isDark
+                                        ? Colors.black.withValues(alpha: 0.35)
+                                        : const Color(0xFF0F172A).withValues(alpha: 0.06),
+                                    blurRadius: 24,
                                     offset: const Offset(0, 8),
                                   ),
                                 ],
@@ -292,6 +284,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                                       (index) => _OtpDigitField(
                                         controller: _controllers[index],
                                         focusNode: _focusNodes[index],
+                                        isDark: isDark,
                                         onChanged: (value) {
                                           if (value.isNotEmpty) {
                                             if (index < _codeLength - 1) {
@@ -316,14 +309,11 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                                     decoration: BoxDecoration(
                                       gradient: AppTheme.primaryGradient,
                                       borderRadius: BorderRadius.circular(16),
-                                      border: Border.all(
-                                        color: Colors.white.withValues(alpha: 0.35),
-                                      ),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: AppTheme.cyanAccent.withValues(alpha: 0.4),
-                                          blurRadius: 18,
-                                          offset: const Offset(0, 5),
+                                          color: AppTheme.primaryBlue.withValues(alpha: 0.35),
+                                          blurRadius: 16,
+                                          offset: const Offset(0, 4),
                                         ),
                                       ],
                                     ),
@@ -371,7 +361,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                             Text(
                               "Didn't receive the code? ",
                               style: GoogleFonts.plusJakartaSans(
-                                color: Colors.white.withValues(alpha: 0.8),
+                                color: isDark ? Colors.white.withValues(alpha: 0.8) : const Color(0xFF475569),
                                 fontSize: 13.5,
                               ),
                             ),
@@ -386,7 +376,9 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                                 _timerSeconds > 0 ? 'Resend in ${_timerSeconds}s' : 'Resend Code',
                                 style: GoogleFonts.plusJakartaSans(
                                   fontWeight: FontWeight.bold,
-                                  color: _timerSeconds == 0 ? AppTheme.cyanAccent : Colors.white54,
+                                  color: _timerSeconds == 0
+                                      ? (isDark ? AppTheme.cyanAccent : AppTheme.primaryBlue)
+                                      : (isDark ? Colors.white54 : const Color(0xFF94A3B8)),
                                 ),
                               ),
                             ),
@@ -398,12 +390,16 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                         Center(
                           child: TextButton.icon(
                             onPressed: _fillDemoCode,
-                            icon: const Icon(Icons.auto_awesome, size: 16, color: AppTheme.cyanAccent),
+                            icon: Icon(
+                              Icons.auto_awesome,
+                              size: 16,
+                              color: isDark ? AppTheme.cyanAccent : AppTheme.primaryBlue,
+                            ),
                             label: Text(
                               'Auto-fill Demo OTP (123456)',
                               style: GoogleFonts.plusJakartaSans(
                                 fontSize: 12.5,
-                                color: AppTheme.cyanAccent,
+                                color: isDark ? AppTheme.cyanAccent : AppTheme.primaryBlue,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -426,11 +422,13 @@ class _OtpDigitField extends StatelessWidget {
   const _OtpDigitField({
     required this.controller,
     required this.focusNode,
+    required this.isDark,
     required this.onChanged,
   });
 
   final TextEditingController controller;
   final FocusNode focusNode;
+  final bool isDark;
   final ValueChanged<String> onChanged;
 
   @override
@@ -447,7 +445,7 @@ class _OtpDigitField extends StatelessWidget {
         style: GoogleFonts.plusJakartaSans(
           fontSize: 22,
           fontWeight: FontWeight.bold,
-          color: Colors.white,
+          color: isDark ? Colors.white : const Color(0xFF0F172A),
         ),
         inputFormatters: [
           FilteringTextInputFormatter.digitsOnly,
@@ -455,24 +453,24 @@ class _OtpDigitField extends StatelessWidget {
         decoration: InputDecoration(
           counterText: '',
           filled: true,
-          fillColor: Colors.white.withValues(alpha: 0.12),
+          fillColor: isDark ? Colors.white.withValues(alpha: 0.08) : const Color(0xFFF1F5F9),
           contentPadding: EdgeInsets.zero,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(14),
             borderSide: BorderSide(
-              color: Colors.white.withValues(alpha: 0.25),
+              color: isDark ? Colors.white.withValues(alpha: 0.18) : const Color(0xFFCBD5E1),
             ),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(14),
             borderSide: BorderSide(
-              color: Colors.white.withValues(alpha: 0.25),
+              color: isDark ? Colors.white.withValues(alpha: 0.18) : const Color(0xFFCBD5E1),
             ),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(14),
-            borderSide: const BorderSide(
-              color: AppTheme.cyanAccent,
+            borderSide: BorderSide(
+              color: isDark ? AppTheme.cyanAccent : AppTheme.primaryBlue,
               width: 2,
             ),
           ),
