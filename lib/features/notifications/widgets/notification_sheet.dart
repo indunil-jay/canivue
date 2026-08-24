@@ -169,7 +169,7 @@ class _NotificationSheetState extends State<NotificationSheet> {
                   ),
                   const SizedBox(height: 12),
 
-                  // Facebook-style Filter Chips
+                  // Filter Chips
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: SingleChildScrollView(

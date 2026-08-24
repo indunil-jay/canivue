@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:canivue/core/theme/app_theme.dart';
 import 'package:canivue/core/widgets/app_feedback.dart';
+import 'package:canivue/core/widgets/luxury_biometric_ring.dart';
+import 'package:canivue/core/widgets/luxury_stat_card.dart';
 import 'package:canivue/features/health_check/screens/health_check_capture_screen.dart';
 import 'package:canivue/features/notifications/widgets/notification_badge_button.dart';
 import 'package:canivue/features/pets/models/pet_model.dart';
@@ -25,10 +28,10 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int _currentIndex = 0;
-  final List<Pet> _pets = List.of(Pet.samplePets);
+  final List<Pet> _pets = List.from(Pet.samplePets);
 
   String get _displayName {
-    if (widget.userName != null && widget.userName!.trim().isNotEmpty) {
+    if (widget.userName != null && widget.userName!.isNotEmpty) {
       return widget.userName!;
     }
     final emailPrefix = widget.userEmail.split('@').first;
@@ -53,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
       MaterialPageRoute(
         builder: (_) => HealthCheckCaptureScreen(
           pets: _pets,
-          initialPet: initialPet ?? _pets.first,
+          initialPet: initialPet,
         ),
       ),
     );
@@ -80,6 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
       key: _scaffoldKey,
@@ -116,16 +120,18 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   Text(
                     'Hello, $_displayName 👋',
-                    style: theme.textTheme.titleMedium?.copyWith(
+                    style: GoogleFonts.plusJakartaSans(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
+                      color: isDark ? Colors.white : const Color(0xFF0F172A),
                     ),
                   ),
                   Text(
                     'Canine Health Intelligence',
-                    style: theme.textTheme.bodySmall?.copyWith(
+                    style: GoogleFonts.plusJakartaSans(
                       color: colorScheme.onSurfaceVariant,
                       fontSize: 12,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ],
@@ -138,45 +144,94 @@ class _HomeScreenState extends State<HomeScreen> {
           SizedBox(width: 8),
         ],
       ),
-      body: _currentIndex == 1 ? const PetListScreen() : _buildDashboardBody(theme, colorScheme),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: _currentIndex,
-        onDestinationSelected: (index) {
-          if (index == 3) {
-            _openProfileSideSheet();
-          } else {
-            setState(() {
-              _currentIndex = index;
-            });
-          }
-        },
-        destinations: const [
-          NavigationDestination(
-            icon: Icon(Icons.home_outlined),
-            selectedIcon: Icon(Icons.home_rounded),
-            label: 'Home',
+      body: _currentIndex == 1 ? const PetListScreen() : _buildDashboardBody(theme, colorScheme, isDark),
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          color: isDark ? const Color(0xFF0D1524).withValues(alpha: 0.95) : Colors.white.withValues(alpha: 0.95),
+          border: Border(
+            top: BorderSide(
+              color: isDark ? Colors.white.withValues(alpha: 0.1) : const Color(0xFFE2E8F0),
+            ),
           ),
-          NavigationDestination(
-            icon: Icon(Icons.pets_outlined),
-            selectedIcon: Icon(Icons.pets_rounded),
-            label: 'My Pets',
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: isDark ? 0.4 : 0.06),
+              blurRadius: 20,
+              offset: const Offset(0, -4),
+            ),
+          ],
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _buildNavItem(0, Icons.home_rounded, Icons.home_outlined, 'Home', isDark),
+                _buildNavItem(1, Icons.pets_rounded, Icons.pets_outlined, 'My Pets', isDark),
+                _buildNavItem(2, Icons.analytics_rounded, Icons.analytics_outlined, 'Telemetry', isDark),
+                _buildNavItem(3, Icons.person_rounded, Icons.person_outline_rounded, 'Profile', isDark),
+              ],
+            ),
           ),
-          NavigationDestination(
-            icon: Icon(Icons.analytics_outlined),
-            selectedIcon: Icon(Icons.analytics_rounded),
-            label: 'Insights',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.person_outline_rounded),
-            selectedIcon: Icon(Icons.person_rounded),
-            label: 'Profile',
-          ),
-        ],
+        ),
       ),
     );
   }
 
-  Widget _buildDashboardBody(ThemeData theme, ColorScheme colorScheme) {
+  Widget _buildNavItem(int index, IconData activeIcon, IconData inactiveIcon, String label, bool isDark) {
+    final isSelected = _currentIndex == index;
+
+    return InkWell(
+      onTap: () {
+        if (index == 3) {
+          _openProfileSideSheet();
+        } else if (index == 2) {
+          _navigateToHealthCheck();
+        } else {
+          setState(() {
+            _currentIndex = index;
+          });
+        }
+      },
+      borderRadius: BorderRadius.circular(16),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 250),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? (isDark ? AppTheme.primaryBlue.withValues(alpha: 0.22) : const Color(0xFFEFF6FF))
+              : Colors.transparent,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              isSelected ? activeIcon : inactiveIcon,
+              color: isSelected
+                  ? (isDark ? AppTheme.cyanAccent : AppTheme.primaryBlue)
+                  : (isDark ? Colors.white60 : const Color(0xFF94A3B8)),
+              size: 22,
+            ),
+            if (isSelected) ...[
+              const SizedBox(width: 8),
+              Text(
+                label,
+                style: GoogleFonts.plusJakartaSans(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 13,
+                  color: isDark ? AppTheme.cyanAccent : AppTheme.primaryBlue,
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDashboardBody(ThemeData theme, ColorScheme colorScheme, bool isDark) {
     return SafeArea(
       child: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
@@ -188,29 +243,33 @@ class _HomeScreenState extends State<HomeScreen> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
               decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
+                color: isDark ? const Color(0xFF131D2D).withValues(alpha: 0.8) : Colors.white,
+                borderRadius: BorderRadius.circular(18),
                 border: Border.all(
-                  color: colorScheme.outlineVariant.withValues(alpha: 0.5),
+                  color: isDark ? Colors.white.withValues(alpha: 0.12) : const Color(0xFFE2E8F0),
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.03),
-                    blurRadius: 10,
+                    color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
+                    blurRadius: 12,
                     offset: const Offset(0, 4),
                   ),
                 ],
               ),
               child: Row(
                 children: [
-                  Icon(Icons.search_rounded, color: colorScheme.onSurfaceVariant),
+                  Icon(Icons.search_rounded, color: isDark ? Colors.white60 : const Color(0xFF94A3B8)),
                   const SizedBox(width: 12),
                   Expanded(
                     child: TextField(
+                      style: GoogleFonts.plusJakartaSans(
+                        color: isDark ? Colors.white : const Color(0xFF0F172A),
+                        fontSize: 14,
+                      ),
                       decoration: InputDecoration(
-                        hintText: 'Search pets, records, symptoms...',
-                        hintStyle: TextStyle(
-                          color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+                        hintText: 'Search pets, health telemetry, records...',
+                        hintStyle: GoogleFonts.plusJakartaSans(
+                          color: isDark ? Colors.white54 : const Color(0xFF94A3B8),
                           fontSize: 14,
                         ),
                         border: InputBorder.none,
@@ -225,25 +284,36 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(height: 20),
 
-            // AI Multimodal Diagnostic Hero Banner
+            // AI Vitality Cockpit Hero Banner (Inspired by Carbit & AthletiQ)
             InkWell(
               onTap: () => _navigateToHealthCheck(),
-              borderRadius: BorderRadius.circular(24),
+              borderRadius: BorderRadius.circular(28),
               child: Container(
                 padding: const EdgeInsets.all(22),
                 decoration: BoxDecoration(
-                  gradient: AppTheme.heroGradient,
-                  borderRadius: BorderRadius.circular(24),
+                  gradient: isDark
+                      ? const LinearGradient(
+                          colors: [Color(0xFF0C2142), Color(0xFF091A36), Color(0xFF061126)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        )
+                      : AppTheme.heroGradient,
+                  borderRadius: BorderRadius.circular(28),
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: isDark ? 0.15 : 0.4),
+                    width: 1.2,
+                  ),
                   boxShadow: [
                     BoxShadow(
-                      color: AppTheme.primaryBlue.withValues(alpha: 0.35),
-                      blurRadius: 20,
+                      color: AppTheme.primaryBlue.withValues(alpha: isDark ? 0.4 : 0.3),
+                      blurRadius: 24,
                       offset: const Offset(0, 8),
                     ),
                   ],
                 ),
                 child: Row(
                   children: [
+                    // Left Telemetry Descriptions & Status Pill
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -251,7 +321,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                             decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.22),
+                              color: Colors.white.withValues(alpha: 0.2),
                               borderRadius: BorderRadius.circular(20),
                               border: Border.all(
                                 color: Colors.white.withValues(alpha: 0.3),
@@ -264,98 +334,173 @@ class _HomeScreenState extends State<HomeScreen> {
                                   height: 8,
                                   width: 8,
                                   decoration: const BoxDecoration(
-                                    color: AppTheme.cyanAccent,
+                                    color: AppTheme.emeraldAccent,
                                     shape: BoxShape.circle,
                                   ),
                                 ),
                                 const SizedBox(width: 6),
-                                const Text(
-                                  'AI Scanner Online',
-                                  style: TextStyle(
+                                Text(
+                                  'GPS Synced • 72 bpm',
+                                  style: GoogleFonts.plusJakartaSans(
                                     color: Colors.white,
                                     fontSize: 11,
                                     fontWeight: FontWeight.bold,
-                                    letterSpacing: 0.3,
+                                    letterSpacing: 0.2,
                                   ),
                                 ),
                               ],
                             ),
                           ),
                           const SizedBox(height: 12),
-                          const Text(
-                            'Multimodal AI Health Detection',
-                            style: TextStyle(
+                          Text(
+                            'Canine Health Cockpit',
+                            style: GoogleFonts.plusJakartaSans(
                               color: Colors.white,
-                              fontSize: 19,
+                              fontSize: 20,
                               fontWeight: FontWeight.bold,
-                              letterSpacing: -0.3,
+                              letterSpacing: -0.4,
                             ),
                           ),
                           const SizedBox(height: 6),
                           Text(
-                            'Fuse visual images, collar telemetry & symptom notes into real-time health scores.',
-                            style: TextStyle(
-                              color: Colors.white.withValues(alpha: 0.92),
+                            'Multimodal AI fusing visual scans, bio-collar metrics & symptom signals.',
+                            style: GoogleFonts.plusJakartaSans(
+                              color: Colors.white.withValues(alpha: 0.88),
                               fontSize: 13,
                               height: 1.35,
+                            ),
+                          ),
+                          const SizedBox(height: 14),
+
+                          // Quick Run AI Check Button
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.22),
+                              borderRadius: BorderRadius.circular(14),
+                              border: Border.all(color: Colors.white.withValues(alpha: 0.35)),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(Icons.auto_awesome, color: Colors.white, size: 15),
+                                const SizedBox(width: 6),
+                                Text(
+                                  'Launch AI Scanner',
+                                  style: GoogleFonts.plusJakartaSans(
+                                    color: Colors.white,
+                                    fontSize: 12.5,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],
                       ),
                     ),
                     const SizedBox(width: 14),
-                    Container(
-                      height: 60,
-                      width: 60,
-                      decoration: BoxDecoration(
-                        gradient: AppTheme.aquaGradient,
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: Colors.white.withValues(alpha: 0.4),
-                          width: 1.5,
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppTheme.cyanAccent.withValues(alpha: 0.4),
-                            blurRadius: 14,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: const Icon(
-                        Icons.document_scanner_rounded,
-                        color: Colors.white,
-                        size: 30,
-                      ),
+
+                    // Right Circular Biometric Vitality Ring Dial
+                    const LuxuryBiometricRing(
+                      percentage: 98,
+                      size: 104,
+                      strokeWidth: 9,
+                      valueText: '98',
+                      unitText: '%',
+                      label: 'Vitality',
                     ),
                   ],
                 ),
               ),
             ),
+            const SizedBox(height: 24),
+
+            // Telemetry Grid Row (Carbit / AthletiQ Style)
+            Row(
+              children: [
+                Expanded(
+                  child: LuxuryStatCard(
+                    title: 'Active Steps',
+                    value: '8,450',
+                    unit: '/ 10k',
+                    icon: Icons.directions_walk_rounded,
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFF0066FF), Color(0xFF38BDF8)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    badgeText: '+12% wk',
+                    progress: 0.84,
+                    onTap: () {
+                      AppFeedback.showToast(
+                        context,
+                        title: 'Daily Activity Telemetry 🏃',
+                        message: 'Max reached 8,450 / 10,000 steps today. 84% of daily goal completed!',
+                        type: ToastType.info,
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: LuxuryStatCard(
+                    title: 'Deep Rest',
+                    value: '9.4',
+                    unit: 'hrs',
+                    icon: Icons.nightlight_round,
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFF8B5CF6), Color(0xFFC084FC)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    badgeText: 'Optimal',
+                    badgeColor: const Color(0xFF10B981),
+                    progress: 0.94,
+                    onTap: () {
+                      AppFeedback.showToast(
+                        context,
+                        title: 'Sleep Telemetry 🌙',
+                        message: '9.4 hours of restful canine REM sleep tracked via smart collar.',
+                        type: ToastType.success,
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
             const SizedBox(height: 28),
 
-            // Pet Health Radar Carousel Slider Header
+            // Pet Health Radar Header
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   'Pet Health Radar',
-                  style: theme.textTheme.titleMedium?.copyWith(
+                  style: GoogleFonts.plusJakartaSans(
                     fontWeight: FontWeight.bold,
-                    fontSize: 17,
+                    fontSize: 18,
+                    color: isDark ? Colors.white : const Color(0xFF0F172A),
+                    letterSpacing: -0.3,
                   ),
                 ),
                 TextButton(
                   onPressed: _navigateToPets,
-                  child: const Text('View All', style: TextStyle(fontWeight: FontWeight.bold)),
+                  style: TextButton.styleFrom(
+                    foregroundColor: isDark ? AppTheme.cyanAccent : AppTheme.primaryBlue,
+                  ),
+                  child: Text(
+                    'View All (${_pets.length})',
+                    style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.bold, fontSize: 13),
+                  ),
                 ),
               ],
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 10),
 
             // Pet Health Radar Slider
             SizedBox(
-              height: 160,
+              height: 175,
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 physics: const BouncingScrollPhysics(),
@@ -363,18 +508,20 @@ class _HomeScreenState extends State<HomeScreen> {
                 separatorBuilder: (_, _) => const SizedBox(width: 14),
                 itemBuilder: (context, index) {
                   final pet = _pets[index];
-                  return _buildPetHealthRadarCard(pet, theme, colorScheme);
+                  return _buildPetHealthRadarCard(pet, theme, colorScheme, isDark);
                 },
               ),
             ),
             const SizedBox(height: 28),
 
-            // Quick Actions Header
+            // Quick Services Header
             Text(
               'Quick Services',
-              style: theme.textTheme.titleMedium?.copyWith(
+              style: GoogleFonts.plusJakartaSans(
                 fontWeight: FontWeight.bold,
-                fontSize: 17,
+                fontSize: 18,
+                color: isDark ? Colors.white : const Color(0xFF0F172A),
+                letterSpacing: -0.3,
               ),
             ),
             const SizedBox(height: 14),
@@ -386,14 +533,14 @@ class _HomeScreenState extends State<HomeScreen> {
               crossAxisCount: 2,
               crossAxisSpacing: 14,
               mainAxisSpacing: 14,
-              childAspectRatio: 1.25,
+              childAspectRatio: 1.22,
               children: [
                 _buildServiceCard(
                   title: 'Health Check',
-                  subtitle: 'AI Symptom Scan',
+                  subtitle: 'Multimodal AI Vision',
                   icon: Icons.health_and_safety_rounded,
                   gradient: AppTheme.primaryGradient,
-                  theme: theme,
+                  isDark: isDark,
                   onTap: () => _navigateToHealthCheck(),
                 ),
                 _buildServiceCard(
@@ -405,7 +552,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
-                  theme: theme,
+                  isDark: isDark,
                   onTap: () {
                     AppFeedback.showToast(
                       context,
@@ -416,23 +563,23 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                 ),
                 _buildServiceCard(
-                  title: 'Pet Profiles',
-                  subtitle: 'Medical History',
-                  icon: Icons.badge_rounded,
+                  title: 'Pet Telemetry',
+                  subtitle: 'Collar & Biometrics',
+                  icon: Icons.bluetooth_connected_rounded,
                   gradient: const LinearGradient(
-                    colors: [Color(0xFF2563EB), Color(0xFF60A5FA)],
+                    colors: [Color(0xFF6366F1), Color(0xFFA855F7)],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
-                  theme: theme,
+                  isDark: isDark,
                   onTap: _navigateToPets,
                 ),
                 _buildServiceCard(
-                  title: 'Appointments',
-                  subtitle: 'Vet Consultations',
+                  title: 'Vet Bookings',
+                  subtitle: 'Consultations',
                   icon: Icons.calendar_month_rounded,
                   gradient: AppTheme.emeraldGradient,
-                  theme: theme,
+                  isDark: isDark,
                   onTap: () {
                     AppFeedback.showToast(
                       context,
@@ -444,30 +591,31 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ],
             ),
+            const SizedBox(height: 24),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildPetHealthRadarCard(Pet pet, ThemeData theme, ColorScheme colorScheme) {
+  Widget _buildPetHealthRadarCard(Pet pet, ThemeData theme, ColorScheme colorScheme, bool isDark) {
     return InkWell(
       onTap: () => _navigateToPetDetail(pet),
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(24),
       child: Container(
-        width: 260,
+        width: 275,
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
+          color: isDark ? const Color(0xFF131D2D).withValues(alpha: 0.85) : Colors.white,
+          borderRadius: BorderRadius.circular(24),
           border: Border.all(
-            color: colorScheme.outlineVariant.withValues(alpha: 0.6),
-            width: 1.1,
+            color: isDark ? Colors.white.withValues(alpha: 0.12) : const Color(0xFFE2E8F0),
+            width: 1.2,
           ),
           boxShadow: [
             BoxShadow(
-              color: AppTheme.primaryBlue.withValues(alpha: 0.06),
-              blurRadius: 14,
+              color: Colors.black.withValues(alpha: isDark ? 0.25 : 0.05),
+              blurRadius: 16,
               offset: const Offset(0, 5),
             ),
           ],
@@ -481,11 +629,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 Hero(
                   tag: 'pet-avatar-${pet.id}',
                   child: Container(
-                    height: 48,
-                    width: 48,
+                    height: 52,
+                    width: 52,
                     decoration: BoxDecoration(
                       gradient: AppTheme.aquaGradient,
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(18),
                       border: Border.all(color: Colors.white, width: 1.5),
                       boxShadow: [
                         BoxShadow(
@@ -514,14 +662,18 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       Text(
                         pet.name,
-                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                        style: GoogleFonts.plusJakartaSans(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: isDark ? Colors.white : const Color(0xFF0F172A),
+                        ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                       Text(
                         pet.breed,
-                        style: TextStyle(
-                          color: colorScheme.onSurfaceVariant,
+                        style: GoogleFonts.plusJakartaSans(
+                          color: isDark ? Colors.white70 : const Color(0xFF64748B),
                           fontSize: 12,
                         ),
                         maxLines: 1,
@@ -530,24 +682,20 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
                 ),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF16A34A).withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Text(
-                    '98% Good',
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF16A34A),
-                    ),
-                  ),
+                // Mini Biometric Ring
+                const LuxuryBiometricRing(
+                  percentage: 98,
+                  size: 46,
+                  strokeWidth: 4.5,
+                  glow: false,
+                  valueText: '98',
                 ),
               ],
             ),
-            const Divider(height: 1),
+            Divider(
+              height: 1,
+              color: isDark ? Colors.white.withValues(alpha: 0.08) : const Color(0xFFF1F5F9),
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -555,16 +703,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Row(
                     children: [
                       const Icon(Icons.favorite_rounded, size: 14, color: Color(0xFFF43F5E)),
-                      const SizedBox(width: 4),
-                      Expanded(
+                      const SizedBox(width: 5),
+                      Flexible(
                         child: Text(
                           'Normal Activity',
-                          style: TextStyle(
-                            fontSize: 11,
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 11.5,
                             fontWeight: FontWeight.w600,
-                            color: colorScheme.onSurfaceVariant,
+                            color: isDark ? Colors.white70 : const Color(0xFF64748B),
                           ),
-                          maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
@@ -580,16 +727,23 @@ class _HomeScreenState extends State<HomeScreen> {
                     decoration: BoxDecoration(
                       gradient: AppTheme.primaryGradient,
                       borderRadius: BorderRadius.circular(10),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppTheme.primaryBlue.withValues(alpha: 0.3),
+                          blurRadius: 6,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
                     ),
-                    child: const Row(
+                    child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.auto_awesome, size: 12, color: Colors.white),
-                        SizedBox(width: 4),
+                        const Icon(Icons.auto_awesome, size: 12, color: Colors.white),
+                        const SizedBox(width: 4),
                         Text(
                           'Scan',
-                          style: TextStyle(
-                            fontSize: 11,
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 11.5,
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
                           ),
@@ -611,24 +765,25 @@ class _HomeScreenState extends State<HomeScreen> {
     required String subtitle,
     required IconData icon,
     required LinearGradient gradient,
-    required ThemeData theme,
+    required bool isDark,
     VoidCallback? onTap,
   }) {
     return InkWell(
       onTap: onTap ?? () {},
-      borderRadius: BorderRadius.circular(18),
+      borderRadius: BorderRadius.circular(22),
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(18),
+          color: isDark ? const Color(0xFF131D2D).withValues(alpha: 0.85) : Colors.white,
+          borderRadius: BorderRadius.circular(22),
           border: Border.all(
-            color: theme.colorScheme.outlineVariant.withValues(alpha: 0.5),
+            color: isDark ? Colors.white.withValues(alpha: 0.12) : const Color(0xFFE2E8F0),
+            width: 1.1,
           ),
           boxShadow: [
             BoxShadow(
-              color: AppTheme.primaryBlue.withValues(alpha: 0.04),
-              blurRadius: 12,
+              color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
+              blurRadius: 14,
               offset: const Offset(0, 4),
             ),
           ],
@@ -641,11 +796,11 @@ class _HomeScreenState extends State<HomeScreen> {
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
                 gradient: gradient,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(14),
                 boxShadow: [
                   BoxShadow(
-                    color: gradient.colors.first.withValues(alpha: 0.3),
-                    blurRadius: 8,
+                    color: gradient.colors.first.withValues(alpha: 0.35),
+                    blurRadius: 10,
                     offset: const Offset(0, 3),
                   ),
                 ],
@@ -655,16 +810,18 @@ class _HomeScreenState extends State<HomeScreen> {
             const Spacer(),
             Text(
               title,
-              style: theme.textTheme.titleSmall?.copyWith(
+              style: GoogleFonts.plusJakartaSans(
                 fontWeight: FontWeight.bold,
+                fontSize: 14,
+                color: isDark ? Colors.white : const Color(0xFF0F172A),
               ),
             ),
             const SizedBox(height: 2),
             Text(
               subtitle,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-                fontSize: 11,
+              style: GoogleFonts.plusJakartaSans(
+                color: isDark ? Colors.white70 : const Color(0xFF64748B),
+                fontSize: 11.5,
               ),
             ),
           ],

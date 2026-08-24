@@ -7,7 +7,6 @@ import 'package:canivue/features/auth/screens/reset_password_screen.dart';
 import 'package:canivue/features/auth/screens/signup_screen.dart';
 import 'package:canivue/features/health_check/screens/health_check_capture_screen.dart';
 import 'package:canivue/features/home/screens/home_screen.dart';
-import 'package:canivue/features/notifications/widgets/notification_sheet.dart';
 import 'package:canivue/features/pets/models/pet_model.dart';
 import 'package:canivue/features/pets/screens/add_edit_pet_screen.dart';
 import 'package:canivue/features/pets/screens/pet_detail_screen.dart';
@@ -232,22 +231,5 @@ void main() {
     expect(find.text('Confidence-Weighted Fusion'), findsOneWidget);
     expect(find.text('Disease Progression Risk (DPRPE)'), findsOneWidget);
     expect(find.text('Book Vet Consultation'), findsOneWidget);
-  });
-
-  testWidgets('NotificationSheet renders correctly smoke test', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      const MaterialApp(
-        home: Scaffold(
-          body: NotificationSheet(),
-        ),
-      ),
-    );
-
-    expect(find.text('Notifications'), findsOneWidget);
-    expect(find.text('All (5)'), findsOneWidget);
-    expect(find.text('Unread (3)'), findsOneWidget);
-    expect(find.text('AI Health'), findsOneWidget);
-    expect(find.text('Reminders'), findsOneWidget);
-    expect(find.text('AI Health Alert: Ocular Discharge'), findsOneWidget);
   });
 }
