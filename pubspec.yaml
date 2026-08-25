@@ -11,6 +11,10 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
+  image_picker: ^1.1.2
+  google_fonts: ^8.2.1
+  flutter_animate: ^4.5.2
+  smooth_page_indicator: ^3.0.0
 
 dev_dependencies:
   flutter_test:
@@ -19,3 +23,6 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/images/onboarding/
+    - assets/images/pets/
