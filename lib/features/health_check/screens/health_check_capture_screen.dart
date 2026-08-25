@@ -1,0 +1,633 @@
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:canivue/core/theme/app_theme.dart';
+import 'package:canivue/core/utils/page_transitions.dart';
+import 'package:canivue/features/auth/widgets/custom_text_field.dart';
+import 'package:canivue/features/health_check/screens/health_check_result_screen.dart';
+import 'package:canivue/features/health_check/services/fusion_risk_engine.dart';
+import 'package:canivue/features/pets/models/pet_model.dart';
+
+/// Owner-facing entry point for a single AI Health Check run. Collects the
+/// three evidence streams described in the proposal — a photo, smart-collar
+/// status, and a free-text symptom description — then runs them through the
+/// [FusionRiskEngine] and hands the result to [HealthCheckResultScreen].
+class HealthCheckCaptureScreen extends StatefulWidget {
+  const HealthCheckCaptureScreen({
+    super.key,
+    required this.pets,
+    this.initialPet,
+    this.lockPetSelection = false,
+  });
+
+  final List<Pet> pets;
+  final Pet? initialPet;
+  final bool lockPetSelection;
+
+  @override
+  State<HealthCheckCaptureScreen> createState() => _HealthCheckCaptureScreenState();
+}
+
+class _HealthCheckCaptureScreenState extends State<HealthCheckCaptureScreen> {
+  final ImagePicker _picker = ImagePicker();
+  final TextEditingController _symptomController = TextEditingController();
+
+  Pet? _selectedPet;
+  File? _imageFile;
+  bool _collarConnected = false;
+  bool _collarConnecting = false;
+  bool _isAnalyzing = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedPet = widget.initialPet ?? (widget.pets.isNotEmpty ? widget.pets.first : null);
+  }
+
+  @override
+  void dispose() {
+    _symptomController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _pickImage(ImageSource source) async {
+    try {
+      final XFile? pickedFile = await _picker.pickImage(
+        source: source,
+        maxWidth: 1000,
+        maxHeight: 1000,
+        imageQuality: 85,
+      );
+      if (pickedFile != null) {
+        setState(() => _imageFile = File(pickedFile.path));
+      }
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Could not access image: $e'),
+          backgroundColor: Theme.of(context).colorScheme.error,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+  }
+
+  void _showPhotoOptions() {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (context) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Add Symptom Photo',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close_rounded),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _PhotoOptionTile(
+                        icon: Icons.camera_alt_rounded,
+                        label: 'Take Photo',
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          _pickImage(ImageSource.camera);
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _PhotoOptionTile(
+                        icon: Icons.photo_library_rounded,
+                        label: 'From Gallery',
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          _pickImage(ImageSource.gallery);
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                if (_imageFile != null) ...[
+                  const SizedBox(height: 8),
+                  TextButton.icon(
+                    onPressed: () {
+                      setState(() => _imageFile = null);
+                      Navigator.of(context).pop();
+                    },
+                    icon: const Icon(Icons.delete_outline_rounded, color: Colors.red, size: 20),
+                    label: const Text('Remove Photo', style: TextStyle(color: Colors.red)),
+                  ),
+                ],
+                const SizedBox(height: 8),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _toggleCollar(bool value) async {
+    if (!value) {
+      setState(() => _collarConnected = false);
+      return;
+    }
+    setState(() => _collarConnecting = true);
+    await Future.delayed(const Duration(milliseconds: 700));
+    if (!mounted) return;
+    setState(() {
+      _collarConnecting = false;
+      _collarConnected = true;
+    });
+  }
+
+  Future<void> _runAnalysis() async {
+    final pet = _selectedPet;
+    if (pet == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Select a pet to run the health check.'), behavior: SnackBarBehavior.floating),
+      );
+      return;
+    }
+    if (_imageFile == null && !_collarConnected && _symptomController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Add at least a photo, collar data, or a symptom description.'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+
+    setState(() => _isAnalyzing = true);
+    // Simulated on-device fusion latency, keeping within the proposal's
+    // "current multimodal inference <= 3 seconds" performance target.
+    await Future.delayed(const Duration(milliseconds: 1800));
+    if (!mounted) return;
+
+    final result = FusionRiskEngine.run(
+      pet: pet,
+      hasImage: _imageFile != null,
+      hasWearable: _collarConnected,
+      symptomText: _symptomController.text,
+    );
+
+    setState(() => _isAnalyzing = false);
+
+    Navigator.of(context).push(fadeSlidePageRoute(HealthCheckResultScreen(result: result)));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: colorScheme.surface,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios_new_rounded, color: colorScheme.onSurface),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: Text(
+          'AI Health Check',
+          style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+        ),
+      ),
+      body: AbsorbPointer(
+        absorbing: _isAnalyzing,
+        child: Stack(
+          children: [
+            SafeArea(
+              child: Center(
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 540),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        // Intro banner
+                        Container(
+                          padding: const EdgeInsets.all(18),
+                          decoration: BoxDecoration(
+                            gradient: AppTheme.heroGradient,
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppTheme.primaryBlue.withValues(alpha: 0.3),
+                                blurRadius: 16,
+                                offset: const Offset(0, 8),
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withValues(alpha: 0.2),
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                                child: const Icon(Icons.biotech_rounded, color: Colors.white, size: 26),
+                              ),
+                              const SizedBox(width: 14),
+                              Expanded(
+                                child: Text(
+                                  'Combine a photo, your smart collar and a symptom note. Our confidence-weighted adaptive fusion engine analyses them together.',
+                                  style: TextStyle(color: Colors.white.withValues(alpha: 0.95), fontSize: 12.5, height: 1.4),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ).animate().fadeIn(duration: 350.ms).slideY(begin: 0.15, end: 0),
+                        const SizedBox(height: 22),
+
+                        if (!widget.lockPetSelection && widget.pets.length > 1) ...[
+                          _SectionLabel(text: 'SELECT PET'),
+                          const SizedBox(height: 10),
+                          SizedBox(
+                            height: 84,
+                            child: ListView.separated(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: widget.pets.length,
+                              separatorBuilder: (_, _) => const SizedBox(width: 10),
+                              itemBuilder: (context, index) {
+                                final pet = widget.pets[index];
+                                final selected = pet.id == _selectedPet?.id;
+                                return _PetChip(
+                                  pet: pet,
+                                  selected: selected,
+                                  onTap: () => setState(() => _selectedPet = pet),
+                                );
+                              },
+                            ),
+                          ),
+                          const SizedBox(height: 24),
+                        ],
+
+                        _SectionLabel(text: '1 · PHOTO EVIDENCE (OPTIONAL)'),
+                        const SizedBox(height: 10),
+                        InkWell(
+                          onTap: _showPhotoOptions,
+                          borderRadius: BorderRadius.circular(18),
+                          child: Container(
+                            height: 150,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+                              borderRadius: BorderRadius.circular(18),
+                              border: Border.all(
+                                color: colorScheme.outlineVariant.withValues(alpha: 0.6),
+                                style: BorderStyle.solid,
+                              ),
+                            ),
+                            clipBehavior: Clip.antiAlias,
+                            child: _imageFile != null
+                                ? Stack(
+                                    fit: StackFit.expand,
+                                    children: [
+                                      Image.file(_imageFile!, fit: BoxFit.cover),
+                                      Positioned(
+                                        right: 8,
+                                        top: 8,
+                                        child: CircleAvatar(
+                                          radius: 14,
+                                          backgroundColor: Colors.black.withValues(alpha: 0.55),
+                                          child: const Icon(Icons.edit_rounded, size: 14, color: Colors.white),
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                : Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(Icons.add_a_photo_rounded, color: colorScheme.primary, size: 30),
+                                      const SizedBox(height: 8),
+                                      Text(
+                                        'Add a photo of the affected area',
+                                        style: TextStyle(color: colorScheme.onSurfaceVariant, fontSize: 13, fontWeight: FontWeight.w600),
+                                      ),
+                                    ],
+                                  ),
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+
+                        _SectionLabel(text: '2 · SMART COLLAR (OPTIONAL)'),
+                        const SizedBox(height: 10),
+                        Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+                            borderRadius: BorderRadius.circular(18),
+                            border: Border.all(color: colorScheme.outlineVariant.withValues(alpha: 0.6)),
+                          ),
+                          child: Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  color: (_collarConnected ? AppTheme.successGreen : colorScheme.primary).withValues(alpha: 0.12),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Icon(
+                                  Icons.sensors_rounded,
+                                  color: _collarConnected ? AppTheme.successGreen : colorScheme.primary,
+                                  size: 22,
+                                ),
+                              ),
+                              const SizedBox(width: 14),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      _collarConnecting
+                                          ? 'Pairing with collar…'
+                                          : (_collarConnected ? 'Connected · Motion data synced' : 'ESP32 + MPU6050 Smart Collar'),
+                                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13.5),
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      _collarConnected
+                                          ? 'Scratching, activity and gait signals included'
+                                          : 'Adds behavioural motion data to the analysis',
+                                      style: TextStyle(fontSize: 11.5, color: colorScheme.onSurfaceVariant),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              _collarConnecting
+                                  ? const SizedBox(
+                                      height: 22,
+                                      width: 22,
+                                      child: CircularProgressIndicator(strokeWidth: 2.4),
+                                    )
+                                  : Switch(
+                                      value: _collarConnected,
+                                      onChanged: _toggleCollar,
+                                      activeThumbColor: AppTheme.successGreen,
+                                    ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+
+                        _SectionLabel(text: '3 · DESCRIBE WHAT YOU\'RE SEEING'),
+                        const SizedBox(height: 10),
+                        CustomTextField(
+                          controller: _symptomController,
+                          label: '',
+                          hintText: 'e.g. "Scratching a lot for 3 days, redness behind the ears, seems worse today"',
+                          prefixIcon: Icons.notes_rounded,
+                          maxLines: 4,
+                          textInputAction: TextInputAction.done,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'The more detail you give, the more the text stream can contribute to the fused result.',
+                          style: TextStyle(fontSize: 11.5, color: colorScheme.onSurfaceVariant),
+                        ),
+                        const SizedBox(height: 28),
+
+                        // Run analysis button
+                        Container(
+                          height: 54,
+                          decoration: BoxDecoration(
+                            gradient: AppTheme.primaryGradient,
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppTheme.primaryBlue.withValues(alpha: 0.35),
+                                blurRadius: 14,
+                                offset: const Offset(0, 5),
+                              ),
+                            ],
+                          ),
+                          child: ElevatedButton.icon(
+                            onPressed: _isAnalyzing ? null : _runAnalysis,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.transparent,
+                              shadowColor: Colors.transparent,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                            ),
+                            icon: const Icon(Icons.auto_awesome_rounded, color: Colors.white),
+                            label: const Text(
+                              'Run AI Analysis',
+                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 14),
+                        Row(
+                          children: [
+                            Icon(Icons.info_outline_rounded, size: 14, color: colorScheme.onSurfaceVariant),
+                            const SizedBox(width: 6),
+                            Expanded(
+                              child: Text(
+                                'A preliminary decision-support result, not a substitute for veterinary examination.',
+                                style: TextStyle(fontSize: 11, color: colorScheme.onSurfaceVariant),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            if (_isAnalyzing) const _AnalyzingOverlay(),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _SectionLabel extends StatelessWidget {
+  const _SectionLabel({required this.text});
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      style: Theme.of(context).textTheme.labelSmall?.copyWith(
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1.1,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
+    );
+  }
+}
+
+class _PhotoOptionTile extends StatelessWidget {
+  const _PhotoOptionTile({required this.icon, required this.label, required this.onTap});
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.5),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.4)),
+        ),
+        child: Column(
+          children: [
+            Icon(icon, size: 28, color: Theme.of(context).colorScheme.primary),
+            const SizedBox(height: 8),
+            Text(label, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _PetChip extends StatelessWidget {
+  const _PetChip({required this.pet, required this.selected, required this.onTap});
+  final Pet pet;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        width: 76,
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        decoration: BoxDecoration(
+          color: selected ? colorScheme.primaryContainer.withValues(alpha: 0.6) : colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: selected ? colorScheme.primary : colorScheme.outlineVariant.withValues(alpha: 0.5),
+            width: selected ? 1.6 : 1,
+          ),
+        ),
+        child: Column(
+          children: [
+            CircleAvatar(
+              radius: 18,
+              backgroundColor: Colors.white,
+              backgroundImage: pet.imagePath != null && File(pet.imagePath!).existsSync() ? FileImage(File(pet.imagePath!)) : null,
+              child: pet.imagePath == null ? Text(pet.avatarEmoji, style: const TextStyle(fontSize: 18)) : null,
+            ),
+            const SizedBox(height: 6),
+            Text(
+              pet.name,
+              style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: selected ? colorScheme.primary : null),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _AnalyzingOverlay extends StatelessWidget {
+  const _AnalyzingOverlay();
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned.fill(
+      child: Container(
+        color: Colors.black.withValues(alpha: 0.55),
+        child: Center(
+          child: Container(
+            padding: const EdgeInsets.all(28),
+            margin: const EdgeInsets.symmetric(horizontal: 40),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surface,
+              borderRadius: BorderRadius.circular(24),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _PulsingIcon(icon: Icons.photo_camera_rounded, delay: 0),
+                    const SizedBox(width: 14),
+                    _PulsingIcon(icon: Icons.sensors_rounded, delay: 150),
+                    const SizedBox(width: 14),
+                    _PulsingIcon(icon: Icons.notes_rounded, delay: 300),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  'Fusing multimodal evidence…',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  'Weighting image, collar & text by confidence and quality',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurfaceVariant),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _PulsingIcon extends StatelessWidget {
+  const _PulsingIcon({required this.icon, required this.delay});
+  final IconData icon;
+  final int delay;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        gradient: AppTheme.primaryGradient,
+        shape: BoxShape.circle,
+      ),
+      child: Icon(icon, color: Colors.white, size: 20),
+    )
+        .animate(onPlay: (controller) => controller.repeat())
+        .fadeIn(duration: 500.ms, delay: delay.ms)
+        .then()
+        .scaleXY(end: 1.15, duration: 400.ms, curve: Curves.easeInOut)
+        .then()
+        .scaleXY(end: 1 / 1.15, duration: 400.ms, curve: Curves.easeInOut);
+  }
+}
