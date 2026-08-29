@@ -110,6 +110,11 @@ void main() {
         child: const MaterialApp(home: HomeScreen()),
       ),
     );
+    // Flush the fake dogs + dashboard-summary repositories' simulated
+    // network delay (500ms then 600ms) rather than pumpAndSettle, since the
+    // loading skeleton's shimmer animation repeats indefinitely.
+    await tester.pump(const Duration(milliseconds: 700));
+    await tester.pump(const Duration(milliseconds: 700));
 
     expect(find.text('Hello, Alex 👋'), findsOneWidget);
     expect(find.text('Quick Services'), findsOneWidget);
