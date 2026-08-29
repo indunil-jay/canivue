@@ -23,6 +23,7 @@ import 'package:canivue/features/pets/models/pet_model.dart';
 import 'package:canivue/features/pets/presentation/controllers/dogs_controller.dart';
 import 'package:canivue/features/pets/screens/pet_detail_screen.dart';
 import 'package:canivue/features/pets/screens/pet_list_screen.dart';
+import 'package:canivue/features/preventive_care/presentation/screens/preventive_care_screen.dart';
 import 'package:canivue/features/vets/presentation/screens/appointments_screen.dart';
 import 'package:canivue/features/vets/presentation/screens/vet_discovery_screen.dart';
 
@@ -329,8 +330,18 @@ class _DashboardContent extends ConsumerWidget {
           const SizedBox(height: AppSpacing.xxl),
           AiInsightCard(insight: summary.insight),
           const SizedBox(height: AppSpacing.xxl),
-          _sectionHeader(theme, isDark, "What's Due"),
-          const SizedBox(height: AppSpacing.sm),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _sectionHeader(theme, isDark, "What's Due"),
+              TextButton(
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => PreventiveCareScreen(dogId: dog.id, dogName: dog.name)),
+                ),
+                child: const Text('View All'),
+              ),
+            ],
+          ),
           CareRemindersSection(reminders: summary.reminders),
           const SizedBox(height: AppSpacing.xxl),
           _sectionHeader(theme, isDark, 'Upcoming Appointment'),
