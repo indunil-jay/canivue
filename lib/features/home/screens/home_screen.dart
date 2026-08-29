@@ -21,6 +21,8 @@ import 'package:canivue/features/home/presentation/widgets/device_status_chip.da
 import 'package:canivue/features/notifications/widgets/notification_badge_button.dart';
 import 'package:canivue/features/pets/models/pet_model.dart';
 import 'package:canivue/features/pets/presentation/controllers/dogs_controller.dart';
+import 'package:canivue/features/devices/presentation/screens/device_management_screen.dart';
+import 'package:canivue/features/nutrition/presentation/screens/nutrition_screen.dart';
 import 'package:canivue/features/pets/screens/pet_detail_screen.dart';
 import 'package:canivue/features/pets/screens/pet_list_screen.dart';
 import 'package:canivue/features/preventive_care/presentation/screens/preventive_care_screen.dart';
@@ -238,7 +240,27 @@ class HomeScreen extends ConsumerWidget {
           icon: Icons.bluetooth_connected_rounded,
           gradient: AppTheme.indigoGradient,
           isDark: isDark,
-          onTap: () => _navigateToPets(context),
+          onTap: () {
+            final activeDog = ref.read(activeDogProvider).value;
+            if (activeDog == null) return;
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => DeviceManagementScreen(dogId: activeDog.id, dogName: activeDog.name)),
+            );
+          },
+        ),
+        _buildServiceCard(
+          title: 'Nutrition',
+          subtitle: 'Weight & Feeding Plan',
+          icon: Icons.restaurant_rounded,
+          gradient: const LinearGradient(colors: [Color(0xFFB45309), Color(0xFFFBBF24)], begin: Alignment.topLeft, end: Alignment.bottomRight),
+          isDark: isDark,
+          onTap: () {
+            final activeDog = ref.read(activeDogProvider).value;
+            if (activeDog == null) return;
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => NutritionScreen(dogId: activeDog.id, dogName: activeDog.name)),
+            );
+          },
         ),
         _buildServiceCard(
           title: 'Vet Bookings',
