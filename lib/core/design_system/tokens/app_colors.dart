@@ -39,9 +39,9 @@ class AppColors {
   // ---------------------------------------------------------------------
   // Semantic
   // ---------------------------------------------------------------------
-  static const Color success = Color(0xFF15803D);
+  static const Color success = Color(0xFF16A34A);
   static const Color successOnDark = Color(0xFF4ADE80);
-  static const Color warning = Color(0xFFB45309);
+  static const Color warning = Color(0xFFF59E0B);
   static const Color warningOnDark = Color(0xFFFBBF24);
   static const Color error = Color(0xFFDC2626);
   static const Color errorOnDark = Color(0xFFF87171);
