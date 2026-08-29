@@ -6,6 +6,7 @@ import 'package:canivue/core/widgets/app_feedback.dart';
 import 'package:canivue/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:canivue/features/pets/presentation/controllers/dogs_controller.dart';
 import 'package:canivue/features/pets/screens/pet_list_screen.dart';
+import 'package:canivue/features/medical_records/presentation/screens/medical_records_screen.dart';
 import 'package:canivue/features/profile/screens/personal_information_screen.dart';
 import 'package:canivue/features/vets/presentation/screens/appointments_screen.dart';
 
@@ -226,7 +227,15 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 icon: Icons.medical_services_outlined,
                 title: 'Medical & Vet Records',
                 subtitle: 'Vaccinations & prescriptions',
-                onTap: () => _showActionSnackBar('Medical records — coming soon'),
+                onTap: () {
+                  if (activeDog == null) {
+                    _showActionSnackBar('Add a dog to see medical records');
+                    return;
+                  }
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => MedicalRecordsScreen(dogId: activeDog.id, dogName: activeDog.name)),
+                  );
+                },
                 theme: theme,
               ),
               _buildNavTile(
