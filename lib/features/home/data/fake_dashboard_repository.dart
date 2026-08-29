@@ -6,7 +6,7 @@ import 'package:canivue/features/home/domain/dashboard_summary.dart';
 /// numbers for every dog.
 class FakeDashboardRepository implements DashboardRepository {
   @override
-  Future<DashboardSummary> fetchSummary(String dogId) async {
+  Future<DashboardSummary> fetchSummary(String dogId, String dogName) async {
     await Future.delayed(const Duration(milliseconds: 600));
 
     final variant = dogId.hashCode % 3;
@@ -25,8 +25,8 @@ class FakeDashboardRepository implements DashboardRepository {
             hydrationGoalMl: 800,
             weightKg: 28.5,
           ),
-          insight: const AiInsight(
-            headline: "Buddy's activity is up 12% this week",
+          insight: AiInsight(
+            headline: "$dogName's activity is up 12% this week",
             detail: 'Consistent with the warmer weather and longer evening walks — no action needed.',
           ),
           reminders: [
@@ -58,9 +58,9 @@ class FakeDashboardRepository implements DashboardRepository {
             hydrationGoalMl: 750,
             weightKg: 24.0,
           ),
-          insight: const AiInsight(
+          insight: AiInsight(
             headline: 'Resting heart rate trending up over 7 days',
-            detail: 'Luna\'s resting heart rate has gradually increased. Worth mentioning at her next checkup.',
+            detail: "$dogName's resting heart rate has gradually increased. Worth mentioning at the next checkup.",
             risk: RiskLevel.monitoring,
           ),
           reminders: [
@@ -86,9 +86,9 @@ class FakeDashboardRepository implements DashboardRepository {
             hydrationGoalMl: 650,
             weightKg: 12.2,
           ),
-          insight: const AiInsight(
-            headline: "Charlie's sleep quality improved this week",
-            detail: 'Deep-sleep duration is up compared with his 30-day baseline.',
+          insight: AiInsight(
+            headline: "$dogName's sleep quality improved this week",
+            detail: 'Deep-sleep duration is up compared with the 30-day baseline.',
           ),
           reminders: [
             CareReminder(kind: ReminderKind.checkup, title: 'Annual health check', dueDate: DateTime.now().add(const Duration(days: 21))),
