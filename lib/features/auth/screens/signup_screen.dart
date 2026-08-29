@@ -7,6 +7,7 @@ import 'package:canivue/core/theme/app_theme.dart';
 import 'package:canivue/core/widgets/app_feedback.dart';
 import 'package:canivue/core/widgets/aura_canvas_background.dart';
 import 'package:canivue/features/auth/presentation/controllers/auth_controller.dart';
+import 'package:canivue/features/auth/screens/otp_verification_screen.dart';
 import 'package:canivue/features/auth/widgets/custom_text_field.dart';
 
 class SignUpScreen extends ConsumerStatefulWidget {
@@ -65,13 +66,21 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
       _isLoading = false;
     });
 
-    ref.read(authControllerProvider.notifier).signUp(
-          email: _emailController.text.trim(),
-          name: _nameController.text.trim().isNotEmpty ? _nameController.text.trim() : 'Alex',
-        );
+    final email = _emailController.text.trim();
+    final name = _nameController.text.trim().isNotEmpty ? _nameController.text.trim() : 'Alex';
 
-    if (!mounted) return;
-    context.go('/home');
+    // Verify the email before completing signup (brief §5).
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => OtpVerificationScreen(
+          email: email,
+          onVerified: () {
+            ref.read(authControllerProvider.notifier).signUp(email: email, name: name);
+            context.go('/home');
+          },
+        ),
+      ),
+    );
   }
 
   @override
