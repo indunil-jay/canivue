@@ -1,20 +1,23 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:canivue/core/theme/app_theme.dart';
 import 'package:canivue/core/widgets/app_feedback.dart';
 import 'package:canivue/core/widgets/aura_canvas_background.dart';
+import 'package:canivue/features/auth/presentation/controllers/auth_controller.dart';
+import 'package:canivue/features/auth/screens/otp_verification_screen.dart';
 import 'package:canivue/features/auth/widgets/custom_text_field.dart';
-import 'package:canivue/features/home/screens/home_screen.dart';
 
-class SignUpScreen extends StatefulWidget {
+class SignUpScreen extends ConsumerStatefulWidget {
   const SignUpScreen({super.key});
 
   @override
-  State<SignUpScreen> createState() => _SignUpScreenState();
+  ConsumerState<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   final _formKey = GlobalKey<FormState>();
 
   final _nameController = TextEditingController();
@@ -63,14 +66,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
       _isLoading = false;
     });
 
-    Navigator.of(context).pushAndRemoveUntil(
+    final email = _emailController.text.trim();
+    final name = _nameController.text.trim().isNotEmpty ? _nameController.text.trim() : 'Alex';
+
+    // Verify the email before completing signup (brief §5).
+    Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => HomeScreen(
-          userEmail: _emailController.text.trim(),
-          userName: _nameController.text.trim().isNotEmpty ? _nameController.text.trim() : 'Alex',
+        builder: (_) => OtpVerificationScreen(
+          email: email,
+          onVerified: () {
+            ref.read(authControllerProvider.notifier).signUp(email: email, name: name);
+            context.go('/home');
+          },
         ),
       ),
-      (route) => false,
     );
   }
 

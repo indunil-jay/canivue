@@ -1,22 +1,25 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:canivue/core/theme/app_theme.dart';
 import 'package:canivue/core/widgets/app_feedback.dart';
 import 'package:canivue/core/widgets/aura_canvas_background.dart';
+import 'package:canivue/features/auth/domain/app_user.dart';
+import 'package:canivue/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:canivue/features/auth/screens/forgot_password_screen.dart';
 import 'package:canivue/features/auth/screens/signup_screen.dart';
 import 'package:canivue/features/auth/widgets/custom_text_field.dart';
-import 'package:canivue/features/home/screens/home_screen.dart';
 
-class SignInScreen extends StatefulWidget {
+class SignInScreen extends ConsumerStatefulWidget {
   const SignInScreen({super.key});
 
   @override
-  State<SignInScreen> createState() => _SignInScreenState();
+  ConsumerState<SignInScreen> createState() => _SignInScreenState();
 }
 
-class _SignInScreenState extends State<SignInScreen> {
+class _SignInScreenState extends ConsumerState<SignInScreen> {
   final _formKey = GlobalKey<FormState>();
 
   final _emailController = TextEditingController();
@@ -50,15 +53,22 @@ class _SignInScreenState extends State<SignInScreen> {
       _isLoading = false;
     });
 
-    Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(
-        builder: (_) => HomeScreen(
-          userEmail: _emailController.text.trim().isNotEmpty ? _emailController.text.trim() : 'alex@canivue.com',
-          userName: 'Alex',
-        ),
-      ),
-      (route) => false,
-    );
+    ref.read(authControllerProvider.notifier).signIn(
+          email: _emailController.text.trim().isNotEmpty ? _emailController.text.trim() : 'alex@canivue.com',
+          name: 'Alex',
+        );
+
+    if (!mounted) return;
+    context.go('/home');
+  }
+
+  void _handleVetSignIn() {
+    ref.read(authControllerProvider.notifier).signIn(
+          email: 'sarah.jenkins@canivue.com',
+          name: 'Dr. Sarah Jenkins',
+          role: UserRole.veterinarian,
+        );
+    context.go('/vet-dashboard');
   }
 
   void _navigateToForgotPassword() {
@@ -444,6 +454,20 @@ class _SignInScreenState extends State<SignInScreen> {
                           ),
                         ),
                       ],
+                    ),
+                    const SizedBox(height: 8),
+                    Center(
+                      child: TextButton.icon(
+                        onPressed: _handleVetSignIn,
+                        icon: Icon(Icons.medical_services_outlined, size: 16, color: isDark ? Colors.white70 : const Color(0xFF64748B)),
+                        label: Text(
+                          "I'm a veterinarian",
+                          style: GoogleFonts.plusJakartaSans(
+                            fontWeight: FontWeight.w600,
+                            color: isDark ? Colors.white70 : const Color(0xFF64748B),
+                          ),
+                        ),
+                      ),
                     ),
                   ],
                 ),

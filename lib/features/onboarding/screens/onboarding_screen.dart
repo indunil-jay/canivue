@@ -1,9 +1,8 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:canivue/core/utils/page_transitions.dart';
-import 'package:canivue/features/auth/screens/signin_screen.dart';
 import 'package:canivue/features/onboarding/models/onboarding_slide.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -27,7 +26,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   void _goToSignIn() {
-    Navigator.of(context).pushReplacement(fadeSlidePageRoute(const SignInScreen()));
+    context.go('/sign-in');
   }
 
   void _handleNext() {
