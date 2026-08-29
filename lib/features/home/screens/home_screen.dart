@@ -307,7 +307,7 @@ class _DashboardContent extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final summaryAsync = ref.watch(dashboardSummaryProvider(dog.id));
+    final summaryAsync = ref.watch(dashboardSummaryProvider((id: dog.id, name: dog.name)));
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
@@ -315,7 +315,7 @@ class _DashboardContent extends ConsumerWidget {
       loading: () => const _DashboardSkeleton(),
       error: (error, _) => ErrorState(
         message: "We couldn't load ${dog.name}'s health summary.",
-        onRetry: () => ref.invalidate(dashboardSummaryProvider(dog.id)),
+        onRetry: () => ref.invalidate(dashboardSummaryProvider((id: dog.id, name: dog.name))),
       ),
       data: (summary) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
