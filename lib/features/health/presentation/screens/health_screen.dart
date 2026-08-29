@@ -14,6 +14,9 @@ import 'package:canivue/features/home/presentation/widgets/active_dog_switcher.d
 import 'package:canivue/features/pets/models/pet_model.dart';
 import 'package:canivue/features/pets/presentation/controllers/dogs_controller.dart';
 import 'package:canivue/features/pets/screens/pet_list_screen.dart';
+import 'package:canivue/features/predictions/presentation/controllers/prediction_controller.dart';
+import 'package:canivue/features/predictions/presentation/screens/prediction_history_screen.dart';
+import 'package:canivue/features/predictions/presentation/widgets/prediction_card.dart';
 
 /// Owner shell "Health" tab — the detailed health profile for the active
 /// dog (brief §9-10, §31): vitals summary, medical info, and the full
@@ -67,6 +70,20 @@ class HealthScreen extends ConsumerWidget {
                     _sectionTitle(context, 'Vitals & Trends'),
                     const SizedBox(height: AppSpacing.sm),
                     MetricChartCard(dogId: activeDog.id),
+                    const SizedBox(height: AppSpacing.xxl),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _sectionTitle(context, 'AI Disease Prediction'),
+                        TextButton(
+                          onPressed: () => Navigator.of(context).push(
+                            MaterialPageRoute(builder: (_) => PredictionHistoryScreen(dogId: activeDog.id, dogName: activeDog.name)),
+                          ),
+                          child: const Text('View History'),
+                        ),
+                      ],
+                    ),
+                    _AiPredictionSection(dogId: activeDog.id),
                     const SizedBox(height: AppSpacing.xxl),
                     _sectionTitle(context, 'Medical Info'),
                     const SizedBox(height: AppSpacing.sm),
@@ -151,6 +168,38 @@ class _HealthScoreBanner extends ConsumerWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class _AiPredictionSection extends ConsumerWidget {
+  const _AiPredictionSection({required this.dogId});
+
+  final String dogId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final predictionAsync = ref.watch(latestPredictionProvider(dogId));
+
+    return Padding(
+      padding: const EdgeInsets.only(top: AppSpacing.sm),
+      child: predictionAsync.when(
+        loading: () => SkeletonBox(height: 220, borderRadius: AppRadius.xlRadius),
+        error: (_, _) => ErrorState(
+          message: "We couldn't load the latest AI analysis.",
+          onRetry: () => ref.invalidate(latestPredictionProvider(dogId)),
+        ),
+        data: (prediction) {
+          if (prediction == null) {
+            return const EmptyState(
+              icon: Icons.auto_awesome_outlined,
+              title: 'No active predictions',
+              message: 'Canivue is continuously monitoring — nothing needs attention right now.',
+            );
+          }
+          return PredictionCard(prediction: prediction);
+        },
+      ),
     );
   }
 }
