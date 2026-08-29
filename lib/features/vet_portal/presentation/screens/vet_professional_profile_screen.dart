@@ -7,6 +7,7 @@ import 'package:canivue/core/design_system/components/skeleton_loader.dart';
 import 'package:canivue/core/design_system/tokens/tokens.dart';
 import 'package:canivue/core/widgets/app_feedback.dart';
 import 'package:canivue/features/auth/presentation/controllers/auth_controller.dart';
+import 'package:canivue/features/privacy/presentation/screens/privacy_security_screen.dart';
 import 'package:canivue/features/vet_portal/domain/vet_reputation.dart';
 import 'package:canivue/features/vet_portal/presentation/controllers/vet_portal_controller.dart';
 import 'package:canivue/features/vet_portal/presentation/screens/vet_availability_screen.dart';
@@ -73,7 +74,7 @@ class VetProfessionalProfileScreen extends ConsumerWidget {
           const SizedBox(height: AppSpacing.xxl),
           _navTile(context, Icons.event_available_rounded, 'Availability', 'Manage your weekly consultation hours', () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const VetAvailabilityScreen()))),
           _navTile(context, Icons.notifications_outlined, 'Notification Preferences', 'Appointment reminders & alerts', () => AppFeedback.showToast(context, title: 'Preferences', message: 'Coming soon.', type: ToastType.info)),
-          _navTile(context, Icons.security_rounded, 'Privacy & Security', 'Sessions, 2FA and data controls', () => AppFeedback.showToast(context, title: 'Privacy & Security', message: 'Coming soon.', type: ToastType.info)),
+          _navTile(context, Icons.security_rounded, 'Privacy & Security', 'Sessions, 2FA and data controls', () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const PrivacySecurityScreen()))),
           const SizedBox(height: AppSpacing.xl),
           SizedBox(
             width: double.infinity,
