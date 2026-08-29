@@ -27,6 +27,10 @@ class _NotificationSheetState extends State<NotificationSheet> {
   final NotificationService _service = NotificationService();
   String _selectedFilter = 'All'; // 'All', 'Unread', 'AI Health', 'Reminders'
 
+  /// Categories the user has expanded out of their grouped "N new X" summary
+  /// (brief §25 — group notifications rather than listing every one).
+  final Set<String> _expandedCategories = {};
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -214,33 +218,83 @@ class _NotificationSheetState extends State<NotificationSheet> {
                     thickness: 1,
                   ),
 
-                  // Notification Activity Feed List
+                  // Notification Activity Feed List — grouped by category so
+                  // e.g. 3 health alerts show as one "3 new" summary rather
+                  // than three separate cards (brief §25).
                   Expanded(
                     child: filteredList.isEmpty
                         ? _buildEmptyState(isDark)
-                        : ListView.separated(
-                            padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-                            physics: const BouncingScrollPhysics(),
-                            itemCount: filteredList.length,
-                            separatorBuilder: (context, index) => const SizedBox(height: 10),
-                            itemBuilder: (context, index) {
-                              final item = filteredList[index];
-                              return _NotificationCard(
-                                item: item,
-                                isDark: isDark,
-                                onDismissed: () => _service.removeNotification(item.id),
-                                onTap: () {
-                                  _service.markAsRead(item.id);
-                                  AppFeedback.showToast(
-                                    context,
-                                    title: item.title,
-                                    message: item.message,
-                                    type: ToastType.info,
+                        : Builder(builder: (context) {
+                            final categoryOrder = <String>[];
+                            final byCategory = <String, List<NotificationItem>>{};
+                            for (final item in filteredList) {
+                              if (!byCategory.containsKey(item.category)) categoryOrder.add(item.category);
+                              byCategory.putIfAbsent(item.category, () => []).add(item);
+                            }
+
+                            return ListView.separated(
+                              padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+                              physics: const BouncingScrollPhysics(),
+                              itemCount: categoryOrder.length,
+                              separatorBuilder: (context, index) => const SizedBox(height: 10),
+                              itemBuilder: (context, index) {
+                                final category = categoryOrder[index];
+                                final items = byCategory[category]!;
+
+                                if (items.length == 1) {
+                                  final item = items.first;
+                                  return _NotificationCard(
+                                    item: item,
+                                    isDark: isDark,
+                                    onDismissed: () => _service.removeNotification(item.id),
+                                    onTap: () {
+                                      _service.markAsRead(item.id);
+                                      AppFeedback.showToast(context, title: item.title, message: item.message, type: ToastType.info);
+                                    },
                                   );
-                                },
-                              );
-                            },
-                          ),
+                                }
+
+                                if (!_expandedCategories.contains(category)) {
+                                  final unread = items.where((n) => !n.isRead).length;
+                                  return _GroupSummaryTile(
+                                    category: category,
+                                    items: items,
+                                    unreadCount: unread,
+                                    isDark: isDark,
+                                    onTap: () => setState(() => _expandedCategories.add(category)),
+                                  );
+                                }
+
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(bottom: 8, left: 4),
+                                      child: TextButton.icon(
+                                        onPressed: () => setState(() => _expandedCategories.remove(category)),
+                                        icon: const Icon(Icons.unfold_less_rounded, size: 16),
+                                        label: Text('Collapse $category'),
+                                        style: TextButton.styleFrom(padding: EdgeInsets.zero, minimumSize: Size.zero, tapTargetSize: MaterialTapTargetSize.shrinkWrap),
+                                      ),
+                                    ),
+                                    for (final item in items)
+                                      Padding(
+                                        padding: const EdgeInsets.only(bottom: 10),
+                                        child: _NotificationCard(
+                                          item: item,
+                                          isDark: isDark,
+                                          onDismissed: () => _service.removeNotification(item.id),
+                                          onTap: () {
+                                            _service.markAsRead(item.id);
+                                            AppFeedback.showToast(context, title: item.title, message: item.message, type: ToastType.info);
+                                          },
+                                        ),
+                                      ),
+                                  ],
+                                );
+                              },
+                            );
+                          }),
                   ),
                 ],
               ),
@@ -338,6 +392,61 @@ class _FilterChip extends StatelessWidget {
                 ? (isDark ? Colors.white : AppTheme.primaryBlue)
                 : (isDark ? Colors.white70 : const Color(0xFF64748B)),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Collapsed "N new X" row for a category with more than one notification
+/// (brief §25) — tapping expands it into the individual cards.
+class _GroupSummaryTile extends StatelessWidget {
+  const _GroupSummaryTile({
+    required this.category,
+    required this.items,
+    required this.unreadCount,
+    required this.isDark,
+    required this.onTap,
+  });
+
+  final String category;
+  final List<NotificationItem> items;
+  final int unreadCount;
+  final bool isDark;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final accent = items.first.accentColor;
+    final label = unreadCount > 0 ? '$unreadCount new $category' : '${items.length} $category';
+
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(18),
+      child: Container(
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: isDark ? Colors.white.withValues(alpha: 0.05) : accent.withValues(alpha: 0.06),
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(color: isDark ? Colors.white.withValues(alpha: 0.1) : accent.withValues(alpha: 0.2)),
+        ),
+        child: Row(
+          children: [
+            Container(
+              height: 40,
+              width: 40,
+              decoration: BoxDecoration(color: accent.withValues(alpha: isDark ? 0.25 : 0.15), shape: BoxShape.circle),
+              child: Icon(items.first.icon, color: accent, size: 18),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                label,
+                style: GoogleFonts.plusJakartaSans(fontSize: 14, fontWeight: FontWeight.bold, color: isDark ? Colors.white : const Color(0xFF0F172A)),
+              ),
+            ),
+            Icon(Icons.chevron_right_rounded, color: isDark ? Colors.white54 : const Color(0xFF94A3B8)),
+          ],
         ),
       ),
     );
