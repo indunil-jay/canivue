@@ -6,6 +6,7 @@ import 'package:canivue/core/widgets/app_feedback.dart';
 import 'package:canivue/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:canivue/features/pets/presentation/controllers/dogs_controller.dart';
 import 'package:canivue/features/pets/screens/pet_list_screen.dart';
+import 'package:canivue/features/billing/presentation/screens/subscription_screen.dart';
 import 'package:canivue/features/medical_records/presentation/screens/medical_records_screen.dart';
 import 'package:canivue/features/profile/screens/personal_information_screen.dart';
 import 'package:canivue/features/vets/presentation/screens/appointments_screen.dart';
@@ -242,7 +243,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 icon: Icons.payment_rounded,
                 title: 'Membership & Billing',
                 subtitle: 'Canivue Premium Plan',
-                onTap: () => _showActionSnackBar('Membership & billing — coming soon'),
+                onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const SubscriptionScreen())),
                 theme: theme,
               ),
               const SizedBox(height: 24),
