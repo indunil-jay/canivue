@@ -129,6 +129,8 @@ void main() {
         child: const MaterialApp(home: ProfileScreen()),
       ),
     );
+    // Flush the fake dogs repository's simulated network delay (500ms).
+    await tester.pump(const Duration(milliseconds: 700));
 
     expect(find.text('Profile & Settings'), findsOneWidget);
     expect(find.text('Alex'), findsOneWidget);

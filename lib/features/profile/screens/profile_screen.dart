@@ -4,9 +4,10 @@ import 'package:go_router/go_router.dart';
 import 'package:canivue/core/theme/app_theme.dart';
 import 'package:canivue/core/widgets/app_feedback.dart';
 import 'package:canivue/features/auth/presentation/controllers/auth_controller.dart';
+import 'package:canivue/features/pets/presentation/controllers/dogs_controller.dart';
 import 'package:canivue/features/pets/screens/pet_list_screen.dart';
-import 'package:canivue/features/pets/models/pet_model.dart';
 import 'package:canivue/features/profile/screens/personal_information_screen.dart';
+import 'package:canivue/features/vets/presentation/screens/appointments_screen.dart';
 
 /// The "Profile" tab of the owner shell — account, dogs shortcut, records,
 /// billing, preferences and sign-out. Evolved from the old drawer-based
@@ -72,7 +73,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final user = ref.watch(authControllerProvider);
     final displayName = user?.name.isNotEmpty == true ? user!.name : 'Pet Parent';
     final email = user?.email ?? 'guest@canivue.com';
-    final pets = Pet.samplePets;
+    final pets = ref.watch(dogsProvider).value ?? const [];
+    final activeDog = ref.watch(activeDogProvider).value;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Profile & Settings')),
@@ -203,6 +205,21 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 title: 'Personal Information',
                 subtitle: 'Edit contact & address details',
                 onTap: () => _navigateToPersonalInfo(email, displayName),
+                theme: theme,
+              ),
+              _buildNavTile(
+                icon: Icons.event_available_rounded,
+                title: 'My Appointments',
+                subtitle: 'Upcoming & past veterinary visits',
+                onTap: () {
+                  if (activeDog == null) {
+                    _showActionSnackBar('Add a dog to see appointments');
+                    return;
+                  }
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => AppointmentsScreen(dogId: activeDog.id, dogName: activeDog.name)),
+                  );
+                },
                 theme: theme,
               ),
               _buildNavTile(
