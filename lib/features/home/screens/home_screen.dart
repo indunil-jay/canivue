@@ -26,6 +26,7 @@ import 'package:canivue/features/nutrition/presentation/screens/nutrition_screen
 import 'package:canivue/features/pets/screens/pet_detail_screen.dart';
 import 'package:canivue/features/pets/screens/pet_list_screen.dart';
 import 'package:canivue/features/preventive_care/presentation/screens/preventive_care_screen.dart';
+import 'package:canivue/features/search/presentation/screens/search_screen.dart';
 import 'package:canivue/features/vets/presentation/screens/appointments_screen.dart';
 import 'package:canivue/features/vets/presentation/screens/vet_discovery_screen.dart';
 
@@ -123,7 +124,7 @@ class HomeScreen extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildSearchBar(isDark),
+              _buildSearchBar(context, isDark),
               const SizedBox(height: AppSpacing.xl),
               activeDogAsync.when(
                 loading: () => const _DashboardSkeleton(),
@@ -166,33 +167,28 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildSearchBar(bool isDark) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-      decoration: BoxDecoration(
-        color: isDark ? AppColors.darkCard : AppColors.lightCard,
-        borderRadius: AppRadius.xlRadius,
-        border: Border.all(color: isDark ? AppColors.darkBorder : AppColors.lightBorder),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04), blurRadius: 12, offset: const Offset(0, 4))],
-      ),
-      child: Row(
-        children: [
-          Icon(Icons.search_rounded, color: isDark ? AppColors.darkMutedText : AppColors.lightMutedText),
-          const SizedBox(width: 12),
-          Expanded(
-            child: TextField(
-              style: GoogleFonts.plusJakartaSans(color: isDark ? Colors.white : const Color(0xFF0F172A), fontSize: 14),
-              decoration: InputDecoration(
-                hintText: 'Search dogs, health telemetry, records...',
-                hintStyle: GoogleFonts.plusJakartaSans(color: isDark ? AppColors.darkMutedText : AppColors.lightMutedText, fontSize: 14),
-                border: InputBorder.none,
-                enabledBorder: InputBorder.none,
-                focusedBorder: InputBorder.none,
-                filled: false,
-              ),
+  Widget _buildSearchBar(BuildContext context, bool isDark) {
+    return InkWell(
+      onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const SearchScreen())),
+      borderRadius: AppRadius.xlRadius,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        decoration: BoxDecoration(
+          color: isDark ? AppColors.darkCard : AppColors.lightCard,
+          borderRadius: AppRadius.xlRadius,
+          border: Border.all(color: isDark ? AppColors.darkBorder : AppColors.lightBorder),
+          boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04), blurRadius: 12, offset: const Offset(0, 4))],
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.search_rounded, color: isDark ? AppColors.darkMutedText : AppColors.lightMutedText),
+            const SizedBox(width: 12),
+            Text(
+              'Search dogs, veterinarians, posts...',
+              style: GoogleFonts.plusJakartaSans(color: isDark ? AppColors.darkMutedText : AppColors.lightMutedText, fontSize: 14),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
