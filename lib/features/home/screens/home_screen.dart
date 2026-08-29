@@ -23,6 +23,8 @@ import 'package:canivue/features/pets/models/pet_model.dart';
 import 'package:canivue/features/pets/presentation/controllers/dogs_controller.dart';
 import 'package:canivue/features/pets/screens/pet_detail_screen.dart';
 import 'package:canivue/features/pets/screens/pet_list_screen.dart';
+import 'package:canivue/features/vets/presentation/screens/appointments_screen.dart';
+import 'package:canivue/features/vets/presentation/screens/vet_discovery_screen.dart';
 
 /// The "Home" tab of the owner shell — see [OwnerShell] for the bottom
 /// navigation and other tabs. User identity comes from
@@ -243,12 +245,13 @@ class HomeScreen extends ConsumerWidget {
           icon: Icons.calendar_month_rounded,
           gradient: AppTheme.emeraldGradient,
           isDark: isDark,
-          onTap: () => AppFeedback.showToast(
-            context,
-            title: 'Vet Booking 🗓️',
-            message: 'Veterinary discovery & booking arrive in a future update.',
-            type: ToastType.info,
-          ),
+          onTap: () {
+            final activeDog = ref.read(activeDogProvider).value;
+            if (activeDog == null) return;
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => VetDiscoveryScreen(dogId: activeDog.id, dogName: activeDog.name)),
+            );
+          },
         ),
       ],
     );
@@ -332,7 +335,15 @@ class _DashboardContent extends ConsumerWidget {
           const SizedBox(height: AppSpacing.xxl),
           _sectionHeader(theme, isDark, 'Upcoming Appointment'),
           const SizedBox(height: AppSpacing.sm),
-          AppointmentCard(appointment: summary.appointment),
+          AppointmentCard(
+            appointment: summary.appointment,
+            onBook: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => VetDiscoveryScreen(dogId: dog.id, dogName: dog.name)),
+            ),
+            onViewAppointments: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => AppointmentsScreen(dogId: dog.id, dogName: dog.name)),
+            ),
+          ),
           const SizedBox(height: AppSpacing.lg),
           DeviceStatusChip(device: summary.device, dogId: dog.id, dogName: dog.name),
         ],
