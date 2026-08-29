@@ -1,54 +1,44 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:canivue/core/theme/app_theme.dart';
 import 'package:canivue/core/widgets/app_feedback.dart';
 import 'package:canivue/core/widgets/luxury_biometric_ring.dart';
 import 'package:canivue/core/widgets/luxury_stat_card.dart';
+import 'package:canivue/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:canivue/features/health_check/screens/health_check_capture_screen.dart';
 import 'package:canivue/features/notifications/widgets/notification_badge_button.dart';
 import 'package:canivue/features/pets/models/pet_model.dart';
 import 'package:canivue/features/pets/screens/pet_detail_screen.dart';
 import 'package:canivue/features/pets/screens/pet_list_screen.dart';
-import 'package:canivue/features/profile/widgets/profile_side_sheet.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({
-    super.key,
-    this.userEmail = 'user@example.com',
-    this.userName,
-  });
-
-  final String userEmail;
-  final String? userName;
+/// The "Home" tab of the owner shell — see [OwnerShell] for the bottom
+/// navigation and other tabs. User identity comes from
+/// [authControllerProvider] rather than constructor arguments so it always
+/// reflects who's signed in.
+class HomeScreen extends ConsumerStatefulWidget {
+  const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  int _currentIndex = 0;
+class _HomeScreenState extends ConsumerState<HomeScreen> {
   final List<Pet> _pets = List.from(Pet.samplePets);
 
-  String get _displayName {
-    if (widget.userName != null && widget.userName!.isNotEmpty) {
-      return widget.userName!;
+  String _displayName(String? userName, String userEmail) {
+    if (userName != null && userName.isNotEmpty) {
+      return userName;
     }
-    final emailPrefix = widget.userEmail.split('@').first;
+    final emailPrefix = userEmail.split('@').first;
     if (emailPrefix.isNotEmpty) {
       return emailPrefix[0].toUpperCase() + emailPrefix.substring(1);
     }
     return 'Pet Parent';
   }
 
-  void _openProfileSideSheet() {
-    _scaffoldKey.currentState?.openEndDrawer();
-  }
-
   void _navigateToPets() {
-    setState(() {
-      _currentIndex = 1;
-    });
+    Navigator.of(context).push(MaterialPageRoute(builder: (_) => const PetListScreen()));
   }
 
   void _navigateToHealthCheck({Pet? initialPet}) {
@@ -84,13 +74,10 @@ class _HomeScreenState extends State<HomeScreen> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final isDark = theme.brightness == Brightness.dark;
+    final user = ref.watch(authControllerProvider);
+    final displayName = _displayName(user?.name, user?.email ?? 'user@example.com');
 
     return Scaffold(
-      key: _scaffoldKey,
-      endDrawer: ProfileSideSheet(
-        userEmail: widget.userEmail,
-        userName: widget.userName,
-      ),
       appBar: AppBar(
         backgroundColor: colorScheme.surface,
         elevation: 0,
@@ -119,7 +106,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Hello, $_displayName 👋',
+                    'Hello, $displayName 👋',
                     style: GoogleFonts.plusJakartaSans(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
@@ -144,90 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
           SizedBox(width: 8),
         ],
       ),
-      body: _currentIndex == 1 ? const PetListScreen() : _buildDashboardBody(theme, colorScheme, isDark),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF0D1524).withValues(alpha: 0.95) : Colors.white.withValues(alpha: 0.95),
-          border: Border(
-            top: BorderSide(
-              color: isDark ? Colors.white.withValues(alpha: 0.1) : const Color(0xFFE2E8F0),
-            ),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: isDark ? 0.4 : 0.06),
-              blurRadius: 20,
-              offset: const Offset(0, -4),
-            ),
-          ],
-        ),
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _buildNavItem(0, Icons.home_rounded, Icons.home_outlined, 'Home', isDark),
-                _buildNavItem(1, Icons.pets_rounded, Icons.pets_outlined, 'My Pets', isDark),
-                _buildNavItem(2, Icons.analytics_rounded, Icons.analytics_outlined, 'Telemetry', isDark),
-                _buildNavItem(3, Icons.person_rounded, Icons.person_outline_rounded, 'Profile', isDark),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildNavItem(int index, IconData activeIcon, IconData inactiveIcon, String label, bool isDark) {
-    final isSelected = _currentIndex == index;
-
-    return InkWell(
-      onTap: () {
-        if (index == 3) {
-          _openProfileSideSheet();
-        } else if (index == 2) {
-          _navigateToHealthCheck();
-        } else {
-          setState(() {
-            _currentIndex = index;
-          });
-        }
-      },
-      borderRadius: BorderRadius.circular(16),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 250),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-        decoration: BoxDecoration(
-          color: isSelected
-              ? (isDark ? AppTheme.primaryBlue.withValues(alpha: 0.22) : const Color(0xFFEFF6FF))
-              : Colors.transparent,
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              isSelected ? activeIcon : inactiveIcon,
-              color: isSelected
-                  ? (isDark ? AppTheme.cyanAccent : AppTheme.primaryBlue)
-                  : (isDark ? Colors.white60 : const Color(0xFF94A3B8)),
-              size: 22,
-            ),
-            if (isSelected) ...[
-              const SizedBox(width: 8),
-              Text(
-                label,
-                style: GoogleFonts.plusJakartaSans(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 13,
-                  color: isDark ? AppTheme.cyanAccent : AppTheme.primaryBlue,
-                ),
-              ),
-            ],
-          ],
-        ),
-      ),
+      body: _buildDashboardBody(theme, colorScheme, isDark),
     );
   }
 
