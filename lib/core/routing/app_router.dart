@@ -7,6 +7,7 @@ import 'package:canivue/features/auth/presentation/controllers/auth_controller.d
 import 'package:canivue/features/auth/screens/forgot_password_screen.dart';
 import 'package:canivue/features/auth/screens/signin_screen.dart';
 import 'package:canivue/features/auth/screens/signup_screen.dart';
+import 'package:canivue/features/auth/screens/splash_screen.dart';
 import 'package:canivue/features/community/presentation/screens/community_screen.dart';
 import 'package:canivue/features/health/presentation/screens/health_screen.dart';
 import 'package:canivue/features/home/screens/home_screen.dart';
@@ -27,11 +28,13 @@ import 'package:canivue/features/vet_portal/presentation/screens/vet_professiona
 /// keeps each role confined to its own shell.
 final goRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
-    initialLocation: '/onboarding',
+    initialLocation: '/splash',
     redirect: (context, state) {
       final user = ref.read(authControllerProvider);
       final signedIn = user != null;
       final location = state.matchedLocation;
+      if (location.startsWith('/splash')) return null;
+
       final inAuthArea = location.startsWith('/onboarding') ||
           location.startsWith('/sign-in') ||
           location.startsWith('/sign-up') ||
@@ -49,6 +52,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       return null;
     },
     routes: [
+      GoRoute(path: '/splash', builder: (context, state) => const SplashScreen()),
       GoRoute(path: '/onboarding', builder: (context, state) => const OnboardingScreen()),
       GoRoute(path: '/sign-in', builder: (context, state) => const SignInScreen()),
       GoRoute(path: '/sign-up', builder: (context, state) => const SignUpScreen()),

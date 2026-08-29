@@ -28,7 +28,10 @@ class _SignedInAuthController extends AuthController {
 void main() {
   testWidgets('CanivueApp launches with the onboarding flow smoke test', (WidgetTester tester) async {
     await tester.pumpWidget(const CanivueApp());
-    await tester.pump(const Duration(milliseconds: 500));
+    // Flush the splash screen's brief branded pause before it routes on,
+    // then pump once more so go_router's resulting rebuild lands.
+    await tester.pump(const Duration(milliseconds: 1200));
+    await tester.pump();
 
     expect(find.text('Your Dog\'s Health,\nAll in One Place'), findsOneWidget);
     expect(find.text('Skip'), findsOneWidget);
@@ -36,7 +39,10 @@ void main() {
 
   testWidgets('Onboarding Skip navigates to SignInScreen smoke test', (WidgetTester tester) async {
     await tester.pumpWidget(const CanivueApp());
-    await tester.pump(const Duration(milliseconds: 500));
+    // Flush the splash screen's brief branded pause before it routes on,
+    // then pump once more so go_router's resulting rebuild lands.
+    await tester.pump(const Duration(milliseconds: 1200));
+    await tester.pump();
 
     await tester.tap(find.text('Skip'));
     await tester.pumpAndSettle();
