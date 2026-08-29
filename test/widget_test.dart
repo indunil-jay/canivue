@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:canivue/features/auth/domain/app_user.dart';
+import 'package:canivue/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:canivue/features/auth/screens/forgot_password_screen.dart';
 import 'package:canivue/features/auth/screens/otp_verification_screen.dart';
 import 'package:canivue/features/auth/screens/reset_password_screen.dart';
@@ -12,21 +15,34 @@ import 'package:canivue/features/pets/screens/add_edit_pet_screen.dart';
 import 'package:canivue/features/pets/screens/pet_detail_screen.dart';
 import 'package:canivue/features/pets/screens/pet_list_screen.dart';
 import 'package:canivue/features/profile/screens/personal_information_screen.dart';
-import 'package:canivue/features/profile/widgets/profile_side_sheet.dart';
+import 'package:canivue/features/profile/screens/profile_screen.dart';
 import 'package:canivue/main.dart';
+
+/// Test-only [AuthController] that starts already signed in, so screens
+/// gated behind [authControllerProvider] can be smoke-tested in isolation.
+class _SignedInAuthController extends AuthController {
+  @override
+  AppUser? build() => const AppUser(email: 'alex@canivue.com', name: 'Alex');
+}
 
 void main() {
   testWidgets('CanivueApp launches with the onboarding flow smoke test', (WidgetTester tester) async {
     await tester.pumpWidget(const CanivueApp());
-    await tester.pump(const Duration(milliseconds: 500));
+    // Flush the splash screen's brief branded pause before it routes on,
+    // then pump once more so go_router's resulting rebuild lands.
+    await tester.pump(const Duration(milliseconds: 1200));
+    await tester.pump();
 
-    expect(find.text('All Your Pets,\nOne Loving Home'), findsOneWidget);
+    expect(find.text('Your Dog\'s Health,\nAll in One Place'), findsOneWidget);
     expect(find.text('Skip'), findsOneWidget);
   });
 
   testWidgets('Onboarding Skip navigates to SignInScreen smoke test', (WidgetTester tester) async {
     await tester.pumpWidget(const CanivueApp());
-    await tester.pump(const Duration(milliseconds: 500));
+    // Flush the splash screen's brief branded pause before it routes on,
+    // then pump once more so go_router's resulting rebuild lands.
+    await tester.pump(const Duration(milliseconds: 1200));
+    await tester.pump();
 
     await tester.tap(find.text('Skip'));
     await tester.pumpAndSettle();
@@ -41,8 +57,10 @@ void main() {
 
   testWidgets('SignUpScreen renders correctly smoke test', (WidgetTester tester) async {
     await tester.pumpWidget(
-      const MaterialApp(
-        home: SignUpScreen(),
+      const ProviderScope(
+        child: MaterialApp(
+          home: SignUpScreen(),
+        ),
       ),
     );
 
@@ -93,13 +111,16 @@ void main() {
 
   testWidgets('HomeScreen renders correctly smoke test', (WidgetTester tester) async {
     await tester.pumpWidget(
-      const MaterialApp(
-        home: HomeScreen(
-          userEmail: 'alex@canivue.com',
-          userName: 'Alex',
-        ),
+      ProviderScope(
+        overrides: [authControllerProvider.overrideWith(_SignedInAuthController.new)],
+        child: const MaterialApp(home: HomeScreen()),
       ),
     );
+    // Flush the fake dogs + dashboard-summary repositories' simulated
+    // network delay (500ms then 600ms) rather than pumpAndSettle, since the
+    // loading skeleton's shimmer animation repeats indefinitely.
+    await tester.pump(const Duration(milliseconds: 700));
+    await tester.pump(const Duration(milliseconds: 700));
 
     expect(find.text('Hello, Alex 👋'), findsOneWidget);
     expect(find.text('Quick Services'), findsOneWidget);
@@ -107,25 +128,23 @@ void main() {
     expect(find.text('Vaccinations'), findsOneWidget);
   });
 
-  testWidgets('ProfileSideSheet renders correctly smoke test', (WidgetTester tester) async {
+  testWidgets('ProfileScreen renders correctly smoke test', (WidgetTester tester) async {
     await tester.pumpWidget(
-      const MaterialApp(
-        home: Scaffold(
-          body: ProfileSideSheet(
-            userEmail: 'alex@canivue.com',
-            userName: 'Alex',
-          ),
-        ),
+      ProviderScope(
+        overrides: [authControllerProvider.overrideWith(_SignedInAuthController.new)],
+        child: const MaterialApp(home: ProfileScreen()),
       ),
     );
+    // Flush the fake dogs repository's simulated network delay (500ms).
+    await tester.pump(const Duration(milliseconds: 700));
 
     expect(find.text('Profile & Settings'), findsOneWidget);
     expect(find.text('Alex'), findsOneWidget);
     expect(find.text('alex@canivue.com'), findsOneWidget);
-    expect(find.text('MY PETS'), findsOneWidget);
+    expect(find.text('MY DOGS'), findsOneWidget);
     expect(find.text('Buddy'), findsOneWidget);
     expect(find.text('Luna'), findsOneWidget);
-    expect(find.text('Add Another Pet'), findsOneWidget);
+    expect(find.text('Add Another Dog'), findsOneWidget);
     expect(find.text('Log Out'), findsOneWidget);
   });
 

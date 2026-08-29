@@ -47,5 +47,7 @@ app.*.map.json
 # Widget Preview related
 .widget_preview/
 
-# Claude/Editor related
-.claude/
+# Claude/Editor related — keep local tooling config (launch.json, settings)
+# out of git, but track the architecture skill so it travels with the repo.
+.claude/*
+!.claude/skills/

@@ -1,3 +1,27 @@
+class VaccinationRecord {
+  const VaccinationRecord({required this.name, required this.dateGiven, this.nextDueDate});
+
+  final String name;
+  final DateTime dateGiven;
+  final DateTime? nextDueDate;
+}
+
+class MedicationRecord {
+  const MedicationRecord({required this.name, required this.dosage, required this.frequency});
+
+  final String name;
+  final String dosage;
+  final String frequency;
+}
+
+class InsuranceInfo {
+  const InsuranceInfo({required this.provider, required this.policyNumber, required this.expiryDate});
+
+  final String provider;
+  final String policyNumber;
+  final DateTime expiryDate;
+}
+
 class Pet {
   final String id;
   final String name;
@@ -18,6 +42,10 @@ class Pet {
   final List<String> allergies;
   final String primaryVet;
   final String specialNotes;
+  final List<String> existingConditions;
+  final List<VaccinationRecord> vaccinations;
+  final List<MedicationRecord> medications;
+  final InsuranceInfo? insurance;
 
   const Pet({
     required this.id,
@@ -39,6 +67,10 @@ class Pet {
     this.allergies = const ['Chicken protein (mild)'],
     this.primaryVet = 'Dr. Sarah Smith (Oakwood Vet)',
     this.specialNotes = 'Very friendly, loves playing fetch, needs daily joint supplements.',
+    this.existingConditions = const [],
+    this.vaccinations = const [],
+    this.medications = const [],
+    this.insurance,
   });
 
   String get ageFormatted {
@@ -71,6 +103,10 @@ class Pet {
     List<String>? allergies,
     String? primaryVet,
     String? specialNotes,
+    List<String>? existingConditions,
+    List<VaccinationRecord>? vaccinations,
+    List<MedicationRecord>? medications,
+    InsuranceInfo? insurance,
   }) {
     return Pet(
       id: id ?? this.id,
@@ -92,6 +128,10 @@ class Pet {
       allergies: allergies ?? this.allergies,
       primaryVet: primaryVet ?? this.primaryVet,
       specialNotes: specialNotes ?? this.specialNotes,
+      existingConditions: existingConditions ?? this.existingConditions,
+      vaccinations: vaccinations ?? this.vaccinations,
+      medications: medications ?? this.medications,
+      insurance: insurance ?? this.insurance,
     );
   }
 
@@ -115,6 +155,15 @@ class Pet {
           allergies: const ['Wheat (mild)'],
           primaryVet: 'Dr. Sarah Jenkins (Bay Area Vet)',
           specialNotes: 'Active and energetic, loves swimming and retriever training.',
+          existingConditions: const ['Mild hip dysplasia (monitoring)'],
+          vaccinations: [
+            VaccinationRecord(name: 'Rabies', dateGiven: DateTime(2025, 6, 1), nextDueDate: DateTime(2026, 6, 1)),
+            VaccinationRecord(name: 'DHPP', dateGiven: DateTime(2025, 3, 15), nextDueDate: DateTime(2026, 3, 15)),
+          ],
+          medications: const [
+            MedicationRecord(name: 'Joint Support Chews', dosage: '1 chew', frequency: 'Daily'),
+          ],
+          insurance: InsuranceInfo(provider: 'PetGuard Plus', policyNumber: 'PG-88213', expiryDate: DateTime(2026, 12, 31)),
         ),
         Pet(
           id: 'pet-2',
@@ -135,6 +184,12 @@ class Pet {
           allergies: const ['None reported'],
           primaryVet: 'Dr. Robert Miller (Sunset Animal Clinic)',
           specialNotes: 'Highly intelligent, protective, in intermediate agility training.',
+          existingConditions: const [],
+          vaccinations: [
+            VaccinationRecord(name: 'Rabies', dateGiven: DateTime(2025, 8, 20), nextDueDate: DateTime(2026, 8, 20)),
+          ],
+          medications: const [],
+          insurance: null,
         ),
         Pet(
           id: 'pet-3',
@@ -155,6 +210,13 @@ class Pet {
           allergies: const ['Chicken protein'],
           primaryVet: 'Dr. Sarah Jenkins (Bay Area Vet)',
           specialNotes: 'Prefers cool indoor spaces, sensitive respiratory system.',
+          existingConditions: const ['Brachycephalic airway syndrome (mild)'],
+          vaccinations: [
+            VaccinationRecord(name: 'Rabies', dateGiven: DateTime(2025, 1, 10), nextDueDate: DateTime(2026, 1, 10)),
+            VaccinationRecord(name: 'Bordetella', dateGiven: DateTime(2025, 7, 2), nextDueDate: DateTime(2026, 1, 2)),
+          ],
+          medications: const [],
+          insurance: InsuranceInfo(provider: 'Canivue Care', policyNumber: 'CV-40217', expiryDate: DateTime(2026, 6, 30)),
         ),
       ];
 }

@@ -6,6 +6,10 @@ enum NotificationType {
   activityGoal,
   smartCollar,
   vetAppointment,
+  vetMessage,
+  medicationReminder,
+  communityActivity,
+  billing,
 }
 
 class NotificationItem {
@@ -67,6 +71,39 @@ class NotificationItem {
         return Icons.bluetooth_connected_rounded;
       case NotificationType.vetAppointment:
         return Icons.medical_services_rounded;
+      case NotificationType.vetMessage:
+        return Icons.chat_bubble_rounded;
+      case NotificationType.medicationReminder:
+        return Icons.medication_rounded;
+      case NotificationType.communityActivity:
+        return Icons.groups_rounded;
+      case NotificationType.billing:
+        return Icons.receipt_long_rounded;
+    }
+  }
+
+  /// Broad grouping bucket used for "N new X" notification summaries
+  /// (brief §25) rather than listing every notification individually.
+  String get category {
+    switch (type) {
+      case NotificationType.aiHealthAlert:
+        return 'Health Alerts';
+      case NotificationType.vaccineReminder:
+        return 'Vaccination Reminders';
+      case NotificationType.medicationReminder:
+        return 'Medication Reminders';
+      case NotificationType.activityGoal:
+        return 'Activity';
+      case NotificationType.smartCollar:
+        return 'Device Alerts';
+      case NotificationType.vetAppointment:
+        return 'Appointments';
+      case NotificationType.vetMessage:
+        return 'Veterinary Messages';
+      case NotificationType.communityActivity:
+        return 'Community Activity';
+      case NotificationType.billing:
+        return 'Subscription & Billing';
     }
   }
 
@@ -82,6 +119,14 @@ class NotificationItem {
         return const Color(0xFF0066FF); // Sapphire
       case NotificationType.vetAppointment:
         return const Color(0xFF8B5CF6); // Violet
+      case NotificationType.vetMessage:
+        return const Color(0xFF0F766E); // Teal
+      case NotificationType.medicationReminder:
+        return const Color(0xFFF59E0B); // Amber
+      case NotificationType.communityActivity:
+        return const Color(0xFF6366F1); // Indigo
+      case NotificationType.billing:
+        return const Color(0xFF64748B); // Slate
     }
   }
 

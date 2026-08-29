@@ -1,10 +1,10 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:canivue/core/theme/app_theme.dart';
 import 'package:canivue/core/widgets/app_feedback.dart';
 import 'package:canivue/core/widgets/aura_canvas_background.dart';
-import 'package:canivue/features/auth/screens/signin_screen.dart';
 import 'package:canivue/features/auth/widgets/custom_text_field.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
@@ -60,10 +60,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       type: ToastType.success,
     );
 
-    Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(builder: (_) => const SignInScreen()),
-      (route) => false,
-    );
+    context.go('/sign-in');
   }
 
   @override

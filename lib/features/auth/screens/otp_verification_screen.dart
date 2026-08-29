@@ -12,9 +12,15 @@ class OtpVerificationScreen extends StatefulWidget {
   const OtpVerificationScreen({
     super.key,
     required this.email,
+    this.onVerified,
   });
 
   final String email;
+
+  /// When provided, called instead of navigating to [ResetPasswordScreen] —
+  /// lets this same OTP flow back both "forgot password" and "verify your
+  /// email at signup" (brief §5) without duplicating the screen.
+  final VoidCallback? onVerified;
 
   @override
   State<OtpVerificationScreen> createState() => _OtpVerificationScreenState();
@@ -98,6 +104,11 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     setState(() {
       _isLoading = false;
     });
+
+    if (widget.onVerified != null) {
+      widget.onVerified!();
+      return;
+    }
 
     Navigator.of(context).push(
       MaterialPageRoute(
