@@ -9,6 +9,8 @@ import 'package:canivue/core/design_system/tokens/tokens.dart';
 import 'package:canivue/features/health/domain/health_timeline_event.dart';
 import 'package:canivue/features/health/presentation/controllers/health_timeline_controller.dart';
 import 'package:canivue/features/health/presentation/widgets/metric_chart_card.dart';
+import 'package:canivue/features/emergency/presentation/screens/emergency_screen.dart';
+import 'package:canivue/features/insights/presentation/widgets/insights_section.dart';
 import 'package:canivue/features/home/presentation/controllers/dashboard_controller.dart';
 import 'package:canivue/features/home/presentation/widgets/active_dog_switcher.dart';
 import 'package:canivue/features/pets/models/pet_model.dart';
@@ -30,8 +32,23 @@ class HealthScreen extends ConsumerWidget {
     final activeDogAsync = ref.watch(activeDogProvider);
     final dogsAsync = ref.watch(dogsProvider);
 
+    final activeDog = activeDogAsync.value;
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Health')),
+      appBar: AppBar(
+        title: const Text('Health'),
+        actions: [
+          IconButton(
+            tooltip: 'Emergency',
+            icon: Icon(Icons.emergency_rounded, color: Theme.of(context).brightness == Brightness.dark ? AppColors.errorOnDark : AppColors.error),
+            onPressed: activeDog == null
+                ? null
+                : () => Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => EmergencyScreen(dogId: activeDog.id, dogName: activeDog.name)),
+                    ),
+          ),
+        ],
+      ),
       body: SafeArea(
         child: activeDogAsync.when(
           loading: () => const _HealthSkeleton(),
@@ -84,6 +101,10 @@ class HealthScreen extends ConsumerWidget {
                       ],
                     ),
                     _AiPredictionSection(dogId: activeDog.id),
+                    const SizedBox(height: AppSpacing.xxl),
+                    _sectionTitle(context, 'Long-Term Insights'),
+                    const SizedBox(height: AppSpacing.sm),
+                    InsightsSection(dogId: activeDog.id, dogName: activeDog.name),
                     const SizedBox(height: AppSpacing.xxl),
                     _sectionTitle(context, 'Medical Info'),
                     const SizedBox(height: AppSpacing.sm),
