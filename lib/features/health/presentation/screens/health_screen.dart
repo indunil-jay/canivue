@@ -8,6 +8,7 @@ import 'package:canivue/core/design_system/components/timeline_tile.dart';
 import 'package:canivue/core/design_system/tokens/tokens.dart';
 import 'package:canivue/features/health/domain/health_timeline_event.dart';
 import 'package:canivue/features/health/presentation/controllers/health_timeline_controller.dart';
+import 'package:canivue/features/health/presentation/widgets/metric_chart_card.dart';
 import 'package:canivue/features/home/presentation/controllers/dashboard_controller.dart';
 import 'package:canivue/features/home/presentation/widgets/active_dog_switcher.dart';
 import 'package:canivue/features/pets/models/pet_model.dart';
@@ -62,6 +63,10 @@ class HealthScreen extends ConsumerWidget {
                     ActiveDogSwitcher(dogs: dogs, activeDog: activeDog),
                     const SizedBox(height: AppSpacing.xl),
                     _HealthScoreBanner(dog: activeDog),
+                    const SizedBox(height: AppSpacing.xxl),
+                    _sectionTitle(context, 'Vitals & Trends'),
+                    const SizedBox(height: AppSpacing.sm),
+                    MetricChartCard(dogId: activeDog.id),
                     const SizedBox(height: AppSpacing.xxl),
                     _sectionTitle(context, 'Medical Info'),
                     const SizedBox(height: AppSpacing.sm),
