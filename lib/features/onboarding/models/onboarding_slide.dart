@@ -31,56 +31,23 @@ class OnboardingSlide {
 const List<OnboardingSlide> onboardingSlides = [
   OnboardingSlide(
     imageAsset: 'assets/images/onboarding/onboard_welcome.jpg',
-    badge: '🐾 Welcome to Canivue',
+    badge: 'Intelligent Canine Care',
     stepLabel: '01 / 04',
-    title: 'All Your Pets,\nOne Loving Home',
+    title: 'Your Dog\'s Health,\nAll in One Place',
     description:
-        'Canivue is your adaptive multimodal AI companion for canine care — uniting photos, smart-collar activity, symptoms and medical history in one secure home.',
+        'Unite smart collar activity, photos, symptoms, and vet records into one intelligent canine dashboard.',
     icon: Icons.pets_rounded,
-    accentColor: Color(0xFF38BDF8), // Sky Blue Accent
+    accentColor: Color(0xFF2DD4BF), // Bright Teal Accent
     primaryGradient: LinearGradient(
-      colors: [Color(0xFF0066FF), Color(0xFF00B4D8)],
+      colors: [Color(0xFF0F766E), Color(0xFF14B8A6)],
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
     ),
     backgroundGradient: LinearGradient(
       colors: [
-        Color(0xFF061126), // Midnight Slate Blue
-        Color(0xFF0A2540), // Deep Navy
-        Color(0xFF003882), // Royal Indigo
-      ],
-      begin: Alignment.topCenter,
-      end: Alignment.bottomCenter,
-    ),
-    cardGradient: LinearGradient(
-      colors: [
-        Color(0x28FFFFFF), // 16% Frosted White Glass
-        Color(0x140066FF), // Soft Blue tint
-      ],
-      begin: Alignment.topLeft,
-      end: Alignment.bottomRight,
-    ),
-    featureTags: ['Multi-Pet Profiles', 'Real Photo Gallery', 'Instant ID Info'],
-  ),
-  OnboardingSlide(
-    imageAsset: 'assets/images/onboarding/onboard_track.jpg',
-    badge: '🧠 Multimodal AI',
-    stepLabel: '02 / 04',
-    title: 'Snap, Speak &\nLet AI Fuse the Clues',
-    description:
-        'Photograph a symptom, sync your smart collar\'s motion data, and describe what you\'re seeing. Our confidence-weighted adaptive fusion engine analyses all three together for a far more reliable read than any single input alone.',
-    icon: Icons.biotech_rounded,
-    accentColor: Color(0xFF22D3EE), // Cyan / Turquoise Accent
-    primaryGradient: LinearGradient(
-      colors: [Color(0xFF0284C7), Color(0xFF06B6D4)],
-      begin: Alignment.topLeft,
-      end: Alignment.bottomRight,
-    ),
-    backgroundGradient: LinearGradient(
-      colors: [
-        Color(0xFF041926), // Marine Midnight
-        Color(0xFF06334D), // Deep Cyan Teal
-        Color(0xFF0369A1), // Ocean Cyan
+        Color(0xFF0A1413),
+        Color(0xFF0F1F1B),
+        Color(0xFF123330),
       ],
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
@@ -88,32 +55,65 @@ const List<OnboardingSlide> onboardingSlides = [
     cardGradient: LinearGradient(
       colors: [
         Color(0x28FFFFFF),
-        Color(0x140284C7),
+        Color(0x140F766E),
       ],
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
     ),
-    featureTags: ['Photo Analysis', 'Smart Collar Sync', 'Confidence-Weighted Fusion'],
+    featureTags: ['Dog Profiles', 'Smart Collar Sync', 'Health History'],
   ),
   OnboardingSlide(
-    imageAsset: 'assets/images/onboarding/onboard_records.jpg',
-    badge: '📈 Risk Forecast',
-    stepLabel: '03 / 04',
-    title: 'Know What\'s Coming,\nNot Just What\'s Wrong',
+    imageAsset: 'assets/images/onboarding/onboard_track.jpg',
+    badge: 'Multimodal AI',
+    stepLabel: '02 / 04',
+    title: 'Snap, Speak &\nDetect Issues Early',
     description:
-        'Our Disease Progression & Risk Prediction Engine (DPRPE) studies behavioural trends, breed, age and history to forecast a 7-day risk score — with plain-language reasons and clear vet-urgency guidance.',
-    icon: Icons.timeline_rounded,
-    accentColor: Color(0xFF818CF8), // Periwinkle / Violet Indigo Accent
+        'Photograph symptoms and describe changes. Our AI fuses image cues with collar telemetry for early alerts.',
+    icon: Icons.biotech_rounded,
+    accentColor: Color(0xFF06B6B0), // Teal-Cyan Accent
     primaryGradient: LinearGradient(
-      colors: [Color(0xFF4F46E5), Color(0xFF38BDF8)],
+      colors: [Color(0xFF0E7490), Color(0xFF06B6B0)],
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
     ),
     backgroundGradient: LinearGradient(
       colors: [
-        Color(0xFF0A0F2B), // Deep Space Indigo
-        Color(0xFF1E1B4B), // Midnight Violet
-        Color(0xFF1D4ED8), // Royal Sapphire
+        Color(0xFF04191A),
+        Color(0xFF0A2E2E),
+        Color(0xFF0B4F4A),
+      ],
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+    ),
+    cardGradient: LinearGradient(
+      colors: [
+        Color(0x28FFFFFF),
+        Color(0x140E7490),
+      ],
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+    ),
+    featureTags: ['Photo Scanner', 'Telemetry Sync', 'Smart Fusion'],
+  ),
+  OnboardingSlide(
+    imageAsset: 'assets/images/onboarding/onboard_records.jpg',
+    badge: 'Risk Forecast',
+    stepLabel: '03 / 04',
+    title: '7-Day Forecast &\nClear Vet Guidance',
+    description:
+        'Predictive models evaluate breed, age, and activity trends to forecast health risks with plain reasons.',
+    icon: Icons.timeline_rounded,
+    accentColor: Color(0xFFA5B4FC), // Intelligence Indigo Accent
+    primaryGradient: LinearGradient(
+      colors: [Color(0xFF4F46E5), Color(0xFF6366F1)],
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+    ),
+    backgroundGradient: LinearGradient(
+      colors: [
+        Color(0xFF0A0F2B),
+        Color(0xFF1E1B4B),
+        Color(0xFF1D4ED8),
       ],
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
@@ -126,27 +126,27 @@ const List<OnboardingSlide> onboardingSlides = [
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
     ),
-    featureTags: ['7-Day Risk Score', 'Explainable Factors', 'Vet Urgency Guidance'],
+    featureTags: ['7-Day Risk Score', 'Breed Trends', 'Vet Urgency Guide'],
   ),
   OnboardingSlide(
     imageAsset: 'assets/images/onboarding/onboard_join.jpg',
-    badge: '🎉 Vibrant Community',
+    badge: 'Connected Care',
     stepLabel: '04 / 04',
-    title: 'Join Thousands of\nHappy Pet Parents',
+    title: 'Bridge the Gap to\nTrusted Vet Care',
     description:
-        'Join pet parents using AI-assisted, explainable insights to catch problems early and bridge the gap to trusted tele-veterinary care.',
+        'Generate structured, explainable health summaries ready to share with your vet whenever needed.',
     icon: Icons.auto_awesome_rounded,
     accentColor: Color(0xFF34D399), // Emerald Mint Accent
     primaryGradient: LinearGradient(
-      colors: [Color(0xFF0066FF), Color(0xFF10B981)],
+      colors: [Color(0xFF0F766E), Color(0xFF10B981)],
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
     ),
     backgroundGradient: LinearGradient(
       colors: [
-        Color(0xFF051726), // Deep Teal Midnight
-        Color(0xFF0B3047), // Deep Teal Slate
-        Color(0xFF047857), // Forest Emerald Blue
+        Color(0xFF051C1A),
+        Color(0xFF0B342F),
+        Color(0xFF047857),
       ],
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
@@ -159,6 +159,6 @@ const List<OnboardingSlide> onboardingSlides = [
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
     ),
-    featureTags: ['100% Free Setup', 'Cloud Protected', 'Emergency ID'],
+    featureTags: ['Vet-Ready Export', 'Cloud Protected', 'Emergency ID'],
   ),
 ];
