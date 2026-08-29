@@ -334,7 +334,7 @@ class _DashboardContent extends ConsumerWidget {
           const SizedBox(height: AppSpacing.sm),
           AppointmentCard(appointment: summary.appointment),
           const SizedBox(height: AppSpacing.lg),
-          DeviceStatusChip(device: summary.device),
+          DeviceStatusChip(device: summary.device, dogId: dog.id, dogName: dog.name),
         ],
       ),
     );

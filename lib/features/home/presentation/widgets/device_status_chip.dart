@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:canivue/core/design_system/tokens/tokens.dart';
-import 'package:canivue/core/widgets/app_feedback.dart';
+import 'package:canivue/features/devices/presentation/screens/device_management_screen.dart';
 import 'package:canivue/features/home/domain/dashboard_summary.dart';
 
 /// Compact wearable/smart-collar connection status for the dashboard (brief
-/// §14). Full pairing/troubleshooting flows arrive with the device
-/// management milestone — this always tells the truth about connection
-/// state in the meantime, including "not paired" and "disconnected".
+/// §14) — tapping opens the full device management screen (pairing,
+/// battery, sync history, troubleshooting).
 class DeviceStatusChip extends StatelessWidget {
-  const DeviceStatusChip({super.key, required this.device});
+  const DeviceStatusChip({super.key, required this.device, required this.dogId, required this.dogName});
 
   final DeviceStatus device;
+  final String dogId;
+  final String dogName;
 
   @override
   Widget build(BuildContext context) {
@@ -40,11 +41,8 @@ class DeviceStatusChip extends StatelessWidget {
 
     return InkWell(
       borderRadius: AppRadius.pillRadius,
-      onTap: () => AppFeedback.showToast(
-        context,
-        title: device.deviceName,
-        message: 'Device pairing & management arrive in a future update.',
-        type: ToastType.info,
+      onTap: () => Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => DeviceManagementScreen(dogId: dogId, dogName: dogName)),
       ),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
