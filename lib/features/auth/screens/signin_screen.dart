@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:canivue/core/theme/app_theme.dart';
 import 'package:canivue/core/widgets/app_feedback.dart';
 import 'package:canivue/core/widgets/aura_canvas_background.dart';
+import 'package:canivue/features/auth/domain/app_user.dart';
 import 'package:canivue/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:canivue/features/auth/screens/forgot_password_screen.dart';
 import 'package:canivue/features/auth/screens/signup_screen.dart';
@@ -59,6 +60,15 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
 
     if (!mounted) return;
     context.go('/home');
+  }
+
+  void _handleVetSignIn() {
+    ref.read(authControllerProvider.notifier).signIn(
+          email: 'sarah.jenkins@canivue.com',
+          name: 'Dr. Sarah Jenkins',
+          role: UserRole.veterinarian,
+        );
+    context.go('/vet-dashboard');
   }
 
   void _navigateToForgotPassword() {
@@ -444,6 +454,20 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                           ),
                         ),
                       ],
+                    ),
+                    const SizedBox(height: 8),
+                    Center(
+                      child: TextButton.icon(
+                        onPressed: _handleVetSignIn,
+                        icon: Icon(Icons.medical_services_outlined, size: 16, color: isDark ? Colors.white70 : const Color(0xFF64748B)),
+                        label: Text(
+                          "I'm a veterinarian",
+                          style: GoogleFonts.plusJakartaSans(
+                            fontWeight: FontWeight.w600,
+                            color: isDark ? Colors.white70 : const Color(0xFF64748B),
+                          ),
+                        ),
+                      ),
                     ),
                   ],
                 ),
