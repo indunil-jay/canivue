@@ -1,6 +1,6 @@
 # Canivue
 
-A new Flutter project.
+Canine health monitoring and diagnostic intelligence app.
 
 ## Getting Started
 
