@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <linearGradient id="dogBodyGrad" x1="15%" y1="10%" x2="85%" y2="90%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="60%" stop-color="#E2FAF8"/>
+      <stop offset="100%" stop-color="#99F6E4"/>
+    </linearGradient>
+
+    <linearGradient id="tealAccent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#5EEAD4"/>
+      <stop offset="50%" stop-color="#2DD4BF"/>
+      <stop offset="100%" stop-color="#0D9488"/>
+    </linearGradient>
+
+    <linearGradient id="pulseGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#2DD4BF"/>
+      <stop offset="45%" stop-color="#38BDF8"/>
+      <stop offset="80%" stop-color="#818CF8"/>
+      <stop offset="100%" stop-color="#6366F1"/>
+    </linearGradient>
+
+    <filter id="pulseGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="0" stdDeviation="14" flood-color="#2DD4BF" flood-opacity="0.6"/>
+    </filter>
+  </defs>
+
+  <g transform="translate(0, -10)">
+    <!-- Canine Modern Silhouette -->
+    <path d="M 330,730 
+             C 320,640 335,530 380,440
+             C 415,370 470,300 480,240
+             C 485,210 495,190 515,190
+             C 535,190 545,215 540,260
+             C 532,320 545,360 580,380
+             L 660,425
+             C 715,455 750,495 750,540
+             C 750,590 710,610 650,610
+             L 575,610
+             C 540,610 510,635 490,665
+             L 445,730 Z" 
+          fill="url(#dogBodyGrad)"/>
+
+    <!-- Ear Inner Facet -->
+    <path d="M 495,225 
+             C 505,280 485,340 435,395 
+             C 425,370 420,335 435,295 
+             C 455,250 480,225 495,225 Z" 
+          fill="url(#tealAccent)"/>
+
+    <!-- Snout Nose -->
+    <path d="M 725,510 
+             C 750,525 750,555 725,565 
+             C 710,570 690,560 690,540 
+             C 690,520 710,505 725,510 Z" 
+          fill="#0D5C54"/>
+
+    <!-- Intelligent Eye -->
+    <circle cx="560" cy="455" r="14" fill="#0D5C54"/>
+    <circle cx="563" cy="452" r="5" fill="#5EEAD4"/>
+
+    <!-- Biometric Pulse Wave -->
+    <path d="M 230,640 
+             L 340,640 
+             L 375,600 
+             L 415,690 
+             L 460,560 
+             L 505,745 
+             L 555,620 
+             L 590,660 
+             L 640,640 
+             L 790,640" 
+          fill="none" 
+          stroke="url(#pulseGrad)" 
+          stroke-width="26" 
+          stroke-linecap="round" 
+          stroke-linejoin="round"
+          filter="url(#pulseGlow)"/>
+
+    <circle cx="505" cy="745" r="16" fill="#FFFFFF"/>
+    <circle cx="505" cy="745" r="9" fill="#6366F1"/>
+
+    <circle cx="460" cy="560" r="14" fill="#FFFFFF"/>
+    <circle cx="460" cy="560" r="8" fill="#2DD4BF"/>
+  </g>
+</svg>
