@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:canivue/core/design_system/tokens/tokens.dart';
 
 class OnboardingSlide {
   const OnboardingSlide({
     required this.imageAsset,
     required this.badge,
     required this.stepLabel,
+    this.telemetryLabel,
+    this.telemetryIcon,
     required this.title,
     required this.description,
     required this.icon,
@@ -18,6 +21,8 @@ class OnboardingSlide {
   final String imageAsset;
   final String badge;
   final String stepLabel;
+  final String? telemetryLabel;
+  final IconData? telemetryIcon;
   final String title;
   final String description;
   final IconData icon;
@@ -29,136 +34,163 @@ class OnboardingSlide {
 }
 
 const List<OnboardingSlide> onboardingSlides = [
+  // Slide 1: Welcome & Unified Intelligent Dashboard
   OnboardingSlide(
     imageAsset: 'assets/images/onboarding/onboard_welcome.jpg',
     badge: 'Intelligent Canine Care',
     stepLabel: '01 / 04',
+    telemetryLabel: 'Live Collar Sync',
+    telemetryIcon: Icons.sensors_rounded,
     title: 'Your Dog\'s Health,\nAll in One Place',
     description:
-        'Unite smart collar activity, photos, symptoms, and vet records into one intelligent canine dashboard.',
+        'Unite smart collar activity, symptoms, photos, and medical milestones into a single intelligent canine health sanctuary.',
     icon: Icons.pets_rounded,
-    accentColor: Color(0xFF2DD4BF), // Bright Teal Accent
-    primaryGradient: LinearGradient(
-      colors: [Color(0xFF0F766E), Color(0xFF14B8A6)],
-      begin: Alignment.topLeft,
-      end: Alignment.bottomRight,
-    ),
+    accentColor: AppColors.cyanAccent, // #00F2FE Electric Cyan
+    primaryGradient: AppColors.auroraGradient,
     backgroundGradient: LinearGradient(
       colors: [
-        Color(0xFF0A1413),
-        Color(0xFF0F1F1B),
-        Color(0xFF123330),
+        Color(0xFF030A0E), // Deep Obsidian
+        Color(0xFF061622),
+        Color(0xFF0A2836),
       ],
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
     ),
     cardGradient: LinearGradient(
       colors: [
-        Color(0x28FFFFFF),
-        Color(0x140F766E),
+        Color(0x38FFFFFF),
+        Color(0x10FFFFFF),
+        Color(0x2200F2FE),
       ],
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
     ),
-    featureTags: ['Dog Profiles', 'Smart Collar Sync', 'Health History'],
+    featureTags: ['Dog Profiles', 'Smart Collar Sync', 'Complete Health Record'],
   ),
+
+  // Slide 2: Multimodal AI & Vision Telemetry
   OnboardingSlide(
     imageAsset: 'assets/images/onboarding/onboard_track.jpg',
-    badge: 'Multimodal AI',
+    badge: 'Multimodal AI Vision',
     stepLabel: '02 / 04',
+    telemetryLabel: 'Vision AI Active',
+    telemetryIcon: Icons.center_focus_strong_rounded,
     title: 'Snap, Speak &\nDetect Issues Early',
     description:
-        'Photograph symptoms and describe changes. Our AI fuses image cues with collar telemetry for early alerts.',
+        'Photograph a symptom, sync collar motion, and describe changes. Our adaptive neural AI fuses visual cues with telemetry to catch health concerns early.',
     icon: Icons.biotech_rounded,
-    accentColor: Color(0xFF06B6B0), // Teal-Cyan Accent
+    accentColor: AppColors.neonMint, // #00E5BE Luminous Mint
     primaryGradient: LinearGradient(
-      colors: [Color(0xFF0E7490), Color(0xFF06B6B0)],
+      colors: [
+        Color(0xFF00F2FE),
+        Color(0xFF00E5BE),
+        Color(0xFF10B981),
+      ],
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
     ),
     backgroundGradient: LinearGradient(
       colors: [
-        Color(0xFF04191A),
-        Color(0xFF0A2E2E),
-        Color(0xFF0B4F4A),
+        Color(0xFF020C0E),
+        Color(0xFF041D20),
+        Color(0xFF083232),
       ],
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
     ),
     cardGradient: LinearGradient(
       colors: [
-        Color(0x28FFFFFF),
-        Color(0x140E7490),
+        Color(0x38FFFFFF),
+        Color(0x10FFFFFF),
+        Color(0x2200E5BE),
       ],
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
     ),
-    featureTags: ['Photo Scanner', 'Telemetry Sync', 'Smart Fusion'],
+    featureTags: ['AI Photo Scanner', 'Telemetry Fusion', 'Early Anomaly Alerts'],
   ),
+
+  // Slide 3: Predictive AI & Disease Progression Engine (Corrected paragraphs & no "98% optimal" chip)
   OnboardingSlide(
     imageAsset: 'assets/images/onboarding/onboard_records.jpg',
-    badge: 'Risk Forecast',
+    badge: 'Predictive Health Engine',
     stepLabel: '03 / 04',
-    title: '7-Day Forecast &\nClear Vet Guidance',
+    telemetryLabel: null, // Removed "98% optimal index" as requested
+    telemetryIcon: null,
+    title: 'Know What\'s Coming,\nNot Just What\'s Wrong',
     description:
-        'Predictive models evaluate breed, age, and activity trends to forecast health risks with plain reasons.',
+        'Our Disease Progression & Risk Prediction Engine evaluates breed predisposition, daily activity trends, and vitals to forecast health trajectories with plain-language explanations.',
     icon: Icons.timeline_rounded,
-    accentColor: Color(0xFFA5B4FC), // Intelligence Indigo Accent
+    accentColor: AppColors.royalViolet, // #8B5CF6 Royal Violet
     primaryGradient: LinearGradient(
-      colors: [Color(0xFF4F46E5), Color(0xFF6366F1)],
+      colors: [
+        Color(0xFF6366F1),
+        Color(0xFF8B5CF6),
+        Color(0xFFA855F7),
+      ],
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
     ),
     backgroundGradient: LinearGradient(
       colors: [
-        Color(0xFF0A0F2B),
-        Color(0xFF1E1B4B),
-        Color(0xFF1D4ED8),
+        Color(0xFF050718),
+        Color(0xFF0E1338),
+        Color(0xFF1A1F52),
       ],
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
     ),
     cardGradient: LinearGradient(
       colors: [
-        Color(0x28FFFFFF),
-        Color(0x144F46E5),
+        Color(0x38FFFFFF),
+        Color(0x10FFFFFF),
+        Color(0x248B5CF6),
       ],
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
     ),
-    featureTags: ['7-Day Risk Score', 'Breed Trends', 'Vet Urgency Guide'],
+    featureTags: ['7-Day Risk Forecast', 'Breed Health Insights', 'Early Warning Alerts'],
   ),
+
+  // Slide 4: Connected Care & Vet Collaboration (Corrected paragraphs & removed "Vet Vault Encrypted" tag)
   OnboardingSlide(
     imageAsset: 'assets/images/onboarding/onboard_join.jpg',
-    badge: 'Connected Care',
+    badge: 'Veterinary Collaboration',
     stepLabel: '04 / 04',
+    telemetryLabel: null, // Removed "Vet Vault Encrypted" tag as requested
+    telemetryIcon: null,
     title: 'Bridge the Gap to\nTrusted Vet Care',
     description:
-        'Generate structured, explainable health summaries ready to share with your vet whenever needed.',
+        'Generate structured, vet-ready health digests instantly. Connect seamlessly with your veterinary team to share verified biometric timeline data and make confident care decisions together.',
     icon: Icons.auto_awesome_rounded,
-    accentColor: Color(0xFF34D399), // Emerald Mint Accent
+    accentColor: Color(0xFF38BDF8), // Sky Blue Accent
     primaryGradient: LinearGradient(
-      colors: [Color(0xFF0F766E), Color(0xFF10B981)],
+      colors: [
+        Color(0xFF0284C7),
+        Color(0xFF00F2FE),
+        Color(0xFF2DD4BF),
+      ],
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
     ),
     backgroundGradient: LinearGradient(
       colors: [
-        Color(0xFF051C1A),
-        Color(0xFF0B342F),
-        Color(0xFF047857),
+        Color(0xFF020C14),
+        Color(0xFF061D2B),
+        Color(0xFF0C3848),
       ],
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
     ),
     cardGradient: LinearGradient(
       colors: [
-        Color(0x28FFFFFF),
-        Color(0x1410B981),
+        Color(0x38FFFFFF),
+        Color(0x10FFFFFF),
+        Color(0x2400F2FE),
       ],
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
     ),
-    featureTags: ['Vet-Ready Export', 'Cloud Protected', 'Emergency ID'],
+    featureTags: ['Vet-Ready Export', 'Clinical Timeline', 'Emergency Care Profile'],
   ),
 ];

@@ -1,9 +1,10 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:canivue/core/widgets/canivue_liquid_logo.dart';
+import 'package:canivue/core/design_system/tokens/tokens.dart';
 import 'package:canivue/features/onboarding/models/onboarding_slide.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -55,52 +56,70 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
     return Scaffold(
       body: AnimatedContainer(
-        duration: const Duration(milliseconds: 500),
+        duration: const Duration(milliseconds: 550),
         curve: Curves.easeInOut,
         decoration: BoxDecoration(
           gradient: _currentSlide.backgroundGradient,
         ),
         child: Stack(
           children: [
-            // Ambient Luminous Background Orbs for Depth
+            // 1. Organic Breathing Aurora Orbs (Liquid Glass Background)
             Positioned(
-              top: -80,
-              right: -60,
+              top: -90,
+              right: -70,
               child: AnimatedContainer(
-                duration: const Duration(milliseconds: 600),
-                height: 280,
-                width: 280,
+                duration: const Duration(milliseconds: 650),
+                height: 320,
+                width: 320,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
                     colors: [
-                      _currentSlide.accentColor.withValues(alpha: 0.35),
+                      _currentSlide.accentColor.withValues(alpha: 0.38),
+                      AppColors.royalViolet.withValues(alpha: 0.15),
                       Colors.transparent,
                     ],
+                    stops: const [0.0, 0.55, 1.0],
                   ),
                 ),
-              ),
+              )
+                  .animate(onPlay: (c) => c.repeat(reverse: true))
+                  .scale(
+                    begin: const Offset(0.96, 0.96),
+                    end: const Offset(1.08, 1.08),
+                    duration: 3800.ms,
+                    curve: Curves.easeInOut,
+                  ),
             ),
             Positioned(
-              bottom: size.height * 0.25,
-              left: -80,
+              bottom: size.height * 0.22,
+              left: -90,
               child: AnimatedContainer(
-                duration: const Duration(milliseconds: 600),
-                height: 260,
-                width: 260,
+                duration: const Duration(milliseconds: 650),
+                height: 300,
+                width: 300,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
                     colors: [
-                      _currentSlide.accentColor.withValues(alpha: 0.2),
+                      AppColors.cyanAccent.withValues(alpha: 0.28),
+                      _currentSlide.accentColor.withValues(alpha: 0.12),
                       Colors.transparent,
                     ],
+                    stops: const [0.0, 0.5, 1.0],
                   ),
                 ),
-              ),
+              )
+                  .animate(onPlay: (c) => c.repeat(reverse: true))
+                  .scale(
+                    begin: const Offset(1.06, 1.06),
+                    end: const Offset(0.94, 0.94),
+                    duration: 4200.ms,
+                    curve: Curves.easeInOut,
+                  ),
             ),
 
-            // Page View with Slides
+            // 2. Page View with Animated Slides
             Positioned.fill(
               child: PageView.builder(
                 controller: _pageController,
@@ -109,6 +128,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 itemBuilder: (context, index) {
                   final slide = onboardingSlides[index];
                   return _OnboardingPage(
+                    key: ValueKey('slide_$index'),
                     slide: slide,
                     isActive: index == _currentPage,
                   );
@@ -116,38 +136,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ),
             ),
 
-            // Top Header: Brand Logo & Brand Title
-            Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              child: SafeArea(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                  child: Row(
-                    children: [
-                      const CanivueLiquidLogo(
-                        size: 36,
-                        showGlow: true,
-                        enableAnimation: true,
-                      ),
-                      const SizedBox(width: 10),
-                      Text(
-                        'Canivue',
-                        style: GoogleFonts.plusJakartaSans(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          letterSpacing: -0.3,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-
-            // Floating Bottom Navigation Controls
+            // 3. Floating Bottom Navigation Bar (Glass Controls)
             Positioned(
               left: 0,
               right: 0,
@@ -175,11 +164,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                       gradient: null,
                                       accentColor: _currentSlide.accentColor,
                                     )
+                                      .animate()
+                                      .fadeIn(duration: 250.ms)
+                                      .scale(
+                                        begin: const Offset(0.85, 0.85),
+                                        end: const Offset(1.0, 1.0),
+                                        curve: Curves.easeOutBack,
+                                      )
                                   : const SizedBox(height: 48, width: 48),
                             ),
                           ),
 
-                          // Center: Smooth Page Indicator
+                          // Center: Smooth Page Indicator with Aurora Glow
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 6),
                             child: SmoothPageIndicator(
@@ -187,7 +183,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                               count: onboardingSlides.length,
                               effect: ExpandingDotsEffect(
                                 activeDotColor: _currentSlide.accentColor,
-                                dotColor: Colors.white.withValues(alpha: 0.35),
+                                dotColor: Colors.white.withValues(alpha: 0.28),
                                 dotHeight: 8,
                                 dotWidth: 8,
                                 expansionFactor: 3.5,
@@ -202,7 +198,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             child: Align(
                               alignment: Alignment.centerRight,
                               child: _RoundIconButton(
-                                icon: _isLastPage ? Icons.rocket_launch_rounded : Icons.arrow_forward_rounded,
+                                key: ValueKey('action_btn_$_isLastPage'),
+                                icon: _isLastPage
+                                    ? Icons.rocket_launch_rounded
+                                    : Icons.arrow_forward_rounded,
                                 onTap: _handleNext,
                                 gradient: _currentSlide.primaryGradient,
                                 accentColor: _currentSlide.accentColor,
@@ -214,7 +213,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         ],
                       ),
 
-                      // Bottom Skip Button (Available across slides until the last page)
+                      // Bottom Skip Button
                       if (!_isLastPage) ...[
                         const SizedBox(height: 8),
                         TextButton(
@@ -234,7 +233,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                   color: Colors.white.withValues(alpha: 0.88),
                                   fontWeight: FontWeight.bold,
                                   fontSize: 14,
-                                  letterSpacing: 0.2,
+                                  letterSpacing: 0.3,
                                 ),
                               ),
                               const SizedBox(width: 4),
@@ -263,6 +262,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
 class _OnboardingPage extends StatelessWidget {
   const _OnboardingPage({
+    super.key,
     required this.slide,
     required this.isActive,
   });
@@ -277,24 +277,31 @@ class _OnboardingPage extends StatelessWidget {
 
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
-      padding: EdgeInsets.fromLTRB(20, isCompact ? 70 : 85, 20, 95),
+      padding: EdgeInsets.fromLTRB(20, isCompact ? 36 : 48, 20, 95),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Hero Image Glass Container
+          // 1. High-Tech Animated Liquid Glass Hero Frame
+          // Combines entrance scale, continuous organic vertical floating, and periodic glass light shimmer
           Container(
             height: isCompact ? size.height * 0.38 : size.height * 0.44,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(32),
               border: Border.all(
-                color: Colors.white.withValues(alpha: 0.25),
+                color: slide.accentColor.withValues(alpha: 0.38),
                 width: 1.5,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: slide.accentColor.withValues(alpha: 0.25),
-                  blurRadius: 30,
-                  offset: const Offset(0, 12),
+                  color: slide.accentColor.withValues(alpha: 0.32),
+                  blurRadius: 36,
+                  spreadRadius: 2,
+                  offset: const Offset(0, 14),
+                ),
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.45),
+                  blurRadius: 22,
+                  offset: const Offset(0, 8),
                 ),
               ],
             ),
@@ -303,19 +310,26 @@ class _OnboardingPage extends StatelessWidget {
               child: Stack(
                 fit: StackFit.expand,
                 children: [
-                  // Image with safe test errorBuilder
+                  // A. Photo with Subtle Cinematic Ambient Zoom
                   Image.asset(
                     slide.imageAsset,
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) => Container(
-                      color: const Color(0xFF0A2540),
+                      color: const Color(0xFF041924),
                       child: Center(
                         child: Icon(slide.icon, size: 64, color: slide.accentColor),
                       ),
                     ),
-                  ),
+                  )
+                      .animate(onPlay: (c) => c.repeat(reverse: true))
+                      .scale(
+                        begin: const Offset(1.0, 1.0),
+                        end: const Offset(1.06, 1.06),
+                        duration: 6000.ms,
+                        curve: Curves.easeInOut,
+                      ),
 
-                  // Gradient Scrim Layer for Smooth Blending
+                  // B. Deep Ambient Contrast Scrim
                   DecoratedBox(
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
@@ -323,46 +337,165 @@ class _OnboardingPage extends StatelessWidget {
                         end: Alignment.bottomCenter,
                         colors: [
                           Colors.transparent,
-                          Colors.black.withValues(alpha: 0.2),
-                          Colors.black.withValues(alpha: 0.75),
+                          Colors.black.withValues(alpha: 0.22),
+                          Colors.black.withValues(alpha: 0.84),
                         ],
-                        stops: const [0.4, 0.7, 1.0],
+                        stops: const [0.35, 0.65, 1.0],
                       ),
                     ),
                   ),
 
-                  // Liquid Glass Logo Preview Watermark on Landing Slide
-                  if (slide.stepLabel.startsWith('01'))
-                    const Positioned(
-                      top: 16,
-                      right: 16,
-                      child: CanivueLiquidLogo(
-                        size: 48,
-                        showGlow: true,
-                        enableAnimation: true,
-                      ),
+                  // C. Vision Scanning Laser Beam (Slide 2 AI Vision active effect)
+                  if (slide.badge.contains('Vision'))
+                    Positioned(
+                      left: 0,
+                      right: 0,
+                      top: 0,
+                      child: Container(
+                        height: 3,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              Colors.transparent,
+                              AppColors.neonMint.withValues(alpha: 0.8),
+                              AppColors.cyanAccent,
+                              AppColors.neonMint.withValues(alpha: 0.8),
+                              Colors.transparent,
+                            ],
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.cyanAccent.withValues(alpha: 0.8),
+                              blurRadius: 8,
+                              spreadRadius: 1,
+                            ),
+                          ],
+                        ),
+                      )
+                          .animate(onPlay: (c) => c.repeat(reverse: true))
+                          .moveY(
+                            begin: 25,
+                            end: isCompact ? size.height * 0.34 : size.height * 0.39,
+                            duration: 2600.ms,
+                            curve: Curves.easeInOut,
+                          ),
                     ),
 
-                  // Bottom Floating Badge with Category Icon
-                  Positioned(
-                    left: 18,
-                    bottom: 18,
+                  // D. Top Right Floating Liquid Telemetry HUD Chip (only if present)
+                  if (slide.telemetryLabel != null && slide.telemetryIcon != null)
+                    Positioned(
+                    top: 16,
+                    right: 16,
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(18),
                       child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                        filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6.5),
                           decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.2),
-                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.black.withValues(alpha: 0.45),
+                            borderRadius: BorderRadius.circular(18),
                             border: Border.all(
-                              color: Colors.white.withValues(alpha: 0.35),
+                              color: slide.accentColor.withValues(alpha: 0.55),
+                              width: 1.2,
                             ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: slide.accentColor.withValues(alpha: 0.25),
+                                blurRadius: 12,
+                              ),
+                            ],
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
+                              // Pulsing Live LED Dot
+                              Container(
+                                height: 7,
+                                width: 7,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: slide.accentColor,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: slide.accentColor,
+                                      blurRadius: 6,
+                                      spreadRadius: 1,
+                                    ),
+                                  ],
+                                ),
+                              )
+                                  .animate(onPlay: (c) => c.repeat(reverse: true))
+                                  .scale(
+                                    begin: const Offset(0.75, 0.75),
+                                    end: const Offset(1.35, 1.35),
+                                    duration: 1100.ms,
+                                  ),
+                              const SizedBox(width: 7),
+                              Icon(slide.telemetryIcon!, color: Colors.white, size: 14),
+                              const SizedBox(width: 5),
+                              Text(
+                                slide.telemetryLabel!,
+                                style: GoogleFonts.inter(
+                                  color: Colors.white,
+                                  fontSize: 11.5,
+                                  fontWeight: FontWeight.w700,
+                                  letterSpacing: 0.3,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                      .animate()
+                      .fadeIn(delay: 250.ms, duration: 400.ms)
+                      .slideY(begin: -0.3, end: 0, curve: Curves.easeOutCubic),
+
+                  // E. Bottom Left Floating Category Badge
+                  Positioned(
+                    left: 16,
+                    bottom: 16,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+                          decoration: BoxDecoration(
+                            color: Colors.black.withValues(alpha: 0.45),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: slide.accentColor.withValues(alpha: 0.5),
+                              width: 1.2,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: slide.accentColor.withValues(alpha: 0.25),
+                                blurRadius: 10,
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                height: 8,
+                                width: 8,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: slide.accentColor,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: slide.accentColor,
+                                      blurRadius: 6,
+                                      spreadRadius: 1,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(width: 8),
                               Icon(
                                 slide.icon,
                                 color: Colors.white,
@@ -375,6 +508,7 @@ class _OnboardingPage extends StatelessWidget {
                                   color: Colors.white,
                                   fontSize: 13,
                                   fontWeight: FontWeight.bold,
+                                  letterSpacing: 0.2,
                                 ),
                               ),
                             ],
@@ -382,82 +516,121 @@ class _OnboardingPage extends StatelessWidget {
                         ),
                       ),
                     ),
-                  ),
+                  )
+                      .animate()
+                      .fadeIn(delay: 200.ms, duration: 400.ms)
+                      .slideY(begin: 0.25, end: 0, curve: Curves.easeOutCubic),
                 ],
               ),
             ),
-          ),
+          )
+              // 1. Initial smooth entrance
+              .animate()
+              .fadeIn(duration: 450.ms, curve: Curves.easeOutCubic)
+              .scale(
+                begin: const Offset(0.96, 0.96),
+                end: const Offset(1.0, 1.0),
+                duration: 500.ms,
+                curve: Curves.easeOutCubic,
+              )
+              // 2. Periodic Specular Shimmer across Glass Frame
+              .animate(onPlay: (c) => c.repeat())
+              .shimmer(
+                delay: 1600.ms,
+                duration: 2500.ms,
+                color: slide.accentColor.withValues(alpha: 0.35),
+                angle: 45,
+              )
+              // 3. Continuous Organic Floating Motion (Liquid Glass Gravity)
+              .animate(onPlay: (c) => c.repeat(reverse: true))
+              .moveY(
+                begin: -5,
+                end: 5,
+                duration: 3400.ms,
+                curve: Curves.easeInOut,
+              ),
+
           const SizedBox(height: 18),
 
-          // Enhanced Glassmorphism Content Card
+          // 2. Liquid Glass Content Card (with Staggered Content Animation)
           ClipRRect(
             borderRadius: BorderRadius.circular(28),
             child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+              filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
               child: Container(
                 padding: const EdgeInsets.all(22),
                 decoration: BoxDecoration(
                   gradient: slide.cardGradient,
                   borderRadius: BorderRadius.circular(28),
                   border: Border.all(
-                    color: Colors.white.withValues(alpha: 0.2),
+                    color: Colors.white.withValues(alpha: 0.26),
                     width: 1.2,
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.15),
-                      blurRadius: 20,
-                      offset: const Offset(0, 8),
+                      color: Colors.black.withValues(alpha: 0.3),
+                      blurRadius: 24,
+                      offset: const Offset(0, 10),
                     ),
                   ],
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Title
+                    // Title with slide-in animation
                     Text(
                       slide.title,
                       style: GoogleFonts.plusJakartaSans(
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w800,
                         fontSize: 24,
                         color: Colors.white,
                         height: 1.18,
                         letterSpacing: -0.5,
                         shadows: [
                           Shadow(
-                            color: Colors.black.withValues(alpha: 0.3),
+                            color: Colors.black.withValues(alpha: 0.4),
                             blurRadius: 8,
                             offset: const Offset(0, 2),
                           ),
                         ],
                       ),
-                    ),
+                    )
+                        .animate()
+                        .fadeIn(delay: 150.ms, duration: 400.ms)
+                        .slideX(begin: -0.04, end: 0, curve: Curves.easeOutCubic),
+
                     const SizedBox(height: 10),
 
-                    // Description
+                    // Description with fade animation
                     Text(
                       slide.description,
-                      style: GoogleFonts.plusJakartaSans(
+                      style: GoogleFonts.inter(
                         color: Colors.white.withValues(alpha: 0.88),
                         fontSize: 14,
-                        height: 1.45,
+                        height: 1.48,
                         fontWeight: FontWeight.w400,
                       ),
-                    ),
+                    )
+                        .animate()
+                        .fadeIn(delay: 250.ms, duration: 400.ms),
+
                     const SizedBox(height: 16),
 
-                    // Feature Pill Chips
+                    // Feature Pill Chips with Staggered Ripple Entrances
                     Wrap(
                       spacing: 8,
                       runSpacing: 8,
-                      children: slide.featureTags.map((tag) {
+                      children: slide.featureTags.asMap().entries.map((entry) {
+                        final index = entry.key;
+                        final tag = entry.value;
+
                         return Container(
                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                           decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.14),
+                            color: slide.accentColor.withValues(alpha: 0.12),
                             borderRadius: BorderRadius.circular(14),
                             border: Border.all(
-                              color: slide.accentColor.withValues(alpha: 0.4),
+                              color: slide.accentColor.withValues(alpha: 0.45),
                               width: 1,
                             ),
                           ),
@@ -480,14 +653,27 @@ class _OnboardingPage extends StatelessWidget {
                               ),
                             ],
                           ),
-                        );
+                        )
+                            .animate()
+                            .fadeIn(
+                              delay: Duration(milliseconds: 320 + (index * 70)),
+                              duration: 350.ms,
+                            )
+                            .scale(
+                              begin: const Offset(0.85, 0.85),
+                              end: const Offset(1.0, 1.0),
+                              curve: Curves.easeOutBack,
+                            );
                       }).toList(),
                     ),
                   ],
                 ),
               ),
             ),
-          ),
+          )
+              .animate()
+              .fadeIn(delay: 100.ms, duration: 450.ms, curve: Curves.easeOutCubic)
+              .slideY(begin: 0.08, end: 0, duration: 450.ms, curve: Curves.easeOutCubic),
         ],
       ),
     );
@@ -516,22 +702,24 @@ class _RoundIconButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final isFilled = gradient != null;
 
-    final child = Container(
+    Widget buttonBody = Container(
       height: 48,
-      padding: wide ? const EdgeInsets.symmetric(horizontal: 16) : EdgeInsets.zero,
-      width: wide ? 135 : 48,
+      padding: wide ? const EdgeInsets.symmetric(horizontal: 18) : EdgeInsets.zero,
+      width: wide ? 142 : 48,
       decoration: BoxDecoration(
         gradient: gradient,
-        color: isFilled ? null : Colors.white.withValues(alpha: 0.18),
+        color: isFilled ? null : Colors.white.withValues(alpha: 0.14),
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
-          color: Colors.white.withValues(alpha: isFilled ? 0.35 : 0.25),
+          color: Colors.white.withValues(alpha: isFilled ? 0.38 : 0.25),
+          width: 1.2,
         ),
         boxShadow: isFilled
             ? [
                 BoxShadow(
-                  color: accentColor.withValues(alpha: 0.4),
-                  blurRadius: 14,
+                  color: accentColor.withValues(alpha: 0.45),
+                  blurRadius: 16,
+                  spreadRadius: 1,
                   offset: const Offset(0, 5),
                 ),
               ]
@@ -564,13 +752,23 @@ class _RoundIconButton extends StatelessWidget {
       ),
     );
 
+    if (wide) {
+      buttonBody = buttonBody
+          .animate(onPlay: (c) => c.repeat(reverse: true))
+          .shimmer(
+            duration: 2200.ms,
+            color: Colors.white.withValues(alpha: 0.35),
+            angle: 45,
+          );
+    }
+
     return Material(
       color: Colors.transparent,
       shape: const StadiumBorder(),
       child: InkWell(
         onTap: onTap,
         customBorder: const StadiumBorder(),
-        child: child,
+        child: buttonBody,
       ),
     );
   }
