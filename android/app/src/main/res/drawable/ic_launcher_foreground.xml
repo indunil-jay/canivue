@@ -9,34 +9,34 @@
         android:fillColor="#F4FCFA"
         android:pathData="M 34.80 76.99 C 33.75 67.50 35.33 55.90 40.08 46.41 C 43.77 39.02 49.57 31.64 50.62 25.31 C 51.15 22.15 52.21 20.04 54.32 20.04 C 56.43 20.04 57.48 22.68 56.95 27.42 C 56.11 33.75 57.48 37.97 61.17 40.08 L 69.61 44.82 C 75.41 47.99 79.10 52.21 79.10 56.95 C 79.10 62.23 74.88 64.34 68.55 64.34 L 60.64 64.34 C 56.95 64.34 53.79 66.97 51.68 70.14 L 46.93 76.99 Z"/>
 
-    <!-- Ear Inner Facet -->
+    <!-- Ear Aurora Facet -->
     <path
-        android:fillColor="#2DD4BF"
+        android:fillColor="#00F2FE"
         android:pathData="M 52.21 23.73 C 53.26 29.53 51.15 35.86 45.88 41.66 C 44.82 39.02 44.30 35.33 45.88 31.11 C 47.99 26.37 50.62 23.73 52.21 23.73 Z"/>
 
     <!-- Snout Nose -->
     <path
-        android:fillColor="#0D5C54"
+        android:fillColor="#072322"
         android:pathData="M 76.47 53.80 C 79.10 55.38 79.10 58.54 76.47 60.12 C 74.88 60.65 72.77 59.59 72.77 57.48 C 72.77 55.38 74.88 53.80 76.47 53.80 Z"/>
 
     <!-- Eye -->
     <path
-        android:fillColor="#0D5C54"
+        android:fillColor="#0A3331"
         android:pathData="M 59.08 48.00 A 1.48 1.48 0 1 0 62.04 48.00 A 1.48 1.48 0 1 0 59.08 48.00 Z"/>
 
-    <!-- Biometric Pulse Line -->
+    <!-- Biometric Telemetry Pulse Line (Electric Cyan) -->
     <path
-        android:strokeColor="#2DD4BF"
+        android:strokeColor="#00F2FE"
         android:strokeWidth="2.7"
         android:strokeLineCap="round"
         android:strokeLineJoin="round"
-        android:pathData="M 24.26 67.50 L 35.86 67.50 L 39.55 63.28 L 43.77 72.77 L 48.52 59.06 L 53.26 78.57 L 58.54 65.39 L 62.23 69.61 L 67.50 67.50 L 83.32 67.50"/>
+        android:pathData="M 23.20 67.50 L 34.80 67.50 L 39.00 62.75 L 43.77 72.77 L 48.52 58.00 L 53.80 79.10 L 59.08 64.87 L 62.77 69.61 L 68.05 67.50 L 84.40 67.50"/>
 
-    <!-- Peak Pulse Node -->
+    <!-- Peak Pulse Node (Royal Violet) -->
     <path
         android:fillColor="#FFFFFF"
-        android:pathData="M 51.57 78.57 A 1.69 1.69 0 1 0 54.95 78.57 A 1.69 1.69 0 1 0 51.57 78.57 Z"/>
+        android:pathData="M 52.11 79.10 A 1.75 1.75 0 1 0 55.61 79.10 A 1.75 1.75 0 1 0 52.11 79.10 Z"/>
     <path
-        android:fillColor="#6366F1"
-        android:pathData="M 52.31 78.57 A 0.95 0.95 0 1 0 54.21 78.57 A 0.95 0.95 0 1 0 52.31 78.57 Z"/>
+        android:fillColor="#8B5CF6"
+        android:pathData="M 52.85 79.10 A 1.05 1.05 0 1 0 54.95 79.10 A 1.05 1.05 0 1 0 52.85 79.10 Z"/>
 </vector>

@@ -11,81 +11,78 @@ def cubic_bezier(p0, p1, p2, p3, num_points=100):
             t**3 * p3)
 
 def create_super_canvas(size=2048):
-    # Create base gradient array
     w, h = size, size
     y_coords, x_coords = np.mgrid[0:h, 0:w]
     
-    # Linear gradient: #082825 -> #0D4B45 -> #07221F
+    # Base Obsidian Space: #040D14 -> #071924 -> #02080D
     t = (x_coords / w + y_coords / h) / 2.0
-    r = (8 * (1 - t) + 13 * t).astype(np.uint8)
-    g = (40 * (1 - t) + 75 * t).astype(np.uint8)
-    b = (37 * (1 - t) + 69 * t).astype(np.uint8)
+    r = (4 * (1 - t) + 7 * t).astype(np.float32)
+    g = (13 * (1 - t) + 25 * t).astype(np.float32)
+    b = (20 * (1 - t) + 36 * t).astype(np.float32)
     
-    # Radial ambient light at (0.5w, 0.35h)
-    cx, cy = 0.5 * w, 0.35 * h
-    dist = np.sqrt((x_coords - cx)**2 + (y_coords - cy)**2) / (0.7 * w)
-    glow = np.clip(1.0 - dist, 0.0, 1.0) ** 1.8
+    # 1. Cyan Aurora Glow at (0.3w, 0.25h): #00F2FE = (0, 242, 254)
+    cx1, cy1 = 0.30 * w, 0.25 * h
+    dist1 = np.sqrt((x_coords - cx1)**2 + (y_coords - cy1)**2) / (0.65 * w)
+    glow1 = np.clip(1.0 - dist1, 0.0, 1.0) ** 1.9
+    r += glow1 * 0 * 0.45
+    g += glow1 * 242 * 0.45
+    b += glow1 * 254 * 0.45
     
-    # Add teal glow: #14B8A6 = (20, 184, 166)
-    r = np.clip(r + glow * 20 * 0.45, 0, 255).astype(np.uint8)
-    g = np.clip(g + glow * 184 * 0.45, 0, 255).astype(np.uint8)
-    b = np.clip(b + glow * 166 * 0.45, 0, 255).astype(np.uint8)
+    # 2. Violet Aurora Glow at (0.75w, 0.8h): #8B5CF6 = (139, 92, 246)
+    cx2, cy2 = 0.75 * w, 0.80 * h
+    dist2 = np.sqrt((x_coords - cx2)**2 + (y_coords - cy2)**2) / (0.70 * w)
+    glow2 = np.clip(1.0 - dist2, 0.0, 1.0) ** 2.0
+    r += glow2 * 139 * 0.38
+    g += glow2 * 92 * 0.38
+    b += glow2 * 246 * 0.38
+    
+    # Clip RGB
+    r = np.clip(r, 0, 255).astype(np.uint8)
+    g = np.clip(g, 0, 255).astype(np.uint8)
+    b = np.clip(b, 0, 255).astype(np.uint8)
     
     rgb = np.stack([r, g, b], axis=-1)
     base_img = Image.fromarray(rgb, 'RGB')
     
-    # Draw elements
     draw = ImageDraw.Draw(base_img, 'RGBA')
-    
-    # Scale factor from 1024 to `size`
     S = size / 1024.0
     
     # --- CANINE PROFILE SILHOUETTE ---
-    # Construct smooth polygon points for the modern dog head
     pts = []
-    # Base neck
     pts.append([330 * S, 740 * S])
-    # Left back curve: 330,740 -> 320,640 -> 335,530 -> 380,440
     c1 = cubic_bezier(np.array([330*S, 740*S]), np.array([320*S, 640*S]), np.array([335*S, 530*S]), np.array([380*S, 440*S]), 30)
     pts.extend(c1.tolist())
-    # Neck to ear curve: 380,440 -> 415,370 -> 470,300 -> 480,230
     c2 = cubic_bezier(np.array([380*S, 440*S]), np.array([415*S, 370*S]), np.array([470*S, 300*S]), np.array([480*S, 230*S]), 30)
     pts.extend(c2.tolist())
-    # Ear tip curve: 480,230 -> 490,200 -> 515,190 -> 530,220
     c3 = cubic_bezier(np.array([480*S, 230*S]), np.array([490*S, 200*S]), np.array([515*S, 190*S]), np.array([530*S, 220*S]), 20)
     pts.extend(c3.tolist())
-    # Ear down to forehead: 530,220 -> 545,260 -> 535,320 -> 580,380
     c4 = cubic_bezier(np.array([530*S, 220*S]), np.array([545*S, 260*S]), np.array([535*S, 320*S]), np.array([580*S, 380*S]), 25)
     pts.extend(c4.tolist())
-    # Forehead to muzzle snout: 580,380 -> 620,400 -> 690,440 -> 750,510
     c5 = cubic_bezier(np.array([580*S, 380*S]), np.array([620*S, 400*S]), np.array([690*S, 440*S]), np.array([750*S, 510*S]), 30)
     pts.extend(c5.tolist())
-    # Snout tip to jaw: 750,510 -> 765,540 -> 735,570 -> 680,580
     c6 = cubic_bezier(np.array([750*S, 510*S]), np.array([765*S, 540*S]), np.array([735*S, 570*S]), np.array([680*S, 580*S]), 25)
     pts.extend(c6.tolist())
-    # Jaw to neck: 680,580 -> 620,585 -> 560,610 -> 520,660
     c7 = cubic_bezier(np.array([680*S, 580*S]), np.array([620*S, 585*S]), np.array([560*S, 610*S]), np.array([520*S, 660*S]), 25)
     pts.extend(c7.tolist())
-    # Down to base: 520,660 -> 480,710 -> 450,740
     pts.append([450 * S, 740 * S])
     
     poly = [(p[0], p[1]) for p in pts]
     
-    # Shadow layer for dog head
+    # Shadow layer
     shadow_layer = Image.new('RGBA', (size, size), (0, 0, 0, 0))
     s_draw = ImageDraw.Draw(shadow_layer)
-    s_poly = [(p[0], p[1] + 16 * S) for p in pts]
-    s_draw.polygon(s_poly, fill=(0, 0, 0, 110))
-    shadow_layer = shadow_layer.filter(ImageFilter.GaussianBlur(16 * S))
+    s_poly = [(p[0], p[1] + 18 * S) for p in pts]
+    s_draw.polygon(s_poly, fill=(0, 0, 0, 130))
+    shadow_layer = shadow_layer.filter(ImageFilter.GaussianBlur(18 * S))
     base_img.paste(shadow_layer, (0, 0), shadow_layer)
     
-    # Draw body polygon with crisp clean gradient off-white / mint tint
+    # Canine Body (Frosted Pearl White)
     dog_layer = Image.new('RGBA', (size, size), (0, 0, 0, 0))
     d_draw = ImageDraw.Draw(dog_layer)
-    d_draw.polygon(poly, fill=(244, 252, 250, 255))
+    d_draw.polygon(poly, fill=(245, 252, 251, 255))
     base_img.paste(dog_layer, (0, 0), dog_layer)
     
-    # Draw Ear geometric inner facet (Teal Accent)
+    # Ear Iridescent Facet (Cyan -> Violet)
     ear_pts = []
     e1 = cubic_bezier(np.array([495*S, 235*S]), np.array([515*S, 280*S]), np.array([490*S, 340*S]), np.array([440*S, 395*S]), 25)
     ear_pts.extend(e1.tolist())
@@ -95,20 +92,19 @@ def create_super_canvas(size=2048):
     
     ear_layer = Image.new('RGBA', (size, size), (0, 0, 0, 0))
     e_draw = ImageDraw.Draw(ear_layer)
-    e_draw.polygon(ear_poly, fill=(45, 212, 191, 230)) # #2DD4BF
+    e_draw.polygon(ear_poly, fill=(0, 242, 254, 235)) # Electric Cyan
     base_img.paste(ear_layer, (0, 0), ear_layer)
     
     # Snout Nose Detail
     draw = ImageDraw.Draw(base_img, 'RGBA')
-    draw.ellipse([720*S, 520*S, 746*S, 546*S], fill=(13, 92, 84, 255))
+    draw.ellipse([720*S, 520*S, 746*S, 546*S], fill=(7, 35, 34, 255))
     
-    # Intelligent Eye (Deep teal + glowing cyan spark)
+    # Intelligent Eye
     eye_x, eye_y = 575 * S, 445 * S
-    draw.ellipse([eye_x - 14*S, eye_y - 14*S, eye_x + 14*S, eye_y + 14*S], fill=(15, 118, 110, 255))
-    draw.ellipse([eye_x - 4*S, eye_y - 4*S, eye_x + 6*S, eye_y + 6*S], fill=(94, 234, 212, 255))
+    draw.ellipse([eye_x - 14*S, eye_y - 14*S, eye_x + 14*S, eye_y + 14*S], fill=(10, 51, 49, 255))
+    draw.ellipse([eye_x - 4*S, eye_y - 4*S, eye_x + 6*S, eye_y + 6*S], fill=(0, 242, 254, 255))
     
-    # --- BIOMETRIC / VITALS PULSE WAVE ("Vue") ---
-    # Points across chest/neck in dynamic V formation
+    # --- BIOMETRIC TELEMETRY PULSE WAVE ("Vue") ---
     pulse_coords = [
         (220*S, 630*S),
         (320*S, 630*S),
@@ -122,52 +118,49 @@ def create_super_canvas(size=2048):
         (800*S, 630*S)
     ]
     
-    # Glow behind pulse line
+    # Luminous cyan glow behind pulse
     glow_pulse = Image.new('RGBA', (size, size), (0, 0, 0, 0))
     gp_draw = ImageDraw.Draw(glow_pulse)
     for i in range(len(pulse_coords) - 1):
-        gp_draw.line([pulse_coords[i], pulse_coords[i+1]], fill=(45, 212, 191, 160), width=int(32 * S))
-    glow_pulse = glow_pulse.filter(ImageFilter.GaussianBlur(14 * S))
+        gp_draw.line([pulse_coords[i], pulse_coords[i+1]], fill=(0, 242, 254, 180), width=int(36 * S))
+    glow_pulse = glow_pulse.filter(ImageFilter.GaussianBlur(16 * S))
     base_img.paste(glow_pulse, (0, 0), glow_pulse)
     
-    # Crisp pulse line
+    # Crisp pulse line with gradient colors: Cyan -> Aquamarine -> Indigo -> Violet
     pulse_line = Image.new('RGBA', (size, size), (0, 0, 0, 0))
     pl_draw = ImageDraw.Draw(pulse_line)
     
-    # Color transitions from #2DD4BF -> #38BDF8 -> #818CF8
     colors = [
-        (45, 212, 191, 255),
-        (45, 212, 191, 255),
-        (56, 189, 248, 255),
+        (0, 242, 254, 255),
+        (0, 242, 254, 255),
+        (0, 210, 196, 255),
         (56, 189, 248, 255),
         (99, 102, 241, 255),
-        (129, 140, 248, 255),
-        (56, 189, 248, 255),
-        (45, 212, 191, 255),
-        (45, 212, 191, 255)
+        (139, 92, 246, 255),
+        (99, 102, 241, 255),
+        (0, 242, 254, 255),
+        (0, 242, 254, 255)
     ]
     for i in range(len(pulse_coords) - 1):
         c = colors[min(i, len(colors)-1)]
         pl_draw.line([pulse_coords[i], pulse_coords[i+1]], fill=c, width=int(18 * S))
         
-    # Draw rounded joints
     for pt in pulse_coords:
-        pl_draw.ellipse([pt[0] - 9*S, pt[1] - 9*S, pt[0] + 9*S, pt[1] + 9*S], fill=(45, 212, 191, 255))
+        pl_draw.ellipse([pt[0] - 9*S, pt[1] - 9*S, pt[0] + 9*S, pt[1] + 9*S], fill=(0, 242, 254, 255))
         
     base_img.paste(pulse_line, (0, 0), pulse_line)
     
-    # Biometric Vital Peak Node
+    # Biometric Peak Node: Pearl + Royal Violet
     draw = ImageDraw.Draw(base_img, 'RGBA')
     pk = pulse_coords[5] # 495, 735
     draw.ellipse([pk[0] - 18*S, pk[1] - 18*S, pk[0] + 18*S, pk[1] + 18*S], fill=(255, 255, 255, 255))
-    draw.ellipse([pk[0] - 10*S, pk[1] - 10*S, pk[0] + 10*S, pk[1] + 10*S], fill=(99, 102, 241, 255))
+    draw.ellipse([pk[0] - 10*S, pk[1] - 10*S, pk[0] + 10*S, pk[1] + 10*S], fill=(139, 92, 246, 255))
     
     pk2 = pulse_coords[4] # 445, 540
     draw.ellipse([pk2[0] - 14*S, pk2[1] - 14*S, pk2[0] + 14*S, pk2[1] + 14*S], fill=(255, 255, 255, 255))
-    draw.ellipse([pk2[0] - 8*S, pk2[1] - 8*S, pk2[0] + 8*S, pk2[1] + 8*S], fill=(45, 212, 191, 255))
+    draw.ellipse([pk2[0] - 8*S, pk2[1] - 8*S, pk2[0] + 8*S, pk2[1] + 8*S], fill=(0, 242, 254, 255))
     
-    # Modern Brand Lettering "CANIVUE" at lower portion
-    # Try default sans or font
+    # Modern Brand Lettering "CANIVUE"
     font_size = int(68 * S)
     try:
         font = ImageFont.truetype("C:/Windows/Fonts/segoeui.ttf", font_size)
@@ -178,21 +171,20 @@ def create_super_canvas(size=2048):
             font = ImageFont.load_default()
             
     text = "CANIVUE"
-    # Spaced characters for modern luxury look
     spaced_text = "  ".join(list(text))
     bbox = draw.textbbox((0, 0), spaced_text, font=font)
     tw = bbox[2] - bbox[0]
     th = bbox[3] - bbox[1]
     tx = (size - tw) / 2.0
     ty = 845 * S
-    draw.text((tx, ty), spaced_text, font=font, fill=(167, 243, 208, 240))
+    draw.text((tx, ty), spaced_text, font=font, fill=(226, 250, 248, 245))
     
-    # Glowing sensor dot next to Vue
-    draw.ellipse([tx + tw + 18*S, ty + th/2 - 6*S, tx + tw + 30*S, ty + th/2 + 6*S], fill=(56, 189, 248, 255))
+    # Glowing Telemetry Beacon Dot
+    draw.ellipse([tx + tw + 18*S, ty + th/2 - 6*S, tx + tw + 30*S, ty + th/2 + 6*S], fill=(0, 242, 254, 255))
     
     return base_img
 
-def apply_mask(img, shape='squircle', radius_ratio=0.22):
+def apply_mask(img, shape='squircle', radius_ratio=0.23):
     w, h = img.size
     mask = Image.new('L', (w, h), 0)
     draw = ImageDraw.Draw(mask)
@@ -204,31 +196,29 @@ def apply_mask(img, shape='squircle', radius_ratio=0.22):
     else:
         return img
     
-    # Add subtle border highlight on the squircle
     result = Image.new('RGBA', (w, h), (0, 0, 0, 0))
     result.paste(img, (0, 0), mask)
     
+    # Iridescent liquid glass rim border
     if shape == 'squircle':
         border = Image.new('RGBA', (w, h), (0, 0, 0, 0))
         b_draw = ImageDraw.Draw(border)
-        b_draw.rounded_rectangle([2, 2, w-2, h-2], radius=int(w*radius_ratio)-2, outline=(45, 212, 191, 70), width=int(max(2, w*0.005)))
+        r = int(w * radius_ratio)
+        b_draw.rounded_rectangle([2, 2, w-2, h-2], radius=r-2, outline=(0, 242, 254, 180), width=int(max(2, w*0.007)))
         result.alpha_composite(border)
         
     return result
 
-print("Generating Master Icons...")
+print("Generating Redesigned Liquid Glass Icons...")
 raw_2048 = create_super_canvas(2048)
 
-# Master 1024x1024 squircle (iOS / standard / Web)
 master_1024 = raw_2048.resize((1024, 1024), Image.Resampling.LANCZOS)
-master_squircle = apply_mask(master_1024, 'squircle', 0.22)
+master_squircle = apply_mask(master_1024, 'squircle', 0.23)
 master_round = apply_mask(master_1024, 'round')
 
-# Save Master to assets
 os.makedirs("assets/icons", exist_ok=True)
 master_squircle.save("assets/icons/app_icon.png")
 master_round.save("assets/icons/app_icon_round.png")
-# Full bleed for Android adaptive icon background & foreground
 master_1024.save("assets/icons/app_icon_full.png")
 print("Saved assets/icons/app_icon.png")
 
@@ -245,13 +235,12 @@ android_sizes = {
 for folder, s in android_sizes.items():
     dir_path = os.path.join(android_res, folder)
     os.makedirs(dir_path, exist_ok=True)
-    # Standard icon (with squircle mask)
-    icon = apply_mask(raw_2048.resize((s, s), Image.Resampling.LANCZOS), 'squircle', 0.22)
+    icon = apply_mask(raw_2048.resize((s, s), Image.Resampling.LANCZOS), 'squircle', 0.23)
     icon.save(os.path.join(dir_path, "ic_launcher.png"))
-    # Round icon (for Pixel & modern launchers)
     icon_round = apply_mask(raw_2048.resize((s, s), Image.Resampling.LANCZOS), 'round')
     icon_round.save(os.path.join(dir_path, "ic_launcher_round.png"))
-    print(f"Generated Android {folder} ({s}x{s})")
+
+print("Generated Android icons")
 
 # --- IOS ICONS ---
 ios_dir = "ios/Runner/Assets.xcassets/AppIcon.appiconset"
@@ -274,10 +263,9 @@ if os.path.exists(ios_dir):
         "Icon-App-20x20@1x.png": 20,
     }
     for filename, s in ios_sizes.items():
-        # iOS expects square without alpha mask (iOS system clips with continuous curvature squircle)
         icon = master_1024.resize((s, s), Image.Resampling.LANCZOS).convert("RGB")
         icon.save(os.path.join(ios_dir, filename))
-        print(f"Generated iOS {filename} ({s}x{s})")
+    print("Generated iOS icons")
 
 # --- WEB ICONS ---
 web_dir = "web"
@@ -290,4 +278,4 @@ if os.path.exists(web_dir):
     master_squircle.resize((32, 32), Image.Resampling.LANCZOS).save("web/favicon.png")
     print("Generated Web icons")
 
-print("All icons successfully generated!")
+print("All icons successfully updated to Liquid Glass design!")

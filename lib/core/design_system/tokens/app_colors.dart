@@ -5,9 +5,8 @@
 /// is built from these tokens in `core/theme/app_theme.dart`) rather than
 /// hardcoding hex values.
 ///
-/// The palette communicates health, trust and calm intelligence: a deep
-/// teal/emerald primary instead of a generic "medical" blue, paired with a
-/// true (non-inverted) dark theme.
+/// The palette communicates health, trust, liquid glassmorphism, and calm intelligence:
+/// electric cyan, aurora teal, hyper indigo, and deep obsidian liquid surfaces.
 library;
 
 import 'package:flutter/material.dart';
@@ -31,10 +30,29 @@ class AppColors {
   static const Color secondary = Color(0xFF35607A);
   static const Color secondaryOnDark = Color(0xFF7DD3FC);
 
-  /// Indigo "intelligence" accent — reserved for AI/prediction surfaces so
-  /// AI-driven content reads as visually distinct from routine health data.
+  /// Indigo "intelligence" accent — reserved for AI/prediction surfaces.
   static const Color intelligence = Color(0xFF6366F1);
   static const Color intelligenceOnDark = Color(0xFFA5B4FC);
+
+  // ---------------------------------------------------------------------
+  // Liquid Glass & Aurora Chromatic Accents
+  // ---------------------------------------------------------------------
+  /// High-voltage electric cyan flare — vital telemetry & specular highlights.
+  static const Color cyanAccent = Color(0xFF00F2FE);
+
+  /// Luminous neon mint — vital signs active state.
+  static const Color neonMint = Color(0xFF00E5BE);
+
+  /// Electric indigo — predictive neural diagnostics.
+  static const Color electricIndigo = Color(0xFF6366F1);
+
+  /// Royal orchid violet — secondary chromatic refraction.
+  static const Color royalViolet = Color(0xFF8B5CF6);
+
+  /// Liquid glass frosted white overlay.
+  static const Color glassSurface = Color(0x18FFFFFF);
+  static const Color glassSurfaceElevated = Color(0x24FFFFFF);
+  static const Color glassBorder = Color(0x4000F2FE);
 
   // ---------------------------------------------------------------------
   // Semantic
@@ -61,13 +79,13 @@ class AppColors {
   static const Color lightMutedText = Color(0xFF8B9A97);
 
   // ---------------------------------------------------------------------
-  // Dark mode surfaces — a true dark theme, not an inversion.
+  // Dark mode surfaces — deep obsidian liquid space.
   // ---------------------------------------------------------------------
-  static const Color darkBackground = Color(0xFF0A1413);
-  static const Color darkSurface = Color(0xFF0F1B19);
-  static const Color darkElevatedSurface = Color(0xFF152420);
-  static const Color darkCard = Color(0xFF152420);
-  static const Color darkBorder = Color(0xFF25332F);
+  static const Color darkBackground = Color(0xFF050E14);
+  static const Color darkSurface = Color(0xFF091720);
+  static const Color darkElevatedSurface = Color(0xFF0F222E);
+  static const Color darkCard = Color(0xFF0F222E);
+  static const Color darkBorder = Color(0xFF1A3545);
   static const Color darkTextPrimary = Color(0xFFF1F5F4);
   static const Color darkTextSecondary = Color(0xFFB9C7C3);
   static const Color darkMutedText = Color(0xFF77857F);
@@ -99,22 +117,73 @@ class AppColors {
     end: Alignment.bottomRight,
   );
 
+  /// Multi-stop Aurora Gradient: Electric Cyan -> Aquamarine -> Indigo -> Violet
+  static const LinearGradient auroraGradient = LinearGradient(
+    colors: [
+      Color(0xFF00F2FE),
+      Color(0xFF00D2C4),
+      Color(0xFF6366F1),
+      Color(0xFF8B5CF6),
+    ],
+    stops: [0.0, 0.32, 0.72, 1.0],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  /// Liquid Glass Frosted Surface Gradient
+  static const LinearGradient liquidGlassGradient = LinearGradient(
+    colors: [
+      Color(0x33FFFFFF), // Crisp top-left specular bounce
+      Color(0x0FFFFFFF), // Translucent body
+      Color(0x1A00F2FE), // Cyan fluid depth
+      Color(0x286366F1), // Subtle chromatic floor
+    ],
+    stops: [0.0, 0.45, 0.8, 1.0],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  /// Iridescent Liquid Glass Border Gradient
+  static const LinearGradient liquidGlassBorderGradient = LinearGradient(
+    colors: [
+      Color(0xCC00F2FE), // Vibrant specular rim
+      Color(0x60FFFFFF),
+      Color(0x308B5CF6),
+      Color(0x996366F1), // Prismatic edge
+    ],
+    stops: [0.0, 0.28, 0.68, 1.0],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  /// Biometric Wave Pulse Gradient
+  static const LinearGradient biometricPulseGradient = LinearGradient(
+    colors: [
+      Color(0xFF00F2FE),
+      Color(0xFF38BDF8),
+      Color(0xFF818CF8),
+      Color(0xFF8B5CF6),
+    ],
+    begin: Alignment.centerLeft,
+    end: Alignment.centerRight,
+  );
+
   // ---------------------------------------------------------------------
-  // Chart palette — readable & muted-safe in both themes.
+  // Chart palette
   // ---------------------------------------------------------------------
   static const List<Color> chartSeriesLight = [
-    Color(0xFF0F766E), // teal
-    Color(0xFF6366F1), // indigo
-    Color(0xFFB45309), // amber
-    Color(0xFFBE185D), // rose
-    Color(0xFF0369A1), // sky
+    Color(0xFF0F766E),
+    Color(0xFF6366F1),
+    Color(0xFFB45309),
+    Color(0xFFBE185D),
+    Color(0xFF0369A1),
   ];
 
   static const List<Color> chartSeriesDark = [
-    Color(0xFF2DD4BF), // teal
-    Color(0xFFA5B4FC), // indigo
-    Color(0xFFFBBF24), // amber
-    Color(0xFFF472B6), // rose
-    Color(0xFF38BDF8), // sky
+    Color(0xFF2DD4BF),
+    Color(0xFFA5B4FC),
+    Color(0xFFFBBF24),
+    Color(0xFFF472B6),
+    Color(0xFF38BDF8),
   ];
 }

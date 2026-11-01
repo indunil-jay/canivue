@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:canivue/core/widgets/canivue_liquid_logo.dart';
 import 'package:canivue/features/onboarding/models/onboarding_slide.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -125,25 +126,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                   child: Row(
                     children: [
-                      Container(
-                        height: 38,
-                        width: 38,
-                        decoration: BoxDecoration(
-                          gradient: _currentSlide.primaryGradient,
-                          borderRadius: BorderRadius.circular(12),
-                          boxShadow: [
-                            BoxShadow(
-                              color: _currentSlide.accentColor.withValues(alpha: 0.35),
-                              blurRadius: 10,
-                              offset: const Offset(0, 3),
-                            ),
-                          ],
-                        ),
-                        child: const Icon(
-                          Icons.pets_rounded,
-                          color: Colors.white,
-                          size: 20,
-                        ),
+                      const CanivueLiquidLogo(
+                        size: 36,
+                        showGlow: true,
+                        enableAnimation: true,
                       ),
                       const SizedBox(width: 10),
                       Text(
@@ -344,6 +330,18 @@ class _OnboardingPage extends StatelessWidget {
                       ),
                     ),
                   ),
+
+                  // Liquid Glass Logo Preview Watermark on Landing Slide
+                  if (slide.stepLabel.startsWith('01'))
+                    const Positioned(
+                      top: 16,
+                      right: 16,
+                      child: CanivueLiquidLogo(
+                        size: 48,
+                        showGlow: true,
+                        enableAnimation: true,
+                      ),
+                    ),
 
                   // Bottom Floating Badge with Category Icon
                   Positioned(
