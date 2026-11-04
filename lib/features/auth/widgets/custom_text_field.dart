@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:canivue/core/design_system/tokens/tokens.dart';
 
-/// Modern Liquid Glass Form Field for Canivue Authentication.
+/// Modern Warm Form Field for Canivue Authentication.
 ///
-/// Implements [liquid-glass-design] and [flutter-ui-design]:
-/// - Frosted glass translucent surface
-/// - Animated focus elevation with cyan aurora glow
-/// - Crisp Plus Jakarta Sans typography
-/// - Clear validation states
+/// Refined with soft squircle borders, dynamic focus elevation,
+/// crisp Plus Jakarta Sans typography, and friendly dog-care aesthetics.
 class CustomTextField extends StatefulWidget {
   const CustomTextField({
     super.key,
@@ -24,8 +20,9 @@ class CustomTextField extends StatefulWidget {
     this.onFieldSubmitted,
     this.onChanged,
     this.maxLines = 1,
-    this.isGlass = true,
+    this.isGlass = false,
     this.focusNode,
+    this.focusAccentColor = const Color(0xFF10B981),
   });
 
   final TextEditingController controller;
@@ -42,6 +39,7 @@ class CustomTextField extends StatefulWidget {
   final int maxLines;
   final bool isGlass;
   final FocusNode? focusNode;
+  final Color focusAccentColor;
 
   @override
   State<CustomTextField> createState() => _CustomTextFieldState();
@@ -86,12 +84,12 @@ class _CustomTextFieldState extends State<CustomTextField> {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    final textColor = isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
-    final labelColor = isDark ? Colors.white.withValues(alpha: 0.9) : const Color(0xFF334155);
-    final hintColor = isDark ? Colors.white.withValues(alpha: 0.4) : const Color(0xFF94A3B8);
-    final fillColor = isDark ? Colors.white.withValues(alpha: 0.06) : const Color(0xFFF8FAFC);
-    final borderColor = isDark ? Colors.white.withValues(alpha: 0.14) : const Color(0xFFE2E8F0);
-    final activeAccent = isDark ? AppColors.cyanAccent : AppColors.primary;
+    final activeAccent = widget.focusAccentColor;
+    final textColor = isDark ? const Color(0xFFF1F5F9) : const Color(0xFF16171B);
+    final labelColor = isDark ? const Color(0xFFCBD5E1) : const Color(0xFF334155);
+    final hintColor = isDark ? const Color(0xFF64748B) : const Color(0xFF94A3B8);
+    final fillColor = isDark ? const Color(0xFF1E252B) : const Color(0xFFF8FAF9);
+    final borderColor = isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -100,27 +98,33 @@ class _CustomTextFieldState extends State<CustomTextField> {
           widget.label,
           style: GoogleFonts.plusJakartaSans(
             fontSize: 13,
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w700,
             color: labelColor,
-            letterSpacing: 0.2,
+            letterSpacing: -0.2,
           ),
         ),
         const SizedBox(height: 7),
         AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
+          duration: const Duration(milliseconds: 220),
           curve: Curves.easeOutCubic,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(18),
             boxShadow: _isFocused
                 ? [
                     BoxShadow(
-                      color: activeAccent.withValues(alpha: isDark ? 0.22 : 0.15),
-                      blurRadius: 14,
+                      color: activeAccent.withValues(alpha: isDark ? 0.28 : 0.2),
+                      blurRadius: 16,
                       spreadRadius: 1,
-                      offset: const Offset(0, 2),
+                      offset: const Offset(0, 3),
                     ),
                   ]
-                : null,
+                : [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: isDark ? 0.15 : 0.02),
+                      blurRadius: 6,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
           ),
           child: TextFormField(
             controller: widget.controller,
@@ -135,7 +139,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
             style: GoogleFonts.plusJakartaSans(
               color: textColor,
               fontSize: 15,
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w600,
             ),
             autovalidateMode: AutovalidateMode.onUserInteraction,
             decoration: InputDecoration(
@@ -148,62 +152,64 @@ class _CustomTextFieldState extends State<CustomTextField> {
               prefixIcon: widget.maxLines > 1
                   ? null
                   : Padding(
-                      padding: const EdgeInsets.only(left: 14, right: 10),
+                      padding: const EdgeInsets.only(left: 16, right: 10),
                       child: Icon(
                         widget.prefixIcon,
-                        color: _isFocused ? activeAccent : (isDark ? Colors.white60 : const Color(0xFF64748B)),
+                        color: _isFocused
+                            ? activeAccent
+                            : (isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B)),
                         size: 20,
                       ),
                     ),
-              prefixIconConstraints: const BoxConstraints(minWidth: 46, minHeight: 46),
+              prefixIconConstraints: const BoxConstraints(minWidth: 48, minHeight: 48),
               suffixIcon: widget.suffixIcon != null
                   ? Padding(
-                      padding: const EdgeInsets.only(right: 6),
+                      padding: const EdgeInsets.only(right: 8),
                       child: widget.suffixIcon,
                     )
                   : null,
               filled: true,
               fillColor: fillColor,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(18),
                 borderSide: BorderSide(
                   color: borderColor,
-                  width: 1,
-                ),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(16),
-                borderSide: BorderSide(
-                  color: borderColor,
-                  width: 1,
-                ),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(16),
-                borderSide: BorderSide(
-                  color: activeAccent,
-                  width: 1.8,
-                ),
-              ),
-              errorBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(16),
-                borderSide: BorderSide(
-                  color: isDark ? AppColors.errorOnDark : AppColors.error,
                   width: 1.2,
                 ),
               ),
-              focusedErrorBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(16),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(18),
                 borderSide: BorderSide(
-                  color: isDark ? AppColors.errorOnDark : AppColors.error,
-                  width: 1.8,
+                  color: borderColor,
+                  width: 1.2,
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(18),
+                borderSide: BorderSide(
+                  color: activeAccent,
+                  width: 2,
+                ),
+              ),
+              errorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(18),
+                borderSide: const BorderSide(
+                  color: Color(0xFFEF4444),
+                  width: 1.4,
+                ),
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(18),
+                borderSide: const BorderSide(
+                  color: Color(0xFFEF4444),
+                  width: 2,
                 ),
               ),
               errorStyle: GoogleFonts.plusJakartaSans(
                 fontSize: 12,
-                fontWeight: FontWeight.w500,
-                color: isDark ? AppColors.errorOnDark : AppColors.error,
+                fontWeight: FontWeight.w600,
+                color: const Color(0xFFEF4444),
               ),
             ),
           ),
