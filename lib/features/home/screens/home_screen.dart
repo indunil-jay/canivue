@@ -29,6 +29,7 @@ import 'package:canivue/features/pets/models/pet_model.dart';
 import 'package:canivue/features/pets/presentation/controllers/dogs_controller.dart';
 import 'package:canivue/features/pets/screens/pet_detail_screen.dart';
 import 'package:canivue/features/pets/screens/pet_list_screen.dart';
+import 'package:canivue/features/predictions/presentation/screens/prediction_history_screen.dart';
 import 'package:canivue/features/preventive_care/presentation/screens/preventive_care_screen.dart';
 import 'package:canivue/features/search/presentation/screens/search_screen.dart';
 import 'package:canivue/features/vets/presentation/screens/appointments_screen.dart';
@@ -476,7 +477,17 @@ class _DashboardContent extends ConsumerWidget {
           // 7. Multimodal AI Insights Card
           _sectionHeader('Multimodal AI Insights', isDark),
           const SizedBox(height: 12),
-          AiInsightCard(insight: summary.insight),
+          AiInsightCard(
+            insight: summary.insight,
+            onTap: () {
+              HapticFeedback.lightImpact();
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => PredictionHistoryScreen(dogId: dog.id, dogName: dog.name),
+                ),
+              );
+            },
+          ),
 
           const SizedBox(height: 26),
 

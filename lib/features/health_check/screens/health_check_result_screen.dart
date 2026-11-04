@@ -3,6 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:canivue/core/theme/app_theme.dart';
 import 'package:canivue/core/widgets/luxury_biometric_ring.dart';
 import 'package:canivue/features/health_check/models/health_check_models.dart';
+import 'package:canivue/features/pets/models/pet_model.dart';
+import 'package:canivue/features/predictions/presentation/screens/prediction_history_screen.dart';
 
 class HealthCheckResultScreen extends StatelessWidget {
   const HealthCheckResultScreen({super.key, required this.result});
@@ -355,6 +357,37 @@ class HealthCheckResultScreen extends StatelessWidget {
                       label: Text(
                         'Book Vet Consultation',
                         style: GoogleFonts.plusJakartaSans(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton.icon(
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => PredictionHistoryScreen(
+                              dogId: Pet.samplePets.firstWhere((p) => p.name == result.petName, orElse: () => Pet.samplePets.first).id,
+                              dogName: result.petName,
+                            ),
+                          ),
+                        );
+                      },
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                        side: BorderSide(
+                          color: isDark ? const Color(0x33FFFFFF) : const Color(0xFFECE6DC),
+                        ),
+                      ),
+                      icon: const Icon(Icons.history_rounded, size: 18),
+                      label: Text(
+                        'View Complete AI Diagnostic History',
+                        style: GoogleFonts.plusJakartaSans(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 14,
+                        ),
                       ),
                     ),
                   ),

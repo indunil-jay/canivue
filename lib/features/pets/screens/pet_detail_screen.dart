@@ -3,12 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:canivue/core/design_system/tokens/tokens.dart';
 import 'package:canivue/core/theme/app_theme.dart';
+import 'package:canivue/core/widgets/ambient_paw_backdrop.dart';
 import 'package:canivue/core/widgets/app_feedback.dart';
 import 'package:canivue/core/widgets/luxury_biometric_ring.dart';
 import 'package:canivue/features/health_check/screens/health_check_capture_screen.dart';
 import 'package:canivue/features/pets/models/pet_model.dart';
 import 'package:canivue/features/pets/screens/add_edit_pet_screen.dart';
+import 'package:canivue/features/predictions/presentation/screens/prediction_history_screen.dart';
 
 class PetDetailScreen extends StatefulWidget {
   const PetDetailScreen({
@@ -336,11 +339,13 @@ class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProv
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final isDark = theme.brightness == Brightness.dark;
     final pet = _pet;
 
     return Scaffold(
+      backgroundColor: isDark ? AppColors.darkBackground : AppColors.lightBackground,
       appBar: AppBar(
-        backgroundColor: colorScheme.surface,
+        backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios_new_rounded, color: colorScheme.onSurface),
@@ -359,7 +364,12 @@ class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProv
           const SizedBox(width: 4),
         ],
       ),
-      body: SafeArea(
+      body: AmbientPawBackdrop(
+        showContainerLines: false,
+        showPawWatermarks: true,
+        showParticles: true,
+        child: SafeArea(
+          bottom: false,
         child: Center(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 600),
@@ -376,11 +386,25 @@ class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProv
                           Container(
                             padding: const EdgeInsets.all(22),
                             decoration: BoxDecoration(
-                              gradient: AppTheme.heroGradient,
+                              gradient: isDark
+                                  ? const LinearGradient(
+                                      colors: [Color(0xFF222834), Color(0xFF191D26)],
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                    )
+                                  : const LinearGradient(
+                                      colors: [Color(0xFFFED25E), Color(0xFFFDCB3F)],
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                    ),
+                              border: Border.all(
+                                color: isDark ? const Color(0xFFFED25E).withValues(alpha: 0.4) : Colors.white.withValues(alpha: 0.6),
+                                width: 1.5,
+                              ),
                               borderRadius: BorderRadius.circular(28),
                               boxShadow: [
                                 BoxShadow(
-                                  color: AppTheme.primaryBlue.withValues(alpha: 0.35),
+                                  color: (isDark ? Colors.black : const Color(0xFFFED25E)).withValues(alpha: 0.25),
                                   blurRadius: 20,
                                   offset: const Offset(0, 8),
                                 ),
@@ -452,7 +476,7 @@ class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProv
                                                   style: GoogleFonts.plusJakartaSans(
                                                     fontWeight: FontWeight.bold,
                                                     fontSize: 22,
-                                                    color: Colors.white,
+                                                    color: isDark ? Colors.white : const Color(0xFF181A20),
                                                     letterSpacing: -0.3,
                                                   ),
                                                 ),
@@ -469,7 +493,7 @@ class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProv
                                                   style: GoogleFonts.plusJakartaSans(
                                                     fontSize: 11.5,
                                                     fontWeight: FontWeight.bold,
-                                                    color: Colors.white,
+                                                    color: isDark ? Colors.white : const Color(0xFF181A20),
                                                   ),
                                                 ),
                                               ),
@@ -479,7 +503,7 @@ class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProv
                                           Text(
                                             '${pet.breed} • ${pet.species}',
                                             style: GoogleFonts.plusJakartaSans(
-                                              color: Colors.white.withValues(alpha: 0.9),
+                                              color: isDark ? Colors.white.withValues(alpha: 0.9) : const Color(0xFF4B3806),
                                               fontWeight: FontWeight.w500,
                                               fontSize: 13,
                                             ),
@@ -506,7 +530,7 @@ class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProv
                                                       style: GoogleFonts.plusJakartaSans(
                                                         fontSize: 11,
                                                         fontWeight: FontWeight.w600,
-                                                        color: Colors.white,
+                                                        color: isDark ? Colors.white : const Color(0xFF181A20),
                                                       ),
                                                       overflow: TextOverflow.ellipsis,
                                                     ),
@@ -571,7 +595,6 @@ class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProv
                             ),
                           ),
                           const SizedBox(height: 12),
-
                           // Quick Vitals 4-Grid
                           Row(
                             children: [
@@ -627,6 +650,7 @@ class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProv
           ),
         ),
       ),
+        ),
       bottomNavigationBar: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
@@ -657,7 +681,8 @@ class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProv
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
-                  gradient: AppTheme.primaryGradient,
+                  color: (theme.brightness == Brightness.dark) ? const Color(0xFF1B202C) : const Color(0xFF181A20),
+                border: Border.all(color: const Color(0xFFFED25E).withValues(alpha: 0.35)),
                   borderRadius: BorderRadius.circular(12),
                   boxShadow: [
                     BoxShadow(
@@ -767,10 +792,10 @@ class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProv
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+        color: (theme.brightness == Brightness.dark) ? const Color(0xFF1B202C) : Colors.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: theme.colorScheme.outlineVariant.withValues(alpha: 0.4),
+          color: (theme.brightness == Brightness.dark) ? const Color(0x22FFFFFF) : const Color(0xFFECE6DC),
         ),
       ),
       child: Row(
@@ -866,10 +891,11 @@ class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProv
             child: Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                gradient: AppTheme.primaryGradient,
+                color: (theme.brightness == Brightness.dark) ? const Color(0xFF1B202C) : const Color(0xFF181A20),
+                border: Border.all(color: const Color(0xFFFED25E).withValues(alpha: 0.35)),
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
-                  BoxShadow(color: AppTheme.primaryBlue.withValues(alpha: 0.3), blurRadius: 14, offset: const Offset(0, 6)),
+                  BoxShadow(color: Colors.black.withValues(alpha: 0.15), blurRadius: 14, offset: const Offset(0, 4)),
                 ],
               ),
               child: Row(
@@ -880,7 +906,7 @@ class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProv
                       color: Colors.white.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(14),
                     ),
-                    child: const Icon(Icons.biotech_rounded, color: Colors.white, size: 24),
+                    child: const Icon(Icons.auto_awesome_rounded, color: Color(0xFFFED25E), size: 24),
                   ),
                   const SizedBox(width: 14),
                   Expanded(
@@ -905,6 +931,45 @@ class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProv
             ),
           ),
           const SizedBox(height: 16),
+          const SizedBox(height: 10),
+          InkWell(
+            onTap: () {
+              HapticFeedback.lightImpact();
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => PredictionHistoryScreen(dogId: _pet.id, dogName: _pet.name),
+                ),
+              );
+            },
+            borderRadius: BorderRadius.circular(16),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: BoxDecoration(
+                color: (theme.brightness == Brightness.dark) ? const Color(0xFF1B202C) : Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: (theme.brightness == Brightness.dark) ? const Color(0xFF6366F1).withValues(alpha: 0.3) : const Color(0xFF6366F1).withValues(alpha: 0.25),
+                ),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.history_rounded, color: Color(0xFF6366F1), size: 20),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      'View Past AI Health Analyses & DPRPE',
+                      style: GoogleFonts.plusJakartaSans(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 13,
+                        color: (theme.brightness == Brightness.dark) ? Colors.white : const Color(0xFF181A20),
+                      ),
+                    ),
+                  ),
+                  const Icon(Icons.chevron_right_rounded, color: Color(0xFF6366F1)),
+                ],
+              ),
+            ),
+          ),
           _buildCardSection(
             title: 'Primary Veterinarian',
             icon: Icons.local_hospital_outlined,
@@ -1069,10 +1134,10 @@ class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProv
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+        color: (theme.brightness == Brightness.dark) ? const Color(0xFF1B202C) : Colors.white,
         borderRadius: BorderRadius.circular(18),
         border: Border.all(
-          color: theme.colorScheme.outlineVariant.withValues(alpha: 0.4),
+          color: (theme.brightness == Brightness.dark) ? const Color(0x22FFFFFF) : const Color(0xFFECE6DC),
         ),
       ),
       child: Column(
