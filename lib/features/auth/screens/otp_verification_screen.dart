@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:canivue/core/widgets/app_feedback.dart';
+import 'package:canivue/core/widgets/canivue_paw_bone_logo.dart';
 import 'package:canivue/features/auth/screens/reset_password_screen.dart';
 import 'package:canivue/features/auth/widgets/auth_hero_header.dart';
 import 'package:canivue/features/auth/widgets/signature_auth_button.dart';
@@ -141,201 +142,270 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     const coralAccent = Color(0xFFFF6B6B);
 
     return Scaffold(
-      backgroundColor: isDark ? const Color(0xFF101418) : const Color(0xFFF8FAF9),
-      body: SafeArea(
+      backgroundColor: const Color(0xFF56CFE1),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: isDark
+              ? const LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Color(0xFF0E2226),
+                    Color(0xFF16171B),
+                  ],
+                )
+              : const LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Color(0xFF56CFE1), // Fresh Seafoam (Slide 4 style)
+                    Color(0xFF72EFDD),
+                    Color(0xFFE8FCFA),
+                  ],
+                ),
+        ),
         child: Stack(
           children: [
-            // Compact Back Pill
+            // Background Watermark Paw Prints
             Positioned(
-              top: 8,
-              left: 14,
-              child: GestureDetector(
-                onTap: () => Navigator.of(context).pop(),
-                child: Container(
-                  width: 38,
-                  height: 38,
-                  decoration: BoxDecoration(
-                    color: isDark ? const Color(0xFF1C222A) : Colors.white,
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: isDark ? Colors.white12 : const Color(0xFFE2E8F0),
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.04),
-                        blurRadius: 6,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
+              top: -20,
+              right: -30,
+              child: Opacity(
+                opacity: 0.08,
+                child: Transform.rotate(
+                  angle: 0.35,
+                  child: const CanivuePawBoneLogo(
+                    size: 210,
+                    color: primaryText,
                   ),
-                  child: Icon(
-                    Icons.arrow_back_rounded,
-                    size: 18,
+                ),
+              ),
+            ),
+            Positioned(
+              top: 140,
+              left: -40,
+              child: Opacity(
+                opacity: 0.06,
+                child: Transform.rotate(
+                  angle: -0.25,
+                  child: const CanivuePawBoneLogo(
+                    size: 190,
                     color: primaryText,
                   ),
                 ),
               ),
             ),
 
-            Center(
-              child: SingleChildScrollView(
-                physics: const ClampingScrollPhysics(),
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 440),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      const SizedBox(height: 18),
-
-                      // Animated Beagle with Love Letter Mascot
-                      AuthHeroHeader(
-                        imageAsset: 'assets/images/auth/auth_dog_otp.jpg',
-                        badgeText: 'Instant Passcode',
-                        badgeEmoji: '📬',
-                        title: 'Verify Your Code',
-                        subtitle: 'Enter the 6-digit code sent to ${widget.email}',
-                        titleColor: primaryText,
-                        subtitleColor: secondaryText,
-                        accentColor: seafoamAccent,
-                        avatarSize: 68,
-                      ),
-                      const SizedBox(height: 20),
-
-                      // Crisp Card with OTP Digits
-                      Container(
-                        padding: const EdgeInsets.all(22),
-                        decoration: BoxDecoration(
-                          color: isDark ? const Color(0xFF182029) : Colors.white,
-                          borderRadius: BorderRadius.circular(28),
-                          border: Border.all(
-                            color: isDark ? Colors.white10 : const Color(0xFFEBF0ED),
-                            width: 1.2,
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: const Color(0xFF16171B).withValues(alpha: isDark ? 0.3 : 0.05),
-                              blurRadius: 24,
-                              offset: const Offset(0, 8),
-                            ),
-                          ],
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            // 6 Digit OTP Fields
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: List.generate(
-                                _codeLength,
-                                (index) => _OtpCompactDigitField(
-                                  controller: _controllers[index],
-                                  focusNode: _focusNodes[index],
-                                  isDark: isDark,
-                                  activeAccent: seafoamAccent,
-                                  onChanged: (value) {
-                                    if (value.isNotEmpty) {
-                                      if (index < _codeLength - 1) {
-                                        _focusNodes[index + 1].requestFocus();
-                                      } else {
-                                        _focusNodes[index].unfocus();
-                                        _handleVerify();
-                                      }
-                                    } else if (value.isEmpty && index > 0) {
-                                      _focusNodes[index - 1].requestFocus();
-                                    }
-                                  },
+            SafeArea(
+              bottom: false,
+              child: Column(
+                children: [
+                  // Top Hero Section: Back Button + Beagle Letter Mascot
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: GestureDetector(
+                            onTap: () => Navigator.of(context).pop(),
+                            child: Container(
+                              width: 38,
+                              height: 38,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: Colors.black.withValues(alpha: 0.06),
                                 ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.06),
+                                    blurRadius: 6,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                              child: const Icon(
+                                Icons.arrow_back_rounded,
+                                size: 18,
+                                color: primaryText,
                               ),
                             ),
-                            const SizedBox(height: 20),
-
-                            // Signature Pill Button with Coral Badge
-                            SignatureAuthButton(
-                              label: 'Verify & Continue',
-                              icon: Icons.check_rounded,
-                              accentColor: coralAccent,
-                              isLoading: _isLoading,
-                              onTap: _handleVerify,
-                            ),
-                          ],
-                        ),
-                      ).animate().fadeIn(delay: 150.ms).slideY(begin: 0.06, end: 0),
-                      const SizedBox(height: 16),
-
-                      // Resend Code Pill
-                      Center(
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
-                          decoration: BoxDecoration(
-                            color: isDark ? const Color(0xFF182029) : Colors.white,
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(
-                              color: isDark ? Colors.white10 : const Color(0xFFE2E8F0),
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.03),
-                                blurRadius: 6,
-                                offset: const Offset(0, 2),
-                              ),
-                            ],
                           ),
-                          child: Row(
+                        ),
+
+                        // Beagle Mascot with Love Letter & Tilted Coral Tile
+                        const AuthTopMascot(
+                          imageAsset: 'assets/images/auth/auth_dog_otp.jpg',
+                          badgeText: 'Instant Passcode',
+                          badgeEmoji: '📬',
+                          tileColor: coralAccent,
+                          avatarSize: 72,
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 8),
+
+                  // Bottom Curved Sheet Card (Flush to Bottom)
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: isDark ? const Color(0xFF182029) : Colors.white,
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(38),
+                          topRight: Radius.circular(38),
+                        ),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Color(0x18000000),
+                            blurRadius: 28,
+                            offset: Offset(0, -6),
+                          ),
+                        ],
+                      ),
+                      child: SafeArea(
+                        top: false,
+                        child: SingleChildScrollView(
+                          physics: const ClampingScrollPhysics(),
+                          padding: const EdgeInsets.fromLTRB(22, 22, 22, 16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
                             mainAxisSize: MainAxisSize.min,
                             children: [
+                              // Title & Subtitle
                               Text(
-                                "Didn't receive code? ",
+                                'Verify Your Code',
                                 style: GoogleFonts.plusJakartaSans(
-                                  color: secondaryText,
+                                  fontSize: 23,
+                                  fontWeight: FontWeight.w900,
+                                  color: isDark ? Colors.white : primaryText,
+                                  letterSpacing: -0.6,
+                                ),
+                              ).animate().fadeIn(delay: 60.ms).slideY(begin: 0.08, end: 0),
+
+                              const SizedBox(height: 3),
+
+                              Text(
+                                'Enter the 6-digit code sent to ${widget.email}',
+                                style: GoogleFonts.plusJakartaSans(
                                   fontSize: 12.5,
                                   fontWeight: FontWeight.w500,
+                                  color: secondaryText,
                                 ),
-                              ),
-                              GestureDetector(
-                                onTap: _timerSeconds == 0 ? _handleResend : null,
-                                child: Text(
-                                  _timerSeconds > 0
-                                      ? 'Resend in ${_timerSeconds}s'
-                                      : 'Resend Code',
-                                  style: GoogleFonts.plusJakartaSans(
-                                    fontWeight: FontWeight.w800,
-                                    fontSize: 12.5,
-                                    color: _timerSeconds == 0
-                                        ? const Color(0xFF0891B2)
-                                        : const Color(0xFF94A3B8),
+                              ).animate().fadeIn(delay: 100.ms).slideY(begin: 0.08, end: 0),
+
+                              const SizedBox(height: 20),
+
+                              // 6 Digit OTP Fields
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: List.generate(
+                                  _codeLength,
+                                  (index) => _OtpCompactDigitField(
+                                    controller: _controllers[index],
+                                    focusNode: _focusNodes[index],
+                                    isDark: isDark,
+                                    activeAccent: seafoamAccent,
+                                    onChanged: (value) {
+                                      if (value.isNotEmpty) {
+                                        if (index < _codeLength - 1) {
+                                          _focusNodes[index + 1].requestFocus();
+                                        } else {
+                                          _focusNodes[index].unfocus();
+                                          _handleVerify();
+                                        }
+                                      } else if (value.isEmpty && index > 0) {
+                                        _focusNodes[index - 1].requestFocus();
+                                      }
+                                    },
                                   ),
                                 ),
                               ),
+                              const SizedBox(height: 20),
+
+                              // Signature Pill Button with Coral Badge
+                              SignatureAuthButton(
+                                label: 'Verify & Continue',
+                                icon: Icons.check_rounded,
+                                accentColor: coralAccent,
+                                isLoading: _isLoading,
+                                onTap: _handleVerify,
+                              ),
+                              const SizedBox(height: 16),
+
+                              // Resend Code Pill
+                              Center(
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+                                  decoration: BoxDecoration(
+                                    color: isDark ? const Color(0xFF222B36) : const Color(0xFFF1F8F6),
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(
+                                      color: isDark ? Colors.white10 : const Color(0xFFE2E8F0),
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        "Didn't receive code? ",
+                                        style: GoogleFonts.plusJakartaSans(
+                                          color: secondaryText,
+                                          fontSize: 12.5,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      GestureDetector(
+                                        onTap: _timerSeconds == 0 ? _handleResend : null,
+                                        child: Text(
+                                          _timerSeconds > 0
+                                              ? 'Resend in ${_timerSeconds}s'
+                                              : 'Resend Code',
+                                          style: GoogleFonts.plusJakartaSans(
+                                            fontWeight: FontWeight.w900,
+                                            fontSize: 12.5,
+                                            color: _timerSeconds == 0
+                                                ? const Color(0xFF0891B2)
+                                                : const Color(0xFF94A3B8),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ).animate().fadeIn(delay: 180.ms),
+                              const SizedBox(height: 10),
+
+                              // Auto-fill Demo Button
+                              Center(
+                                child: TextButton.icon(
+                                  onPressed: _fillDemoCode,
+                                  icon: const Icon(
+                                    Icons.auto_awesome_rounded,
+                                    size: 15,
+                                    color: Color(0xFF0891B2),
+                                  ),
+                                  label: Text(
+                                    'Auto-fill Demo Code (123456)',
+                                    style: GoogleFonts.plusJakartaSans(
+                                      fontSize: 12.5,
+                                      color: isDark ? Colors.white : primaryText,
+                                      fontWeight: FontWeight.w800,
+                                    ),
+                                  ),
+                                ),
+                              ).animate().fadeIn(delay: 220.ms),
                             ],
                           ),
                         ),
-                      ).animate().fadeIn(delay: 200.ms),
-                      const SizedBox(height: 10),
-
-                      // Auto-fill Demo Button
-                      Center(
-                        child: TextButton.icon(
-                          onPressed: _fillDemoCode,
-                          icon: const Icon(
-                            Icons.auto_awesome_rounded,
-                            size: 15,
-                            color: Color(0xFF0891B2),
-                          ),
-                          label: Text(
-                            'Auto-fill Demo Code (123456)',
-                            style: GoogleFonts.plusJakartaSans(
-                              fontSize: 12.5,
-                              color: primaryText,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ),
-                      ).animate().fadeIn(delay: 240.ms),
-                    ],
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
           ],
