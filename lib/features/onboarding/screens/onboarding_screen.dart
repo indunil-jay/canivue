@@ -214,7 +214,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         duration: const Duration(milliseconds: 280),
                         child: Text(
                           _currentSlide.title,
-                          key: ValueKey('title_${_currentPage}'),
+                          key: ValueKey('title_$_currentPage'),
                           style: GoogleFonts.plusJakartaSans(
                             fontSize: 25,
                             fontWeight: FontWeight.w900,
@@ -232,7 +232,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         duration: const Duration(milliseconds: 280),
                         child: Text(
                           _currentSlide.description,
-                          key: ValueKey('desc_${_currentPage}'),
+                          key: ValueKey('desc_$_currentPage'),
                           style: GoogleFonts.plusJakartaSans(
                             fontSize: 13.5,
                             fontWeight: FontWeight.w600,
