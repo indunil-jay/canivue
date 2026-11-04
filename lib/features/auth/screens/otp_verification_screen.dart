@@ -174,7 +174,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                 opacity: 0.08,
                 child: Transform.rotate(
                   angle: 0.35,
-                  child: const CanivuePawBoneLogo(
+                  child: CanivuePawBoneLogo(
                     size: 210,
                     color: primaryText,
                   ),
@@ -188,7 +188,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                 opacity: 0.06,
                 child: Transform.rotate(
                   angle: -0.25,
-                  child: const CanivuePawBoneLogo(
+                  child: CanivuePawBoneLogo(
                     size: 190,
                     color: primaryText,
                   ),
@@ -227,7 +227,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                                   ),
                                 ],
                               ),
-                              child: const Icon(
+                              child: Icon(
                                 Icons.arrow_back_rounded,
                                 size: 18,
                                 color: primaryText,
