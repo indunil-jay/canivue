@@ -27,6 +27,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
 
   UserRole _selectedRole = UserRole.dogOwner;
   bool _obscurePassword = true;
@@ -38,6 +39,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
   }
 
