@@ -97,6 +97,12 @@
       "skillPath": "skills/engineering/codebase-design/SKILL.md",
       "computedHash": "417e3ea96ab3fbe2b7a4279ce3e59202fb7106ad688c12f2d577c9219803de8d"
     },
+    "container-lines": {
+      "source": "MengTo/Skills",
+      "sourceType": "github",
+      "skillPath": "agent-skills/web-design/container-lines/SKILL.md",
+      "computedHash": "798e1090879a5eac9d206bcbe92c092c4cd792922f1fe7413354586353095aac"
+    },
     "dart-add-unit-test": {
       "source": "flutter/skills",
       "sourceType": "github",
