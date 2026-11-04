@@ -68,28 +68,36 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
             ),
           ),
 
-          // Central New Paw & Bone Logo
+          // Central Dog App Logo & Brand Text
           Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // Logo card container
+                // Dog App Logo Card
                 Container(
-                  padding: const EdgeInsets.all(24),
+                  width: 96,
+                  height: 96,
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(36),
+                    borderRadius: BorderRadius.circular(28),
+                    border: Border.all(
+                      color: Colors.white,
+                      width: 3,
+                    ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.06),
+                        color: Colors.black.withValues(alpha: 0.12),
                         blurRadius: 28,
                         offset: const Offset(0, 10),
                       ),
                     ],
                   ),
-                  child: const CanivuePawBoneLogo(
-                    size: 76,
-                    color: Color(0xFF16171B),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(25),
+                    child: Image.asset(
+                      'assets/icons/app_dog_logo.png',
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 )
                     .animate()
@@ -100,11 +108,11 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
                       curve: Curves.easeOutBack,
                     ),
 
-                const SizedBox(height: 24),
+                const SizedBox(height: 20),
 
                 // Brand text
                 const CanivuePawBoneLogo(
-                  size: 42,
+                  size: 38,
                   showText: true,
                   subtitle: 'PET CARE SANCTUARY',
                   color: Color(0xFF16171B),
