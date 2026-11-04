@@ -4,14 +4,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:canivue/core/widgets/app_feedback.dart';
-import 'package:canivue/core/widgets/canivue_paw_bone_logo.dart';
 import 'package:canivue/features/auth/domain/app_user.dart';
 import 'package:canivue/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:canivue/features/auth/screens/forgot_password_screen.dart';
 import 'package:canivue/features/auth/screens/signup_screen.dart';
+import 'package:canivue/features/auth/widgets/ambient_auth_backdrop.dart';
+import 'package:canivue/features/auth/widgets/auth_form_card.dart';
 import 'package:canivue/features/auth/widgets/auth_hero_header.dart';
 import 'package:canivue/features/auth/widgets/custom_text_field.dart';
 import 'package:canivue/features/auth/widgets/signature_auth_button.dart';
+import 'package:canivue/features/auth/widgets/social_auth_button.dart';
 
 class SignInScreen extends ConsumerStatefulWidget {
   const SignInScreen({super.key});
@@ -92,503 +94,344 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
     const amberAccent = Color(0xFFF59E0B);
     const violetAccent = Color(0xFF6366F1);
 
-    return Scaffold(
-      backgroundColor: const Color(0xFFFFAE33),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: isDark
-              ? const LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Color(0xFF261D12),
-                    Color(0xFF16171B),
-                  ],
-                )
-              : const LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Color(0xFFFFAE33), // Radiant Sunshine Amber (Slide 1 style)
-                    Color(0xFFFFCC33),
-                    Color(0xFFFFF0D0),
-                  ],
-                ),
-        ),
-        child: Stack(
-          children: [
-            // Background Watermark Paw Prints
-            Positioned(
-              top: -20,
-              right: -30,
-              child: Opacity(
-                opacity: 0.08,
-                child: Transform.rotate(
-                  angle: 0.35,
-                  child: const CanivuePawBoneLogo(
-                    size: 210,
-                    color: primaryText,
-                  ),
-                ),
-              ),
+    return AmbientAuthBackdrop(
+      gradient: const LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [
+          Color(0xFFFFAE33), // Radiant Sunshine Amber (Onboarding Slide 1 Style)
+          Color(0xFFFFC043),
+          Color(0xFFFFF3D6),
+        ],
+      ),
+      accentColor: amberAccent,
+      showBack: false,
+      child: Column(
+        children: [
+          // 1. Hero Mascot & Title Section
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 6, 20, 10),
+            child: const AuthTopMascot(
+              imageAsset: 'assets/images/auth/auth_dog_signin.jpg',
+              badgeText: 'Health Sanctuary',
+              badgeEmoji: '🐶',
+              tileColor: Color(0xFF6B66FF), // Contrast Electric Violet Tile
+              avatarSize: 68,
             ),
-            Positioned(
-              top: 140,
-              left: -40,
-              child: Opacity(
-                opacity: 0.06,
-                child: Transform.rotate(
-                  angle: -0.25,
-                  child: const CanivuePawBoneLogo(
-                    size: 190,
-                    color: primaryText,
-                  ),
-                ),
-              ),
-            ),
+          ),
 
-            SafeArea(
-              bottom: false,
-              child: Column(
-                children: [
-                  // Top Hero Section: Brand Pill + Animated 3D Mascot
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        // Top Brand Pill Tag
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.85),
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(
-                              color: Colors.black.withValues(alpha: 0.05),
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const CanivuePawBoneLogo(
-                                size: 14,
-                                color: primaryText,
-                              ),
-                              const SizedBox(width: 6),
-                              Text(
-                                'CANIVUE · CANINE SANCTUARY',
-                                style: GoogleFonts.plusJakartaSans(
-                                  fontSize: 10.5,
-                                  fontWeight: FontWeight.w800,
-                                  letterSpacing: 0.5,
-                                  color: primaryText,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ).animate().fadeIn(duration: 300.ms),
-
-                        const SizedBox(height: 10),
-
-                        // Dedicated 3D Canine Mascot with Tilted Violet Tile & Float Animation
-                        const AuthTopMascot(
-                          imageAsset: 'assets/images/auth/auth_dog_signin.jpg',
-                          badgeText: 'Health Sanctuary',
-                          badgeEmoji: '🐶',
-                          tileColor: Color(0xFF6B66FF),
-                          avatarSize: 72,
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  const SizedBox(height: 8),
-
-                  // Bottom Curved Sheet Card (Flush to Bottom, No Gap!)
-                  Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: isDark ? const Color(0xFF182029) : Colors.white,
-                        borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(38),
-                          topRight: Radius.circular(38),
-                        ),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Color(0x18000000),
-                            blurRadius: 28,
-                            offset: Offset(0, -6),
-                          ),
-                        ],
+          // 2. Compact Bottom Card (Zero Scrolling at Rest)
+          Expanded(
+            child: AuthFormCard(
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 14),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Headline
+                    Text(
+                      'Welcome Back',
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w900,
+                        color: isDark ? Colors.white : primaryText,
+                        letterSpacing: -0.6,
                       ),
-                      child: SafeArea(
-                        top: false,
-                        child: SingleChildScrollView(
-                          physics: const ClampingScrollPhysics(),
-                          padding: const EdgeInsets.fromLTRB(22, 20, 22, 16),
-                          child: Form(
-                            key: _formKey,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                    ).animate().fadeIn(duration: 250.ms),
+
+                    const SizedBox(height: 2),
+
+                    Text(
+                      "Sign in to monitor your dog's telemetry & vitals",
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                        color: secondaryText,
+                      ),
+                    ).animate().fadeIn(delay: 50.ms, duration: 250.ms),
+
+                    const SizedBox(height: 12),
+
+                    // Email Field
+                    CustomTextField(
+                      label: 'Email Address',
+                      hintText: 'e.g. alex@canivue.com',
+                      prefixIcon: Icons.alternate_email_rounded,
+                      controller: _emailController,
+                      keyboardType: TextInputType.emailAddress,
+                      focusAccentColor: amberAccent,
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return 'Please enter your email';
+                        }
+                        if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                            .hasMatch(value.trim())) {
+                          return 'Please enter a valid email';
+                        }
+                        return null;
+                      },
+                    ),
+
+                    const SizedBox(height: 10),
+
+                    // Password Field
+                    CustomTextField(
+                      label: 'Password',
+                      hintText: 'Enter account password',
+                      prefixIcon: Icons.lock_outline_rounded,
+                      controller: _passwordController,
+                      obscureText: _obscurePassword,
+                      focusAccentColor: amberAccent,
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscurePassword
+                              ? Icons.visibility_outlined
+                              : Icons.visibility_off_outlined,
+                          color: const Color(0xFF64748B),
+                          size: 18,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _obscurePassword = !_obscurePassword;
+                          });
+                        },
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your password';
+                        }
+                        if (value.length < 6) {
+                          return 'Password must be at least 6 characters';
+                        }
+                        return null;
+                      },
+                    ),
+
+                    const SizedBox(height: 6),
+
+                    // Remember Me & Forgot Password Row
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            setState(() {
+                              _rememberMe = !_rememberMe;
+                            });
+                          },
+                          borderRadius: BorderRadius.circular(6),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 2),
+                            child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                // Headline (Onboarding Bottom Sheet Style)
-                                Text(
-                                  'Welcome Back!',
-                                  style: GoogleFonts.plusJakartaSans(
-                                    fontSize: 23,
-                                    fontWeight: FontWeight.w900,
-                                    color: isDark ? Colors.white : primaryText,
-                                    letterSpacing: -0.6,
-                                  ),
-                                ).animate().fadeIn(delay: 60.ms).slideY(begin: 0.08, end: 0),
-
-                                const SizedBox(height: 3),
-
-                                Text(
-                                  "Sign in to monitor your dog's telemetry & vitals",
-                                  style: GoogleFonts.plusJakartaSans(
-                                    fontSize: 12.5,
-                                    fontWeight: FontWeight.w500,
-                                    color: secondaryText,
-                                  ),
-                                ).animate().fadeIn(delay: 100.ms).slideY(begin: 0.08, end: 0),
-
-                                const SizedBox(height: 16),
-
-                                // Email Input
-                                CustomTextField(
-                                  label: 'Email Address',
-                                  hintText: 'e.g. alex@canivue.com',
-                                  prefixIcon: Icons.alternate_email_rounded,
-                                  controller: _emailController,
-                                  keyboardType: TextInputType.emailAddress,
-                                  focusAccentColor: amberAccent,
-                                  validator: (value) {
-                                    if (value == null || value.trim().isEmpty) {
-                                      return 'Please enter your email';
-                                    }
-                                    if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
-                                        .hasMatch(value.trim())) {
-                                      return 'Please enter a valid email';
-                                    }
-                                    return null;
-                                  },
-                                ),
-                                const SizedBox(height: 12),
-
-                                // Password Input
-                                CustomTextField(
-                                  label: 'Password',
-                                  hintText: 'Enter your account password',
-                                  prefixIcon: Icons.lock_outline_rounded,
-                                  controller: _passwordController,
-                                  obscureText: _obscurePassword,
-                                  focusAccentColor: amberAccent,
-                                  suffixIcon: IconButton(
-                                    icon: Icon(
-                                      _obscurePassword
-                                          ? Icons.visibility_outlined
-                                          : Icons.visibility_off_outlined,
-                                      color: const Color(0xFF64748B),
-                                      size: 18,
+                                SizedBox(
+                                  height: 18,
+                                  width: 18,
+                                  child: Checkbox(
+                                    value: _rememberMe,
+                                    activeColor: primaryText,
+                                    checkColor: Colors.white,
+                                    materialTapTargetSize:
+                                        MaterialTapTargetSize.shrinkWrap,
+                                    side: const BorderSide(
+                                      color: Color(0xFFCBD5E1),
+                                      width: 1.4,
                                     ),
-                                    onPressed: () {
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                    onChanged: (val) {
                                       setState(() {
-                                        _obscurePassword = !_obscurePassword;
+                                        _rememberMe = val ?? false;
                                       });
                                     },
                                   ),
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Please enter your password';
-                                    }
-                                    if (value.length < 6) {
-                                      return 'Password must be at least 6 characters';
-                                    }
-                                    return null;
-                                  },
                                 ),
-                                const SizedBox(height: 8),
-
-                                // Remember Me & Forgot Password
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    InkWell(
-                                      onTap: () {
-                                        setState(() {
-                                          _rememberMe = !_rememberMe;
-                                        });
-                                      },
-                                      borderRadius: BorderRadius.circular(6),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(vertical: 2),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            SizedBox(
-                                              height: 18,
-                                              width: 18,
-                                              child: Checkbox(
-                                                value: _rememberMe,
-                                                activeColor: primaryText,
-                                                checkColor: Colors.white,
-                                                materialTapTargetSize:
-                                                    MaterialTapTargetSize.shrinkWrap,
-                                                side: const BorderSide(
-                                                  color: Color(0xFFCBD5E1),
-                                                  width: 1.4,
-                                                ),
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(4),
-                                                ),
-                                                onChanged: (val) {
-                                                  setState(() {
-                                                    _rememberMe = val ?? false;
-                                                  });
-                                                },
-                                              ),
-                                            ),
-                                            const SizedBox(width: 6),
-                                            Text(
-                                              'Remember me',
-                                              style: GoogleFonts.plusJakartaSans(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w600,
-                                                color: secondaryText,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    TextButton(
-                                      onPressed: _navigateToForgotPassword,
-                                      style: TextButton.styleFrom(
-                                        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                                        minimumSize: Size.zero,
-                                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                      ),
-                                      child: Text(
-                                        'Forgot Password?',
-                                        style: GoogleFonts.plusJakartaSans(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w800,
-                                          color: const Color(0xFFD97706),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 14),
-
-                                // Signature Pill Button with Amber Icon Badge
-                                SignatureAuthButton(
-                                  label: 'Sign In to Pack',
-                                  icon: Icons.arrow_forward_rounded,
-                                  accentColor: const Color(0xFFFFAE33),
-                                  isLoading: _isLoading,
-                                  onTap: _handleSignIn,
-                                ),
-                                const SizedBox(height: 14),
-
-                                // Social Buttons Row
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: _CompactSocialButton(
-                                        label: 'Google',
-                                        icon: Icons.g_mobiledata_rounded,
-                                        isDark: isDark,
-                                        onTap: () {
-                                          AppFeedback.showToast(
-                                            context,
-                                            title: 'Google Sign In',
-                                            message: 'Connecting to Google Authentication...',
-                                            type: ToastType.info,
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                    const SizedBox(width: 10),
-                                    Expanded(
-                                      child: _CompactSocialButton(
-                                        label: 'Apple',
-                                        icon: Icons.apple_rounded,
-                                        isDark: isDark,
-                                        onTap: () {
-                                          AppFeedback.showToast(
-                                            context,
-                                            title: 'Apple Sign In',
-                                            message: 'Connecting to Apple ID...',
-                                            type: ToastType.info,
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                  ],
-                                ).animate().fadeIn(delay: 180.ms),
-                                const SizedBox(height: 12),
-
-                                // Veterinarian Instant Demo Pill
-                                Center(
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: isDark ? const Color(0xFF222B36) : const Color(0xFFF8F5FF),
-                                      borderRadius: BorderRadius.circular(20),
-                                      border: Border.all(
-                                        color: violetAccent.withValues(alpha: 0.25),
-                                      ),
-                                    ),
-                                    child: Material(
-                                      color: Colors.transparent,
-                                      child: InkWell(
-                                        onTap: _handleVetSignIn,
-                                        borderRadius: BorderRadius.circular(20),
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Container(
-                                                padding: const EdgeInsets.all(4),
-                                                decoration: const BoxDecoration(
-                                                  shape: BoxShape.circle,
-                                                  color: violetAccent,
-                                                ),
-                                                child: const Icon(
-                                                  Icons.medical_services_rounded,
-                                                  size: 11,
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                              const SizedBox(width: 7),
-                                              Text(
-                                                "Veterinarian Instant Demo",
-                                                style: GoogleFonts.plusJakartaSans(
-                                                  fontSize: 11.5,
-                                                  fontWeight: FontWeight.w700,
-                                                  color: isDark ? Colors.white : primaryText,
-                                                ),
-                                              ),
-                                              const SizedBox(width: 3),
-                                              const Icon(
-                                                Icons.chevron_right_rounded,
-                                                size: 15,
-                                                color: violetAccent,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
+                                const SizedBox(width: 6),
+                                Text(
+                                  'Remember me',
+                                  style: GoogleFonts.plusJakartaSans(
+                                    fontSize: 11.5,
+                                    fontWeight: FontWeight.w600,
+                                    color: secondaryText,
                                   ),
-                                ).animate().fadeIn(delay: 220.ms),
-                                const SizedBox(height: 12),
-
-                                // Sign Up Link Row
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      "Don't have an account? ",
-                                      style: GoogleFonts.plusJakartaSans(
-                                        color: secondaryText,
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                            builder: (_) => const SignUpScreen(),
-                                          ),
-                                        );
-                                      },
-                                      style: TextButton.styleFrom(
-                                        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                                        minimumSize: Size.zero,
-                                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                      ),
-                                      child: Text(
-                                        'Sign Up',
-                                        style: GoogleFonts.plusJakartaSans(
-                                          fontWeight: FontWeight.w800,
-                                          fontSize: 13,
-                                          color: const Color(0xFFD97706),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
                                 ),
                               ],
                             ),
                           ),
                         ),
+                        TextButton(
+                          onPressed: _navigateToForgotPassword,
+                          style: TextButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                            minimumSize: Size.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
+                          child: Text(
+                            'Forgot Password?',
+                            style: GoogleFonts.plusJakartaSans(
+                              fontSize: 11.5,
+                              fontWeight: FontWeight.w800,
+                              color: const Color(0xFFD97706),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 10),
+
+                    // Primary Signature Action Button
+                    SignatureAuthButton(
+                      label: 'Log In',
+                      icon: Icons.arrow_forward_rounded,
+                      accentColor: const Color(0xFFFFAE33),
+                      isLoading: _isLoading,
+                      height: 48,
+                      onTap: _handleSignIn,
+                    ),
+
+                    const SizedBox(height: 10),
+
+                    // Social Buttons Row
+                    Row(
+                      children: [
+                        Expanded(
+                          child: CompactSocialButton(
+                            label: 'Google',
+                            icon: Icons.g_mobiledata_rounded,
+                            onTap: () {
+                              AppFeedback.showToast(
+                                context,
+                                title: 'Google Sign In',
+                                message: 'Connecting to Google Authentication...',
+                                type: ToastType.info,
+                              );
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: CompactSocialButton(
+                            label: 'Apple',
+                            icon: Icons.apple_rounded,
+                            onTap: () {
+                              AppFeedback.showToast(
+                                context,
+                                title: 'Apple Sign In',
+                                message: 'Connecting to Apple ID...',
+                                type: ToastType.info,
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 8),
+
+                    // Veterinarian Demo Pill
+                    Center(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: isDark ? const Color(0xFF222B36) : const Color(0xFFF8F5FF),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: violetAccent.withValues(alpha: 0.25),
+                          ),
+                        ),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: _handleVetSignIn,
+                            borderRadius: BorderRadius.circular(20),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.all(3.5),
+                                    decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: violetAccent,
+                                    ),
+                                    child: const Icon(
+                                      Icons.medical_services_rounded,
+                                      size: 10,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 6),
+                                  Text(
+                                    "Veterinarian Instant Demo",
+                                    style: GoogleFonts.plusJakartaSans(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w700,
+                                      color: isDark ? Colors.white : primaryText,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 3),
+                                  const Icon(
+                                    Icons.chevron_right_rounded,
+                                    size: 14,
+                                    color: violetAccent,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
 
-class _CompactSocialButton extends StatelessWidget {
-  const _CompactSocialButton({
-    required this.label,
-    required this.icon,
-    required this.isDark,
-    required this.onTap,
-  });
+                    const SizedBox(height: 8),
 
-  final String label;
-  final IconData icon;
-  final bool isDark;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          decoration: BoxDecoration(
-            color: isDark ? const Color(0xFF222B36) : const Color(0xFFF8FAF9),
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: isDark ? Colors.white10 : const Color(0xFFE2E8F0),
-            ),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                icon,
-                color: isDark ? Colors.white : const Color(0xFF16171B),
-                size: 19,
-              ),
-              const SizedBox(width: 6),
-              Text(
-                label,
-                style: GoogleFonts.plusJakartaSans(
-                  color: isDark ? Colors.white : const Color(0xFF16171B),
-                  fontWeight: FontWeight.w700,
-                  fontSize: 13,
+                    // Sign Up Link Row
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Don't have an account? ",
+                          style: GoogleFonts.plusJakartaSans(
+                            color: secondaryText,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) => const SignUpScreen(),
+                              ),
+                            );
+                          },
+                          style: TextButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                            minimumSize: Size.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
+                          child: Text(
+                            'Sign Up',
+                            style: GoogleFonts.plusJakartaSans(
+                              fontWeight: FontWeight.w800,
+                              fontSize: 12,
+                              color: const Color(0xFFD97706),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

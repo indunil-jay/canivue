@@ -4,8 +4,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:canivue/core/widgets/app_feedback.dart';
-import 'package:canivue/core/widgets/canivue_paw_bone_logo.dart';
 import 'package:canivue/features/auth/screens/reset_password_screen.dart';
+import 'package:canivue/features/auth/widgets/ambient_auth_backdrop.dart';
+import 'package:canivue/features/auth/widgets/auth_form_card.dart';
 import 'package:canivue/features/auth/widgets/auth_hero_header.dart';
 import 'package:canivue/features/auth/widgets/signature_auth_button.dart';
 
@@ -99,7 +100,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
       _isLoading = true;
     });
 
-    await Future.delayed(const Duration(milliseconds: 700));
+    await Future.delayed(const Duration(milliseconds: 650));
 
     if (!mounted) return;
 
@@ -138,269 +139,167 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
 
     final primaryText = isDark ? const Color(0xFFF1F5F9) : const Color(0xFF16171B);
     final secondaryText = isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
-    const seafoamAccent = Color(0xFF06B6D4);
-    const coralAccent = Color(0xFFFF6B6B);
+    const seafoamAccent = Color(0xFF0891B2);
+    const coralAccent = Color(0xFFF43F5E);
 
-    return Scaffold(
-      backgroundColor: const Color(0xFF56CFE1),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: isDark
-              ? const LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Color(0xFF0E2226),
-                    Color(0xFF16171B),
-                  ],
-                )
-              : const LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Color(0xFF56CFE1), // Fresh Seafoam (Slide 4 style)
-                    Color(0xFF72EFDD),
-                    Color(0xFFE8FCFA),
-                  ],
-                ),
-        ),
-        child: Stack(
-          children: [
-            // Background Watermark Paw Prints
-            Positioned(
-              top: -20,
-              right: -30,
-              child: Opacity(
-                opacity: 0.08,
-                child: Transform.rotate(
-                  angle: 0.35,
-                  child: CanivuePawBoneLogo(
-                    size: 210,
-                    color: primaryText,
-                  ),
-                ),
-              ),
+    return AmbientAuthBackdrop(
+      gradient: const LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [
+          Color(0xFF06B6D4), // Fresh Seafoam & Sky Cyan (Onboarding Slide 4 Style)
+          Color(0xFF38BDF8),
+          Color(0xFFE0F2FE),
+        ],
+      ),
+      accentColor: seafoamAccent,
+      showBack: true,
+      onBack: () => Navigator.of(context).pop(),
+      child: Column(
+        children: [
+          // 1. Hero Mascot (Beagle with Mail & Coral Tile)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 6, 20, 10),
+            child: const AuthTopMascot(
+              imageAsset: 'assets/images/auth/auth_dog_otp.jpg',
+              badgeText: 'Instant Passcode',
+              badgeEmoji: '📬',
+              tileColor: coralAccent,
+              avatarSize: 68,
             ),
-            Positioned(
-              top: 140,
-              left: -40,
-              child: Opacity(
-                opacity: 0.06,
-                child: Transform.rotate(
-                  angle: -0.25,
-                  child: CanivuePawBoneLogo(
-                    size: 190,
-                    color: primaryText,
-                  ),
-                ),
-              ),
-            ),
+          ),
 
-            SafeArea(
-              bottom: false,
+          // 2. Compact Bottom Card (Zero Scrolling at Rest)
+          Expanded(
+            child: AuthFormCard(
+              padding: const EdgeInsets.fromLTRB(20, 18, 20, 16),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Top Hero Section: Back Button + Beagle Letter Mascot
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: GestureDetector(
-                            onTap: () => Navigator.of(context).pop(),
-                            child: Container(
-                              width: 38,
-                              height: 38,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: Colors.black.withValues(alpha: 0.06),
-                                ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withValues(alpha: 0.06),
-                                    blurRadius: 6,
-                                    offset: const Offset(0, 2),
-                                  ),
-                                ],
-                              ),
-                              child: Icon(
-                                Icons.arrow_back_rounded,
-                                size: 18,
-                                color: primaryText,
+                  // Headline
+                  Text(
+                    'Enter Verification Code',
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w900,
+                      color: isDark ? Colors.white : primaryText,
+                      letterSpacing: -0.6,
+                    ),
+                  ).animate().fadeIn(duration: 250.ms),
+
+                  const SizedBox(height: 2),
+
+                  Text(
+                    'Enter the 6-digit code sent to ${widget.email}',
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: secondaryText,
+                    ),
+                  ).animate().fadeIn(delay: 50.ms, duration: 250.ms),
+
+                  const SizedBox(height: 18),
+
+                  // 6 Digit OTP Fields
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: List.generate(
+                      _codeLength,
+                      (index) => _OtpCompactDigitField(
+                        controller: _controllers[index],
+                        focusNode: _focusNodes[index],
+                        isDark: isDark,
+                        activeAccent: seafoamAccent,
+                        onChanged: (value) {
+                          if (value.isNotEmpty) {
+                            if (index < _codeLength - 1) {
+                              _focusNodes[index + 1].requestFocus();
+                            } else {
+                              _focusNodes[index].unfocus();
+                              _handleVerify();
+                            }
+                          } else if (value.isEmpty && index > 0) {
+                            _focusNodes[index - 1].requestFocus();
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 18),
+
+                  // Verify Button with Coral Icon Accent
+                  SignatureAuthButton(
+                    label: 'Verify Code',
+                    icon: Icons.check_rounded,
+                    accentColor: coralAccent,
+                    isLoading: _isLoading,
+                    height: 48,
+                    onTap: _handleVerify,
+                  ),
+
+                  const SizedBox(height: 14),
+
+                  // Resend Code Pill
+                  Center(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+                      decoration: BoxDecoration(
+                        color: isDark ? const Color(0xFF222B36) : const Color(0xFFF1F8F6),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: isDark ? Colors.white10 : const Color(0xFFE2E8F0),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            "Didn't receive code? ",
+                            style: GoogleFonts.plusJakartaSans(
+                              color: secondaryText,
+                              fontSize: 11.5,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: _timerSeconds == 0 ? _handleResend : null,
+                            child: Text(
+                              _timerSeconds > 0
+                                  ? 'Resend in ${_timerSeconds}s'
+                                  : 'Resend Code',
+                              style: GoogleFonts.plusJakartaSans(
+                                fontWeight: FontWeight.w900,
+                                fontSize: 11.5,
+                                color: _timerSeconds == 0
+                                    ? seafoamAccent
+                                    : const Color(0xFF94A3B8),
                               ),
                             ),
                           ),
-                        ),
-
-                        // Beagle Mascot with Love Letter & Tilted Coral Tile
-                        const AuthTopMascot(
-                          imageAsset: 'assets/images/auth/auth_dog_otp.jpg',
-                          badgeText: 'Instant Passcode',
-                          badgeEmoji: '📬',
-                          tileColor: coralAccent,
-                          avatarSize: 72,
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
 
                   const SizedBox(height: 8),
 
-                  // Bottom Curved Sheet Card (Flush to Bottom)
-                  Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: isDark ? const Color(0xFF182029) : Colors.white,
-                        borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(38),
-                          topRight: Radius.circular(38),
-                        ),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Color(0x18000000),
-                            blurRadius: 28,
-                            offset: Offset(0, -6),
-                          ),
-                        ],
+                  // Auto-fill Demo Button
+                  Center(
+                    child: TextButton.icon(
+                      onPressed: _fillDemoCode,
+                      icon: const Icon(
+                        Icons.auto_awesome_rounded,
+                        size: 14,
+                        color: seafoamAccent,
                       ),
-                      child: SafeArea(
-                        top: false,
-                        child: SingleChildScrollView(
-                          physics: const ClampingScrollPhysics(),
-                          padding: const EdgeInsets.fromLTRB(22, 22, 22, 16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              // Title & Subtitle
-                              Text(
-                                'Verify Your Code',
-                                style: GoogleFonts.plusJakartaSans(
-                                  fontSize: 23,
-                                  fontWeight: FontWeight.w900,
-                                  color: isDark ? Colors.white : primaryText,
-                                  letterSpacing: -0.6,
-                                ),
-                              ).animate().fadeIn(delay: 60.ms).slideY(begin: 0.08, end: 0),
-
-                              const SizedBox(height: 3),
-
-                              Text(
-                                'Enter the 6-digit code sent to ${widget.email}',
-                                style: GoogleFonts.plusJakartaSans(
-                                  fontSize: 12.5,
-                                  fontWeight: FontWeight.w500,
-                                  color: secondaryText,
-                                ),
-                              ).animate().fadeIn(delay: 100.ms).slideY(begin: 0.08, end: 0),
-
-                              const SizedBox(height: 20),
-
-                              // 6 Digit OTP Fields
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: List.generate(
-                                  _codeLength,
-                                  (index) => _OtpCompactDigitField(
-                                    controller: _controllers[index],
-                                    focusNode: _focusNodes[index],
-                                    isDark: isDark,
-                                    activeAccent: seafoamAccent,
-                                    onChanged: (value) {
-                                      if (value.isNotEmpty) {
-                                        if (index < _codeLength - 1) {
-                                          _focusNodes[index + 1].requestFocus();
-                                        } else {
-                                          _focusNodes[index].unfocus();
-                                          _handleVerify();
-                                        }
-                                      } else if (value.isEmpty && index > 0) {
-                                        _focusNodes[index - 1].requestFocus();
-                                      }
-                                    },
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 20),
-
-                              // Signature Pill Button with Coral Badge
-                              SignatureAuthButton(
-                                label: 'Verify & Continue',
-                                icon: Icons.check_rounded,
-                                accentColor: coralAccent,
-                                isLoading: _isLoading,
-                                onTap: _handleVerify,
-                              ),
-                              const SizedBox(height: 16),
-
-                              // Resend Code Pill
-                              Center(
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
-                                  decoration: BoxDecoration(
-                                    color: isDark ? const Color(0xFF222B36) : const Color(0xFFF1F8F6),
-                                    borderRadius: BorderRadius.circular(20),
-                                    border: Border.all(
-                                      color: isDark ? Colors.white10 : const Color(0xFFE2E8F0),
-                                    ),
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text(
-                                        "Didn't receive code? ",
-                                        style: GoogleFonts.plusJakartaSans(
-                                          color: secondaryText,
-                                          fontSize: 12.5,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                      GestureDetector(
-                                        onTap: _timerSeconds == 0 ? _handleResend : null,
-                                        child: Text(
-                                          _timerSeconds > 0
-                                              ? 'Resend in ${_timerSeconds}s'
-                                              : 'Resend Code',
-                                          style: GoogleFonts.plusJakartaSans(
-                                            fontWeight: FontWeight.w900,
-                                            fontSize: 12.5,
-                                            color: _timerSeconds == 0
-                                                ? const Color(0xFF0891B2)
-                                                : const Color(0xFF94A3B8),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ).animate().fadeIn(delay: 180.ms),
-                              const SizedBox(height: 10),
-
-                              // Auto-fill Demo Button
-                              Center(
-                                child: TextButton.icon(
-                                  onPressed: _fillDemoCode,
-                                  icon: const Icon(
-                                    Icons.auto_awesome_rounded,
-                                    size: 15,
-                                    color: Color(0xFF0891B2),
-                                  ),
-                                  label: Text(
-                                    'Auto-fill Demo Code (123456)',
-                                    style: GoogleFonts.plusJakartaSans(
-                                      fontSize: 12.5,
-                                      color: isDark ? Colors.white : primaryText,
-                                      fontWeight: FontWeight.w800,
-                                    ),
-                                  ),
-                                ),
-                              ).animate().fadeIn(delay: 220.ms),
-                            ],
-                          ),
+                      label: Text(
+                        'Auto-fill Demo Code (123456)',
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 11.5,
+                          color: isDark ? Colors.white : primaryText,
+                          fontWeight: FontWeight.w800,
                         ),
                       ),
                     ),
@@ -408,8 +307,8 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                 ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -462,10 +361,10 @@ class _OtpCompactDigitFieldState extends State<_OtpCompactDigitField> {
     final borderColor = widget.isDark ? const Color(0xFF334155) : const Color(0xFFCBD5E1);
 
     return AnimatedContainer(
-      duration: const Duration(milliseconds: 200),
+      duration: const Duration(milliseconds: 180),
       curve: Curves.easeOutCubic,
       width: 44,
-      height: 52,
+      height: 50,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
         boxShadow: _isFocused
@@ -486,7 +385,7 @@ class _OtpCompactDigitFieldState extends State<_OtpCompactDigitField> {
         textAlign: TextAlign.center,
         maxLength: 1,
         style: GoogleFonts.plusJakartaSans(
-          fontSize: 20,
+          fontSize: 19,
           fontWeight: FontWeight.w800,
           color: widget.isDark ? Colors.white : const Color(0xFF16171B),
         ),
