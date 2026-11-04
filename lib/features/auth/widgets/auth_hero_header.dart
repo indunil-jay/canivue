@@ -43,7 +43,7 @@ class AuthTopMascot extends StatelessWidget {
       width: avatarSize,
       height: avatarSize,
       fit: BoxFit.contain,
-      errorBuilder: (_, __, ___) => Icon(
+      errorBuilder: (_, _, _) => Icon(
         Icons.pets_rounded,
         size: avatarSize * 0.45,
         color: Colors.white70,

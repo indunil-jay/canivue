@@ -55,7 +55,7 @@ class _FeedTab extends ConsumerWidget {
           return const EmptyState(icon: Icons.groups_outlined, title: 'No posts yet', message: 'Join a disease community or follow a topic to see posts here.');
         }
         return ListView.separated(
-          padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+          padding: const EdgeInsets.fromLTRB(20, 0, 20, 110),
           itemCount: posts.length,
           separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.md),
           itemBuilder: (context, index) => PostCard(
@@ -86,7 +86,7 @@ class _CommunitiesTab extends ConsumerWidget {
       error: (_, _) => ErrorState(message: "We couldn't load communities.", onRetry: () => ref.invalidate(communitiesControllerProvider)),
       data: (communities) {
         return ListView.separated(
-          padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+          padding: const EdgeInsets.fromLTRB(20, 0, 20, 110),
           itemCount: communities.length,
           separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.md),
           itemBuilder: (context, index) {

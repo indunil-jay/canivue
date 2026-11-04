@@ -74,7 +74,6 @@ class _AmbientAuthBackdropState extends State<AmbientAuthBackdrop>
 
     final effectiveGradient = widget.gradient ??
         (isDark ? activePalette.darkGradient : activePalette.gradient);
-    final effectiveAccent = widget.accentColor ?? activePalette.accentColor;
 
     return Scaffold(
       backgroundColor: isDark ? const Color(0xFF0A0F14) : const Color(0xFFF6FAF9),

@@ -95,16 +95,16 @@ class AppColors {
   static const Color infoOnDark = Color(0xFF38BDF8);
 
   // ---------------------------------------------------------------------
-  // Light mode surfaces
+  // Light mode surfaces — Warm sanctuary cream (Pawsure & Pupora reference)
   // ---------------------------------------------------------------------
-  static const Color lightBackground = Color(0xFFF6FAF9);
+  static const Color lightBackground = Color(0xFFFAF7F2);
   static const Color lightSurface = Color(0xFFFFFFFF);
   static const Color lightElevatedSurface = Color(0xFFFFFFFF);
   static const Color lightCard = Color(0xFFFFFFFF);
-  static const Color lightBorder = Color(0xFFE1E8E6);
-  static const Color lightTextPrimary = Color(0xFF0F172A);
-  static const Color lightTextSecondary = Color(0xFF475569);
-  static const Color lightMutedText = Color(0xFF8B9A97);
+  static const Color lightBorder = Color(0xFFECE6DC);
+  static const Color lightTextPrimary = Color(0xFF181A20);
+  static const Color lightTextSecondary = Color(0xFF57534E);
+  static const Color lightMutedText = Color(0xFF8C887B);
 
   // ---------------------------------------------------------------------
   // Dark mode surfaces — deep obsidian liquid space.
