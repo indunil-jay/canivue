@@ -117,6 +117,7 @@ void main() {
     expect(find.text('38.5°C'), findsOneWidget);
     expect(find.text('95%'), findsOneWidget);
     expect(find.text('Guardian Synced'), findsOneWidget);
+    expect(find.text('Launch AI Scanner'), findsOneWidget);
   });
 
   testWidgets('HomeQuickActionTiles renders AI Health Scanner and Collar Telemetry tiles', (tester) async {
@@ -149,8 +150,8 @@ void main() {
       ),
     );
 
-    expect(find.text('Health Check'), findsOneWidget);
-    expect(find.text('Vaccinations'), findsOneWidget);
+    expect(find.text('AI Scanner'), findsOneWidget);
+    expect(find.text('Vaccine Log'), findsOneWidget);
     expect(find.text('My Pets'), findsOneWidget);
     expect(find.text('Telemetry'), findsOneWidget);
     expect(find.text('Nutrition'), findsOneWidget);

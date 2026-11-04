@@ -14,7 +14,7 @@ import 'package:canivue/features/preventive_care/presentation/screens/preventive
 /// Features:
 /// - Rounded pastel squares with custom iconography
 /// - Tactile micro-bounce on press (scale 0.94)
-/// - Direct navigation to core pet services (Health Check, Vaccinations, etc.)
+/// - Direct navigation to core pet services
 class HomeCategoryPills extends StatelessWidget {
   const HomeCategoryPills({
     super.key,
@@ -32,8 +32,8 @@ class HomeCategoryPills extends StatelessWidget {
 
     final categories = [
       _CategoryItem(
-        label: 'Health Check',
-        icon: Icons.health_and_safety_rounded,
+        label: 'AI Scanner',
+        icon: Icons.auto_awesome_rounded,
         bgColor: const Color(0xFFDDF4EC),
         iconColor: const Color(0xFF0D9488),
         onTap: () => Navigator.of(context).push(
@@ -43,7 +43,7 @@ class HomeCategoryPills extends StatelessWidget {
         ),
       ),
       _CategoryItem(
-        label: 'Vaccinations',
+        label: 'Vaccine Log',
         icon: Icons.vaccines_rounded,
         bgColor: const Color(0xFFEDE9FE),
         iconColor: const Color(0xFF7C3AED),

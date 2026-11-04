@@ -13,7 +13,8 @@ import 'package:canivue/features/health_check/screens/health_check_capture_scree
 /// - Radiant Warm Honey Amber & Sunlit Peach gradient backplate
 /// - High-resolution pet portrait with playful layered offset backing
 /// - Live AI Guardian telemetry badge with glowing status dot
-/// - Floating frosted glass info bar (Due date / vitals / price / score)
+/// - Dedicated "Launch AI Scanner" tactile button
+/// - Floating frosted glass info bar (Due date / vitals / score)
 /// - Directional arrow `↗` button with micro-bounce
 /// - Apple-style press scaling (scale 0.96)
 class HomeHeroPetCard extends StatefulWidget {
@@ -234,6 +235,40 @@ class _HomeHeroPetCardState extends State<HomeHeroPetCard> {
                                   fontWeight: FontWeight.w500,
                                   color: subtitleColor,
                                   height: 1.35,
+                                ),
+                              ),
+                              const SizedBox(height: 14),
+                              // Dedicated "Launch AI Scanner" button pill
+                              GestureDetector(
+                                onTap: () => _openScanner(context),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                                  decoration: BoxDecoration(
+                                    color: isDark ? const Color(0xFF242A38) : const Color(0xFF181A20),
+                                    borderRadius: BorderRadius.circular(16),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.15),
+                                        blurRadius: 8,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const Icon(Icons.auto_awesome, color: Colors.white, size: 14),
+                                      const SizedBox(width: 6),
+                                      Text(
+                                        'Launch AI Scanner',
+                                        style: GoogleFonts.plusJakartaSans(
+                                          color: Colors.white,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ],

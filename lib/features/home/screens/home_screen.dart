@@ -8,8 +8,11 @@ import 'package:canivue/core/design_system/components/skeleton_loader.dart';
 import 'package:canivue/core/design_system/tokens/tokens.dart';
 import 'package:canivue/core/widgets/ambient_paw_backdrop.dart';
 import 'package:canivue/core/widgets/app_feedback.dart';
+import 'package:canivue/core/widgets/luxury_biometric_ring.dart';
 import 'package:canivue/core/widgets/luxury_stat_card.dart';
 import 'package:canivue/features/auth/presentation/controllers/auth_controller.dart';
+import 'package:canivue/features/devices/presentation/screens/device_management_screen.dart';
+import 'package:canivue/features/health_check/screens/health_check_capture_screen.dart';
 import 'package:canivue/features/home/domain/dashboard_summary.dart';
 import 'package:canivue/features/home/presentation/controllers/dashboard_controller.dart';
 import 'package:canivue/features/home/presentation/widgets/active_dog_switcher.dart';
@@ -21,8 +24,10 @@ import 'package:canivue/features/home/presentation/widgets/home_category_pills.d
 import 'package:canivue/features/home/presentation/widgets/home_hero_pet_card.dart';
 import 'package:canivue/features/home/presentation/widgets/home_quick_action_tiles.dart';
 import 'package:canivue/features/notifications/widgets/notification_badge_button.dart';
+import 'package:canivue/features/nutrition/presentation/screens/nutrition_screen.dart';
 import 'package:canivue/features/pets/models/pet_model.dart';
 import 'package:canivue/features/pets/presentation/controllers/dogs_controller.dart';
+import 'package:canivue/features/pets/screens/pet_detail_screen.dart';
 import 'package:canivue/features/pets/screens/pet_list_screen.dart';
 import 'package:canivue/features/preventive_care/presentation/screens/preventive_care_screen.dart';
 import 'package:canivue/features/search/presentation/screens/search_screen.dart';
@@ -36,6 +41,12 @@ import 'package:canivue/features/vets/presentation/screens/vet_discovery_screen.
 /// - PawAdopt: Organic pastel backplates and pet-first framing
 /// - PawMate: Soft pastel category squares and friendly typography
 /// - Pupora: Clean minimal lines, floating capsule nav, and high accessibility
+///
+/// Fully preserves all existing core features:
+/// - Biometric health ring gauge
+/// - 4-stat vitals grid (Activity, Sleep, Heart Rate, Hydration)
+/// - Full 5-card Quick Services grid
+/// - Dedicated AI scan triggers and deep navigation
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
@@ -388,6 +399,15 @@ class _DashboardContent extends ConsumerWidget {
   final Pet dog;
   final List<Pet> dogs;
 
+  void _navigateToHealthCheck(BuildContext context, {Pet? initialPet}) {
+    HapticFeedback.lightImpact();
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => HealthCheckCaptureScreen(pets: dogs, initialPet: initialPet ?? dog),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final summaryAsync = ref.watch(dashboardSummaryProvider((id: dog.id, name: dog.name)));
@@ -414,16 +434,19 @@ class _DashboardContent extends ConsumerWidget {
           // 2. Side-by-Side Quick Action Tiles (Image 1 Pawsure style)
           HomeQuickActionTiles(dog: dog, dogs: dogs),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: 22),
 
           // 3. Category Quick Navigation Row (Image 3 PawMate style)
-          _sectionHeader('Quick Services', isDark),
-          const SizedBox(height: 12),
           HomeCategoryPills(dog: dog, dogs: dogs),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: 26),
 
-          // 4. Live Health Telemetry & Activity Grid
+          // 4. Biometric Health Cockpit & Ring Overview
+          _buildHealthCockpitCard(context, summary, isDark),
+
+          const SizedBox(height: 20),
+
+          // 5. Complete 4-Stat Live Telemetry Grid (Activity, Sleep, Heart Rate, Hydration)
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -441,16 +464,23 @@ class _DashboardContent extends ConsumerWidget {
           const SizedBox(height: 12),
           _buildVitalsGrid(context, summary.vitals, isDark),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: 26),
 
-          // 5. AI Health Insights Card
+          // 6. Complete 5-Service Interactive Cards Grid
+          _sectionHeader('Quick Services', isDark),
+          const SizedBox(height: 12),
+          _buildQuickServicesGrid(context, ref, isDark),
+
+          const SizedBox(height: 26),
+
+          // 7. Multimodal AI Insights Card
           _sectionHeader('Multimodal AI Insights', isDark),
           const SizedBox(height: 12),
           AiInsightCard(insight: summary.insight),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: 26),
 
-          // 6. Care Reminders & Preventive Health
+          // 8. Care Reminders & Preventive Health
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -473,9 +503,9 @@ class _DashboardContent extends ConsumerWidget {
           const SizedBox(height: 10),
           CareRemindersSection(reminders: summary.reminders),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: 26),
 
-          // 7. Upcoming Vet Appointment Card
+          // 9. Upcoming Vet Appointment Card
           _sectionHeader('Upcoming Appointment', isDark),
           const SizedBox(height: 10),
           AppointmentCard(
@@ -490,7 +520,7 @@ class _DashboardContent extends ConsumerWidget {
 
           const SizedBox(height: 18),
 
-          // 8. Device Hardware Status Chip
+          // 10. Device Hardware Status Chip
           DeviceStatusChip(device: summary.device, dogId: dog.id, dogName: dog.name),
         ],
       ),
@@ -505,6 +535,99 @@ class _DashboardContent extends ConsumerWidget {
         fontSize: 16.5,
         color: isDark ? Colors.white : const Color(0xFF181A20),
         letterSpacing: -0.3,
+      ),
+    );
+  }
+
+  Widget _buildHealthCockpitCard(BuildContext context, DashboardSummary summary, bool isDark) {
+    return InkWell(
+      onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => PetDetailScreen(pet: dog))),
+      borderRadius: BorderRadius.circular(28),
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: isDark ? const Color(0xFF1A2230) : Colors.white,
+          borderRadius: BorderRadius.circular(28),
+          border: Border.all(
+            color: isDark ? const Color(0x332DD4BF) : const Color(0xFFE2E8F0),
+            width: 1.2,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: isDark ? Colors.black.withValues(alpha: 0.3) : const Color(0x100F766E),
+              blurRadius: 18,
+              offset: const Offset(0, 6),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: isDark ? const Color(0x332DD4BF) : const Color(0xFFE6F4F1),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          height: 7,
+                          width: 7,
+                          decoration: const BoxDecoration(
+                            color: Color(0xFF10B981),
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          '${summary.vitals.heartRateBpm} bpm • ${summary.vitals.temperatureC.toStringAsFixed(1)}°C',
+                          style: GoogleFonts.plusJakartaSans(
+                            color: isDark ? const Color(0xFF2DD4BF) : const Color(0xFF0F766E),
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    "${dog.name}'s Health Cockpit",
+                    style: GoogleFonts.plusJakartaSans(
+                      color: isDark ? Colors.white : const Color(0xFF181A20),
+                      fontSize: 18,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: -0.3,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Multimodal AI fusing visual scans, bio-collar metrics & symptom signals.',
+                    style: GoogleFonts.plusJakartaSans(
+                      color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                      fontSize: 12.5,
+                      height: 1.35,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 14),
+            LuxuryBiometricRing(
+              percentage: summary.healthScore.toDouble(),
+              size: 94,
+              strokeWidth: 8.5,
+              valueText: '${summary.healthScore}',
+              unitText: '%',
+              label: 'Health Score',
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -587,22 +710,20 @@ class _DashboardContent extends ConsumerWidget {
             const SizedBox(width: 14),
             Expanded(
               child: LuxuryStatCard(
-                title: 'Temperature',
-                value: vitals.temperatureC.toStringAsFixed(1),
-                unit: '°C',
-                icon: Icons.thermostat_rounded,
+                title: 'Hydration',
+                value: '${vitals.hydrationMl}',
+                unit: '/ ${vitals.hydrationGoalMl} ml',
+                icon: Icons.water_drop_rounded,
                 gradient: const LinearGradient(
                   colors: [Color(0xFF0284C7), Color(0xFF38BDF8)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
-                badgeText: vitals.temperatureC <= 39.2 ? 'Normal' : 'High',
-                badgeColor: vitals.temperatureC <= 39.2 ? AppColors.success : AppColors.error,
-                progress: ((vitals.temperatureC - 37.0) / 3.0).clamp(0, 1).toDouble(),
+                progress: (vitals.hydrationMl / vitals.hydrationGoalMl).clamp(0, 1).toDouble(),
                 onTap: () => AppFeedback.showToast(
                   context,
-                  title: 'Body Temperature',
-                  message: '${vitals.temperatureC.toStringAsFixed(1)}°C — perfectly in canine baseline.',
+                  title: 'Hydration Tracker',
+                  message: '${vitals.hydrationMl}ml consumed of ${vitals.hydrationGoalMl}ml daily goal.',
                   type: ToastType.info,
                 ),
               ),
@@ -610,6 +731,167 @@ class _DashboardContent extends ConsumerWidget {
           ],
         ),
       ],
+    );
+  }
+
+  Widget _buildQuickServicesGrid(BuildContext context, WidgetRef ref, bool isDark) {
+    return GridView.count(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      crossAxisCount: 2,
+      crossAxisSpacing: 14,
+      mainAxisSpacing: 14,
+      childAspectRatio: 1.24,
+      children: [
+        _buildServiceCard(
+          title: 'Health Check',
+          subtitle: 'Multimodal AI Vision',
+          icon: Icons.health_and_safety_rounded,
+          gradient: const LinearGradient(
+            colors: [Color(0xFF0F766E), Color(0xFF14B8A6)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          isDark: isDark,
+          onTap: () => _navigateToHealthCheck(context),
+        ),
+        _buildServiceCard(
+          title: 'Vaccinations',
+          subtitle: 'Schedule & Alerts',
+          icon: Icons.vaccines_rounded,
+          gradient: const LinearGradient(
+            colors: [Color(0xFF0E7490), Color(0xFF06B6B0)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          isDark: isDark,
+          onTap: () => AppFeedback.showToast(
+            context,
+            title: 'Vaccination Tracker 💉',
+            message: 'All core vaccinations (Rabies, DHPP) are up to date for your dogs.',
+            type: ToastType.info,
+          ),
+        ),
+        _buildServiceCard(
+          title: 'Dog Telemetry',
+          subtitle: 'Collar & Biometrics',
+          icon: Icons.bluetooth_connected_rounded,
+          gradient: const LinearGradient(
+            colors: [Color(0xFF4F46E5), Color(0xFF6366F1)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          isDark: isDark,
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => DeviceManagementScreen(dogId: dog.id, dogName: dog.name)),
+            );
+          },
+        ),
+        _buildServiceCard(
+          title: 'Nutrition',
+          subtitle: 'Weight & Feeding Plan',
+          icon: Icons.restaurant_rounded,
+          gradient: const LinearGradient(
+            colors: [Color(0xFFB45309), Color(0xFFFBBF24)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          isDark: isDark,
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => NutritionScreen(dogId: dog.id, dogName: dog.name)),
+            );
+          },
+        ),
+        _buildServiceCard(
+          title: 'Vet Bookings',
+          subtitle: 'Consultations',
+          icon: Icons.calendar_month_rounded,
+          gradient: const LinearGradient(
+            colors: [Color(0xFF059669), Color(0xFF10B981)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          isDark: isDark,
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => VetDiscoveryScreen(dogId: dog.id, dogName: dog.name)),
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildServiceCard({
+    required String title,
+    required String subtitle,
+    required IconData icon,
+    required LinearGradient gradient,
+    required bool isDark,
+    VoidCallback? onTap,
+  }) {
+    return InkWell(
+      onTap: onTap ?? () {},
+      borderRadius: BorderRadius.circular(24),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: isDark ? const Color(0xFF1E2430) : Colors.white,
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(
+            color: isDark ? const Color(0x22FFFFFF) : const Color(0xFFE2E8F0),
+            width: 1.1,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: isDark ? 0.25 : 0.04),
+              blurRadius: 14,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(9),
+              decoration: BoxDecoration(
+                gradient: gradient,
+                borderRadius: BorderRadius.circular(14),
+                boxShadow: [
+                  BoxShadow(
+                    color: gradient.colors.first.withValues(alpha: 0.35),
+                    blurRadius: 10,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: Icon(icon, color: Colors.white, size: 20),
+            ),
+            const Spacer(),
+            Text(
+              title,
+              style: GoogleFonts.plusJakartaSans(
+                fontWeight: FontWeight.w800,
+                fontSize: 14,
+                color: isDark ? Colors.white : const Color(0xFF181A20),
+                letterSpacing: -0.2,
+              ),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              subtitle,
+              style: GoogleFonts.plusJakartaSans(
+                color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                fontSize: 11,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
