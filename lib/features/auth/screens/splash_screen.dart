@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:canivue/core/design_system/tokens/tokens.dart';
-import 'package:canivue/core/widgets/canivue_liquid_logo.dart';
+import 'package:canivue/core/widgets/canivue_paw_bone_logo.dart';
 import 'package:canivue/features/auth/domain/app_user.dart';
 import 'package:canivue/features/auth/presentation/controllers/auth_controller.dart';
 
-/// App launch splash (brief §5) — branded liquid-glass pause while the session is
-/// resolved, then routes to the right place: role-based shell if already
-/// signed in, onboarding otherwise.
+/// App launch splash screen — branded pause showing the new Paw & Bone logo on
+/// fresh pastel mint before routing to the session destination.
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
 
@@ -36,65 +35,101 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.darkBackground,
+      backgroundColor: const Color(0xFFD4EFEA),
       body: Stack(
         children: [
-          // Ambient fluid background aura
+          // Background subtle watermark paw prints
           Positioned(
-            top: -100,
-            right: -80,
-            width: 340,
-            height: 340,
-            child: Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: RadialGradient(
-                  colors: [
-                    AppColors.cyanAccent.withValues(alpha: 0.22),
-                    Colors.transparent,
-                  ],
+            top: -40,
+            right: -40,
+            child: Opacity(
+              opacity: 0.05,
+              child: Transform.rotate(
+                angle: 0.3,
+                child: const CanivuePawBoneLogo(
+                  size: 260,
+                  color: Color(0xFF16171B),
                 ),
               ),
             ),
           ),
           Positioned(
-            bottom: -60,
-            left: -80,
-            width: 320,
-            height: 320,
-            child: Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: RadialGradient(
-                  colors: [
-                    AppColors.royalViolet.withValues(alpha: 0.20),
-                    Colors.transparent,
-                  ],
+            bottom: -50,
+            left: -50,
+            child: Opacity(
+              opacity: 0.04,
+              child: Transform.rotate(
+                angle: -0.25,
+                child: const CanivuePawBoneLogo(
+                  size: 240,
+                  color: Color(0xFF16171B),
                 ),
               ),
             ),
           ),
 
-          // Central Liquid Glass Landing Logo Preview
+          // Central New Paw & Bone Logo
           Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const CanivueLandingLogoPreview(
-                  logoSize: 110,
-                  titleSize: 34,
-                  subtitleSize: 12.5,
-                  spacing: 24,
-                ),
+                // Logo card container
+                Container(
+                  padding: const EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(36),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.06),
+                        blurRadius: 28,
+                        offset: const Offset(0, 10),
+                      ),
+                    ],
+                  ),
+                  child: const CanivuePawBoneLogo(
+                    size: 76,
+                    color: Color(0xFF16171B),
+                  ),
+                )
+                    .animate()
+                    .fadeIn(duration: 500.ms)
+                    .scale(
+                      begin: const Offset(0.88, 0.88),
+                      end: const Offset(1, 1),
+                      curve: Curves.easeOutBack,
+                    ),
+
+                const SizedBox(height: 24),
+
+                // Brand text
+                const CanivuePawBoneLogo(
+                  size: 42,
+                  showText: true,
+                  subtitle: 'PET CARE SANCTUARY',
+                  color: Color(0xFF16171B),
+                  textColor: Color(0xFF16171B),
+                  badgeColor: Color(0xFF10B981),
+                )
+                    .animate()
+                    .fadeIn(duration: 500.ms, delay: 200.ms)
+                    .slideY(begin: 0.15, end: 0, curve: Curves.easeOutCubic),
+
                 const SizedBox(height: 48),
+
+                // Minimal smooth spinner
                 SizedBox(
                   height: 20,
                   width: 20,
                   child: CircularProgressIndicator(
                     strokeWidth: 2.2,
-                    valueColor: const AlwaysStoppedAnimation<Color>(AppColors.cyanAccent),
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      const Color(0xFF16171B).withValues(alpha: 0.7),
+                    ),
                   ),
-                ),
+                )
+                    .animate()
+                    .fadeIn(duration: 400.ms, delay: 400.ms),
               ],
             ),
           ),

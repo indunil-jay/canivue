@@ -15,6 +15,34 @@ class AppColors {
   const AppColors._();
 
   // ---------------------------------------------------------------------
+  // Modern Warm Pet Care Palette (Reference Aesthetic)
+  // ---------------------------------------------------------------------
+  /// Fresh mint & sage tones (Images 2 & 4)
+  static const Color pastelMint = Color(0xFFE4F4F0);
+  static const Color pastelMintSoft = Color(0xFFF2FAF7);
+  static const Color mintAccent = Color(0xFF10B981);
+  static const Color mintPillBadge = Color(0xFF34D399);
+
+  /// Warm honey & cream tones (Image 1)
+  static const Color pastelAmber = Color(0xFFFFF5E4);
+  static const Color amberAccent = Color(0xFFF59E0B);
+  static const Color honeyGolden = Color(0xFFFDCB58);
+
+  /// Soft pastel lilac & blush tones (Image 3)
+  static const Color pastelLilac = Color(0xFFF3EFFF);
+  static const Color lilacAccent = Color(0xFF7A67EE);
+  static const Color softBlush = Color(0xFFFDF2F0);
+
+  /// Sky & cyan pastel tones
+  static const Color pastelSky = Color(0xFFEAF4FB);
+  static const Color skyAccent = Color(0xFF0284C7);
+
+  /// Signature high-contrast controls
+  static const Color charcoalBlack = Color(0xFF181A20);
+  static const Color charcoalCard = Color(0xFF22262E);
+  static const Color warmCream = Color(0xFFFAF8F5);
+
+  // ---------------------------------------------------------------------
   // Brand
   // ---------------------------------------------------------------------
   /// Deep teal — trust, health, calm intelligence. Primary brand color.

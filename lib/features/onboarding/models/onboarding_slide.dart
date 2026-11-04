@@ -1,196 +1,115 @@
 import 'package:flutter/material.dart';
-import 'package:canivue/core/design_system/tokens/tokens.dart';
 
 class OnboardingSlide {
   const OnboardingSlide({
     required this.imageAsset,
     required this.badge,
-    required this.stepLabel,
-    this.telemetryLabel,
-    this.telemetryIcon,
     required this.title,
     required this.description,
     required this.icon,
     required this.accentColor,
-    required this.primaryGradient,
     required this.backgroundGradient,
-    required this.cardGradient,
-    required this.featureTags,
+    required this.tileBackingColor,
+    this.badgeEmoji = '🐶',
   });
 
   final String imageAsset;
   final String badge;
-  final String stepLabel;
-  final String? telemetryLabel;
-  final IconData? telemetryIcon;
   final String title;
   final String description;
   final IconData icon;
   final Color accentColor;
-  final LinearGradient primaryGradient;
   final LinearGradient backgroundGradient;
-  final LinearGradient cardGradient;
-  final List<String> featureTags;
+  final Color tileBackingColor;
+  final String badgeEmoji;
 }
 
 const List<OnboardingSlide> onboardingSlides = [
-  // Slide 1: Welcome & Unified Intelligent Dashboard
+  // Slide 1: Intelligent Canine Sanctuary (Image 1 Warm Amber & Violet style)
   OnboardingSlide(
-    imageAsset: 'assets/images/onboarding/onboard_welcome.jpg',
+    imageAsset: 'assets/images/onboarding/dog_slide_1.jpg',
     badge: 'Intelligent Canine Care',
-    stepLabel: '01 / 04',
-    telemetryLabel: 'Live Collar Sync',
-    telemetryIcon: Icons.sensors_rounded,
+    badgeEmoji: '🐶',
     title: 'Your Dog\'s Health,\nAll in One Place',
     description:
-        'Unite smart collar activity, symptoms, photos, and medical milestones into a single intelligent canine health sanctuary.',
+        'Sync collar activity, symptom logs, and medical milestones into a single canine sanctuary.',
     icon: Icons.pets_rounded,
-    accentColor: AppColors.cyanAccent, // #00F2FE Electric Cyan
-    primaryGradient: AppColors.auroraGradient,
+    accentColor: Color(0xFFF59E0B), // Warm Amber
     backgroundGradient: LinearGradient(
       colors: [
-        Color(0xFF030A0E), // Deep Obsidian
-        Color(0xFF061622),
-        Color(0xFF0A2836),
+        Color(0xFFFFAE33), // Radiant Sunshine Amber
+        Color(0xFFFFCC33),
+        Color(0xFFFFF3D6),
       ],
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
     ),
-    cardGradient: LinearGradient(
-      colors: [
-        Color(0x38FFFFFF),
-        Color(0x10FFFFFF),
-        Color(0x2200F2FE),
-      ],
-      begin: Alignment.topLeft,
-      end: Alignment.bottomRight,
-    ),
-    featureTags: ['Dog Profiles', 'Smart Collar Sync', 'Complete Health Record'],
+    tileBackingColor: Color(0xFF6B66FF), // Contrast Violet Card (Image 1)
   ),
 
-  // Slide 2: Multimodal AI & Vision Telemetry
+  // Slide 2: Multimodal AI & Vision Telemetry (Image 2 Teal Mint & Tangerine style)
   OnboardingSlide(
-    imageAsset: 'assets/images/onboarding/onboard_track.jpg',
+    imageAsset: 'assets/images/onboarding/dog_slide_2.jpg',
     badge: 'Multimodal AI Vision',
-    stepLabel: '02 / 04',
-    telemetryLabel: 'Vision AI Active',
-    telemetryIcon: Icons.center_focus_strong_rounded,
+    badgeEmoji: '🔍',
     title: 'Snap, Speak &\nDetect Issues Early',
     description:
-        'Photograph a symptom, sync collar motion, and describe changes. Our adaptive neural AI fuses visual cues with telemetry to catch health concerns early.',
+        'Photograph symptoms and fuse motion telemetry to catch canine health concerns early.',
     icon: Icons.biotech_rounded,
-    accentColor: AppColors.neonMint, // #00E5BE Luminous Mint
-    primaryGradient: LinearGradient(
-      colors: [
-        Color(0xFF00F2FE),
-        Color(0xFF00E5BE),
-        Color(0xFF10B981),
-      ],
-      begin: Alignment.topLeft,
-      end: Alignment.bottomRight,
-    ),
+    accentColor: Color(0xFF10B981), // Emerald Mint
     backgroundGradient: LinearGradient(
       colors: [
-        Color(0xFF020C0E),
-        Color(0xFF041D20),
-        Color(0xFF083232),
+        Color(0xFF4ECDC4), // Vibrant Teal Mint
+        Color(0xFF68D8D6),
+        Color(0xFFE0FAF7),
       ],
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
     ),
-    cardGradient: LinearGradient(
-      colors: [
-        Color(0x38FFFFFF),
-        Color(0x10FFFFFF),
-        Color(0x2200E5BE),
-      ],
-      begin: Alignment.topLeft,
-      end: Alignment.bottomRight,
-    ),
-    featureTags: ['AI Photo Scanner', 'Telemetry Fusion', 'Early Anomaly Alerts'],
+    tileBackingColor: Color(0xFFFF9F1C), // Tangerine Orange Card (Image 2)
   ),
 
-  // Slide 3: Predictive AI & Disease Progression Engine (Corrected paragraphs & no "98% optimal" chip)
+  // Slide 3: Predictive AI & Disease Progression Engine (Image 3 Violet & Butter Yellow style)
   OnboardingSlide(
-    imageAsset: 'assets/images/onboarding/onboard_records.jpg',
+    imageAsset: 'assets/images/onboarding/dog_slide_3.jpg',
     badge: 'Predictive Health Engine',
-    stepLabel: '03 / 04',
-    telemetryLabel: null, // Removed "98% optimal index" as requested
-    telemetryIcon: null,
+    badgeEmoji: '🔮',
     title: 'Know What\'s Coming,\nNot Just What\'s Wrong',
     description:
-        'Our Disease Progression & Risk Prediction Engine evaluates breed predisposition, daily activity trends, and vitals to forecast health trajectories with plain-language explanations.',
+        'Evaluate breed risks and vitals to forecast health trajectories before symptoms emerge.',
     icon: Icons.timeline_rounded,
-    accentColor: AppColors.royalViolet, // #8B5CF6 Royal Violet
-    primaryGradient: LinearGradient(
-      colors: [
-        Color(0xFF6366F1),
-        Color(0xFF8B5CF6),
-        Color(0xFFA855F7),
-      ],
-      begin: Alignment.topLeft,
-      end: Alignment.bottomRight,
-    ),
+    accentColor: Color(0xFF8B5CF6), // Royal Violet
     backgroundGradient: LinearGradient(
       colors: [
-        Color(0xFF050718),
-        Color(0xFF0E1338),
-        Color(0xFF1A1F52),
+        Color(0xFFC77DFF), // Dreamy Violet
+        Color(0xFFE0AAFF),
+        Color(0xFFFAF5FF),
       ],
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
     ),
-    cardGradient: LinearGradient(
-      colors: [
-        Color(0x38FFFFFF),
-        Color(0x10FFFFFF),
-        Color(0x248B5CF6),
-      ],
-      begin: Alignment.topLeft,
-      end: Alignment.bottomRight,
-    ),
-    featureTags: ['7-Day Risk Forecast', 'Breed Health Insights', 'Early Warning Alerts'],
+    tileBackingColor: Color(0xFFFFD166), // Butter Yellow Card (Image 3)
   ),
 
-  // Slide 4: Connected Care & Vet Collaboration (Corrected paragraphs & removed "Vet Vault Encrypted" tag)
+  // Slide 4: Connected Care & Vet Collaboration (Image 4 Fresh Seafoam & Coral style)
   OnboardingSlide(
-    imageAsset: 'assets/images/onboarding/onboard_join.jpg',
+    imageAsset: 'assets/images/onboarding/dog_slide_4.jpg',
     badge: 'Veterinary Collaboration',
-    stepLabel: '04 / 04',
-    telemetryLabel: null, // Removed "Vet Vault Encrypted" tag as requested
-    telemetryIcon: null,
+    badgeEmoji: '🩺',
     title: 'Bridge the Gap to\nTrusted Vet Care',
     description:
-        'Generate structured, vet-ready health digests instantly. Connect seamlessly with your veterinary team to share verified biometric timeline data and make confident care decisions together.',
+        'Generate structured health digests and share verified biometric history with your vet.',
     icon: Icons.auto_awesome_rounded,
-    accentColor: Color(0xFF38BDF8), // Sky Blue Accent
-    primaryGradient: LinearGradient(
-      colors: [
-        Color(0xFF0284C7),
-        Color(0xFF00F2FE),
-        Color(0xFF2DD4BF),
-      ],
-      begin: Alignment.topLeft,
-      end: Alignment.bottomRight,
-    ),
+    accentColor: Color(0xFF06B6D4), // Cyan Sky Blue
     backgroundGradient: LinearGradient(
       colors: [
-        Color(0xFF020C14),
-        Color(0xFF061D2B),
-        Color(0xFF0C3848),
+        Color(0xFF56CFE1), // Fresh Seafoam
+        Color(0xFF72EFDD),
+        Color(0xFFE8FCFA),
       ],
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
     ),
-    cardGradient: LinearGradient(
-      colors: [
-        Color(0x38FFFFFF),
-        Color(0x10FFFFFF),
-        Color(0x2400F2FE),
-      ],
-      begin: Alignment.topLeft,
-      end: Alignment.bottomRight,
-    ),
-    featureTags: ['Vet-Ready Export', 'Clinical Timeline', 'Emergency Care Profile'],
+    tileBackingColor: Color(0xFFFF6B6B), // Coral Pink Card (Image 4)
   ),
 ];
