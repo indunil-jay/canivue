@@ -4,12 +4,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:canivue/core/widgets/app_feedback.dart';
+import 'package:canivue/features/auth/domain/auth_theme_palette.dart';
 import 'package:canivue/features/auth/screens/reset_password_screen.dart';
 import 'package:canivue/features/auth/widgets/ambient_auth_backdrop.dart';
 import 'package:canivue/features/auth/widgets/auth_form_card.dart';
 import 'package:canivue/features/auth/widgets/auth_hero_header.dart';
 import 'package:canivue/features/auth/widgets/signature_auth_button.dart';
 
+/// Redesigned OTP Verification Screen for Canivue.
 class OtpVerificationScreen extends StatefulWidget {
   const OtpVerificationScreen({
     super.key,
@@ -19,9 +21,6 @@ class OtpVerificationScreen extends StatefulWidget {
 
   final String email;
 
-  /// When provided, called instead of navigating to [ResetPasswordScreen] —
-  /// lets this same OTP flow back both "forgot password" and "verify your
-  /// email at signup" without duplicating the screen.
   final VoidCallback? onVerified;
 
   @override
@@ -139,40 +138,29 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
 
     final primaryText = isDark ? const Color(0xFFF1F5F9) : const Color(0xFF16171B);
     final secondaryText = isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
-    const seafoamAccent = Color(0xFF0891B2);
-    const coralAccent = Color(0xFFF43F5E);
+    const palette = AuthThemePalette.emeraldShield;
 
     return AmbientAuthBackdrop(
-      gradient: const LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: [
-          Color(0xFF06B6D4), // Fresh Seafoam & Sky Cyan (Onboarding Slide 4 Style)
-          Color(0xFF38BDF8),
-          Color(0xFFE0F2FE),
-        ],
-      ),
-      accentColor: seafoamAccent,
+      palette: palette,
       showBack: true,
       onBack: () => Navigator.of(context).pop(),
       child: Column(
         children: [
-          // 1. Hero Mascot (Beagle with Mail & Coral Tile)
+          // 1. Emerald Shield Hero Section with Large Mascot (No Tags)
           Padding(
-            padding: const EdgeInsets.fromLTRB(20, 6, 20, 10),
-            child: const AuthTopMascot(
-              imageAsset: 'assets/images/auth/auth_dog_otp.jpg',
-              badgeText: 'Instant Passcode',
-              badgeEmoji: '📬',
-              tileColor: coralAccent,
-              avatarSize: 68,
+            padding: const EdgeInsets.fromLTRB(20, 18, 20, 24),
+            child: AuthTopMascot(
+              imageAsset: 'assets/images/auth/cutout_dog_otp.png',
+              shadowColor: palette.shadowColor,
+              tileColor: palette.tileColor,
+              avatarSize: 155,
             ),
           ),
 
-          // 2. Compact Bottom Card (Zero Scrolling at Rest)
+          // 2. Bottom Form Card
           Expanded(
             child: AuthFormCard(
-              padding: const EdgeInsets.fromLTRB(20, 18, 20, 16),
+              padding: const EdgeInsets.fromLTRB(24, 22, 24, 28),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisSize: MainAxisSize.min,
@@ -181,19 +169,19 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                   Text(
                     'Enter Verification Code',
                     style: GoogleFonts.plusJakartaSans(
-                      fontSize: 22,
+                      fontSize: 23,
                       fontWeight: FontWeight.w900,
-                      color: isDark ? Colors.white : primaryText,
+                      color: primaryText,
                       letterSpacing: -0.6,
                     ),
                   ).animate().fadeIn(duration: 250.ms),
 
-                  const SizedBox(height: 2),
+                  const SizedBox(height: 3),
 
                   Text(
                     'Enter the 6-digit code sent to ${widget.email}',
                     style: GoogleFonts.plusJakartaSans(
-                      fontSize: 12,
+                      fontSize: 12.5,
                       fontWeight: FontWeight.w500,
                       color: secondaryText,
                     ),
@@ -210,7 +198,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                         controller: _controllers[index],
                         focusNode: _focusNodes[index],
                         isDark: isDark,
-                        activeAccent: seafoamAccent,
+                        activeAccent: palette.accentColor,
                         onChanged: (value) {
                           if (value.isNotEmpty) {
                             if (index < _codeLength - 1) {
@@ -227,24 +215,24 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                     ),
                   ),
 
-                  const SizedBox(height: 18),
+                  const SizedBox(height: 24),
 
-                  // Verify Button with Coral Icon Accent
+                  // Verify Button
                   SignatureAuthButton(
                     label: 'Verify Code',
                     icon: Icons.check_rounded,
-                    accentColor: coralAccent,
+                    accentColor: palette.buttonAccent,
                     isLoading: _isLoading,
-                    height: 48,
+                    height: 52,
                     onTap: _handleVerify,
                   ),
 
-                  const SizedBox(height: 14),
+                  const SizedBox(height: 20),
 
                   // Resend Code Pill
                   Center(
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8.5),
                       decoration: BoxDecoration(
                         color: isDark ? const Color(0xFF222B36) : const Color(0xFFF1F8F6),
                         borderRadius: BorderRadius.circular(20),
@@ -259,7 +247,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                             "Didn't receive code? ",
                             style: GoogleFonts.plusJakartaSans(
                               color: secondaryText,
-                              fontSize: 11.5,
+                              fontSize: 12,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -271,9 +259,9 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                                   : 'Resend Code',
                               style: GoogleFonts.plusJakartaSans(
                                 fontWeight: FontWeight.w900,
-                                fontSize: 11.5,
+                                fontSize: 12,
                                 color: _timerSeconds == 0
-                                    ? seafoamAccent
+                                    ? palette.accentColor
                                     : const Color(0xFF94A3B8),
                               ),
                             ),
@@ -283,22 +271,22 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                     ),
                   ),
 
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 14),
 
                   // Auto-fill Demo Button
                   Center(
                     child: TextButton.icon(
                       onPressed: _fillDemoCode,
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.auto_awesome_rounded,
                         size: 14,
-                        color: seafoamAccent,
+                        color: palette.accentColor,
                       ),
                       label: Text(
                         'Auto-fill Demo Code (123456)',
                         style: GoogleFonts.plusJakartaSans(
-                          fontSize: 11.5,
-                          color: isDark ? Colors.white : primaryText,
+                          fontSize: 12,
+                          color: primaryText,
                           fontWeight: FontWeight.w800,
                         ),
                       ),

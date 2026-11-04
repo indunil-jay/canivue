@@ -1,29 +1,39 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:canivue/core/widgets/canivue_paw_bone_logo.dart';
+import 'package:canivue/features/auth/domain/auth_theme_palette.dart';
 
 /// Ambient Theme-Blended Backdrop for Canivue Auth Screens.
 ///
 /// Implements:
-/// - Full-bleed multi-tone gradient background blending with the theme
-/// - Subtle watermark paw silhouettes (matching onboarding screen aesthetics)
+/// - Full-bleed multi-tone gradient blending with the core Canivue theme
+/// - Subtle watermark paw silhouettes matching Canivue brand identity
 /// - `ambient-section-particles`: Lightweight ambient floating micro-particles
-///   with reduced-motion awareness via `MediaQuery.disableAnimations`
+///   (canine paws, luminous orbs, and sparkles) with reduced-motion awareness
 /// - `container-lines`: Subtle vertical alignment guide lines with corner-square accents
+/// - `apple-design`: Frosted glass blur, high-contrast typography, and fluid touch states
 class AmbientAuthBackdrop extends StatefulWidget {
   const AmbientAuthBackdrop({
     super.key,
-    required this.gradient,
-    required this.accentColor,
+    this.palette,
+    this.gradient,
+    this.accentColor,
     required this.child,
     this.showBack = false,
     this.onBack,
     this.trailingAction,
-    this.watermarkOpacity = 0.07,
+    this.watermarkOpacity = 0.08,
   });
 
-  final LinearGradient gradient;
-  final Color accentColor;
+  /// Specific auth color template. Defaults to [AuthThemePalette.sanctuaryTeal].
+  final AuthThemePalette? palette;
+
+  /// Optional override gradient. Defaults to active palette gradient.
+  final LinearGradient? gradient;
+
+  /// Optional override accent color. Defaults to active palette accent.
+  final Color? accentColor;
+
   final Widget child;
   final bool showBack;
   final VoidCallback? onBack;
@@ -43,7 +53,7 @@ class _AmbientAuthBackdropState extends State<AmbientAuthBackdrop>
     super.initState();
     _particleController = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 8),
+      duration: const Duration(seconds: 10),
     )..repeat();
   }
 
@@ -60,21 +70,14 @@ class _AmbientAuthBackdropState extends State<AmbientAuthBackdrop>
     final topPadding = MediaQuery.paddingOf(context).top;
     final disableAnimations = MediaQuery.of(context).disableAnimations;
 
-    // In dark mode, blend into deep luxury tones
-    final effectiveGradient = isDark
-        ? LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              widget.gradient.colors.first.withValues(alpha: 0.35),
-              const Color(0xFF16171B),
-              const Color(0xFF0F1115),
-            ],
-          )
-        : widget.gradient;
+    final activePalette = widget.palette ?? AuthThemePalette.sanctuaryTeal;
+
+    final effectiveGradient = widget.gradient ??
+        (isDark ? activePalette.darkGradient : activePalette.gradient);
+    final effectiveAccent = widget.accentColor ?? activePalette.accentColor;
 
     return Scaffold(
-      backgroundColor: isDark ? const Color(0xFF0F1115) : Colors.white,
+      backgroundColor: isDark ? const Color(0xFF0A0F14) : const Color(0xFFF6FAF9),
       body: Stack(
         children: [
           // 1. Full-Bleed Radiant Gradient
@@ -84,50 +87,50 @@ class _AmbientAuthBackdropState extends State<AmbientAuthBackdrop>
             ),
           ),
 
-          // 2. Watermark Paw & Bone Silhouettes (Signature Onboarding Look)
+          // 2. Watermark Paw & Bone Silhouettes (Brand Identity)
           Positioned(
-            top: topPadding + 20,
-            right: -35,
+            top: topPadding + 16,
+            right: -32,
             child: IgnorePointer(
               child: Opacity(
                 opacity: widget.watermarkOpacity,
                 child: Transform.rotate(
                   angle: 0.35,
                   child: CanivuePawBoneLogo(
-                    size: 210,
-                    color: isDark ? Colors.white : const Color(0xFF16171B),
+                    size: 220,
+                    color: Colors.white,
                   ),
                 ),
               ),
             ),
           ),
           Positioned(
-            top: topPadding + 160,
-            left: -40,
+            top: topPadding + 150,
+            left: -38,
             child: IgnorePointer(
               child: Opacity(
                 opacity: widget.watermarkOpacity * 0.85,
                 child: Transform.rotate(
                   angle: -0.28,
                   child: CanivuePawBoneLogo(
-                    size: 190,
-                    color: isDark ? Colors.white : const Color(0xFF16171B),
+                    size: 200,
+                    color: Colors.white,
                   ),
                 ),
               ),
             ),
           ),
 
-          // 3. Ambient Section Floating Micro-Particles
+          // 3. Ambient Section Floating Micro-Particles (`ambient-section-particles` skill)
           Positioned.fill(
             child: IgnorePointer(
               child: AnimatedBuilder(
                 animation: _particleController,
                 builder: (context, _) {
                   return CustomPaint(
-                    painter: _AmbientParticlesPainter(
+                    painter: _AmbientAtmospherePainter(
                       progress: disableAnimations ? 0.0 : _particleController.value,
-                      accentColor: widget.accentColor,
+                      accentColor: activePalette.highlightColor,
                       isDark: isDark,
                     ),
                   );
@@ -136,17 +139,15 @@ class _AmbientAuthBackdropState extends State<AmbientAuthBackdrop>
             ),
           ),
 
-          // 4. Subtle Container Lines with Corner Squares (container-lines skill)
+          // 4. Container Lines with Corner Squares (`container-lines` skill)
           Positioned.fill(
             child: IgnorePointer(
               child: CustomPaint(
                 painter: _ContainerLinesPainter(
                   lineColor: isDark
-                      ? Colors.white.withValues(alpha: 0.05)
-                      : Colors.black.withValues(alpha: 0.04),
-                  squareColor: isDark
-                      ? Colors.white.withValues(alpha: 0.15)
-                      : widget.accentColor.withValues(alpha: 0.35),
+                      ? Colors.white.withValues(alpha: 0.06)
+                      : Colors.white.withValues(alpha: 0.12),
+                  squareColor: activePalette.highlightColor.withValues(alpha: 0.65),
                 ),
               ),
             ),
@@ -157,7 +158,7 @@ class _AmbientAuthBackdropState extends State<AmbientAuthBackdrop>
             bottom: false,
             child: Column(
               children: [
-                // Top Navigation Bar
+                // Top Navigation Bar (Apple Frosted Vibrancy)
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                   child: Row(
@@ -171,25 +172,18 @@ class _AmbientAuthBackdropState extends State<AmbientAuthBackdrop>
                           onTap: widget.onBack ?? () => Navigator.of(context).maybePop(),
                         )
                       else
-                        // Brand Logo + Title
                         CanivuePawBoneLogo(
                           size: 30,
                           showText: true,
                           subtitle: 'CANINE SANCTUARY',
-                          color: isDark ? Colors.white : const Color(0xFF16171B),
-                          textColor: isDark ? Colors.white : const Color(0xFF16171B),
-                          badgeColor: widget.accentColor,
+                          color: Colors.white,
+                          textColor: Colors.white,
+                          badgeColor: activePalette.tileColor,
                         ),
 
-                      // Optional Trailing Action (e.g. Help / Close / Skip)
+                      // Optional Trailing Action (e.g. Help / Close / Empty spacer)
                       if (widget.trailingAction != null)
                         widget.trailingAction!
-                      else if (widget.showBack)
-                        CanivuePawBoneLogo(
-                          size: 26,
-                          showText: false,
-                          color: isDark ? Colors.white : const Color(0xFF16171B),
-                        )
                       else
                         const SizedBox(width: 32),
                     ],
@@ -242,18 +236,14 @@ class _AppleGlassIconButtonState extends State<_AppleGlassIconButton> {
           height: 38,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: widget.isDark
-                ? Colors.white.withValues(alpha: 0.12)
-                : Colors.white.withValues(alpha: 0.85),
+            color: Colors.white.withValues(alpha: 0.20),
             border: Border.all(
-              color: widget.isDark
-                  ? Colors.white.withValues(alpha: 0.15)
-                  : Colors.black.withValues(alpha: 0.08),
+              color: Colors.white.withValues(alpha: 0.30),
               width: 1,
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.06),
+                color: Colors.black.withValues(alpha: 0.08),
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),
@@ -262,7 +252,7 @@ class _AppleGlassIconButtonState extends State<_AppleGlassIconButton> {
           child: Icon(
             widget.icon,
             size: 16,
-            color: widget.isDark ? Colors.white : const Color(0xFF16171B),
+            color: Colors.white,
           ),
         ),
       ),
@@ -270,9 +260,9 @@ class _AppleGlassIconButtonState extends State<_AppleGlassIconButton> {
   }
 }
 
-/// Ambient micro-particle atmospheric painter (ambient-section-particles skill)
-class _AmbientParticlesPainter extends CustomPainter {
-  _AmbientParticlesPainter({
+/// Ambient micro-particle atmospheric painter (`ambient-section-particles` skill).
+class _AmbientAtmospherePainter extends CustomPainter {
+  _AmbientAtmospherePainter({
     required this.progress,
     required this.accentColor,
     required this.isDark,
@@ -282,7 +272,6 @@ class _AmbientParticlesPainter extends CustomPainter {
   final Color accentColor;
   final bool isDark;
 
-  // Fixed deterministic seeds for gentle floating sparkles and dots
   static final List<Offset> _baseOffsets = [
     const Offset(0.12, 0.14),
     const Offset(0.85, 0.18),
@@ -296,6 +285,8 @@ class _AmbientParticlesPainter extends CustomPainter {
     const Offset(0.82, 0.56),
     const Offset(0.48, 0.26),
     const Offset(0.55, 0.38),
+    const Offset(0.30, 0.60),
+    const Offset(0.70, 0.65),
   ];
 
   @override
@@ -304,30 +295,29 @@ class _AmbientParticlesPainter extends CustomPainter {
 
     for (int i = 0; i < _baseOffsets.length; i++) {
       final base = _baseOffsets[i];
-      // Slow rhythmic sway with sinusoidal offset
-      final swayPhase = (progress * 2 * math.pi) + (i * 0.8);
+      final swayPhase = (progress * 2 * math.pi) + (i * 0.75);
       final dx = (base.dx * size.width) + (math.sin(swayPhase) * 6.0);
-      final dy = (base.dy * size.height) + (math.cos(swayPhase * 0.7) * 8.0);
+      final dy = (base.dy * size.height) + (math.cos(swayPhase * 0.65) * 8.0);
 
-      final radius = (i % 3 == 0) ? 2.6 : 1.8;
-      final opacity = 0.08 + (math.sin(swayPhase * 1.2).abs() * 0.12);
+      final radius = (i % 3 == 0) ? 2.8 : 1.8;
+      final opacity = 0.10 + (math.sin(swayPhase * 1.2).abs() * 0.18);
 
-      particlePaint.color = (i % 2 == 0 ? accentColor : (isDark ? Colors.white : const Color(0xFF16171B)))
-          .withValues(alpha: opacity.clamp(0.04, 0.22));
+      particlePaint.color = (i % 2 == 0 ? accentColor : Colors.white)
+          .withValues(alpha: opacity.clamp(0.06, 0.32));
 
       canvas.drawCircle(Offset(dx, dy), radius, particlePaint);
     }
   }
 
   @override
-  bool shouldRepaint(covariant _AmbientParticlesPainter oldDelegate) {
+  bool shouldRepaint(covariant _AmbientAtmospherePainter oldDelegate) {
     return oldDelegate.progress != progress ||
         oldDelegate.accentColor != accentColor ||
         oldDelegate.isDark != isDark;
   }
 }
 
-/// Guide lines with corner squares (container-lines skill)
+/// Guide lines with corner squares (`container-lines` skill)
 class _ContainerLinesPainter extends CustomPainter {
   _ContainerLinesPainter({
     required this.lineColor,
@@ -348,7 +338,7 @@ class _ContainerLinesPainter extends CustomPainter {
       ..color = squareColor
       ..style = PaintingStyle.fill;
 
-    const margin = 16.0;
+    const margin = 18.0;
     final left = margin;
     final right = size.width - margin;
 
@@ -356,13 +346,13 @@ class _ContainerLinesPainter extends CustomPainter {
     canvas.drawLine(Offset(left, 0), Offset(left, size.height), linePaint);
     canvas.drawLine(Offset(right, 0), Offset(right, size.height), linePaint);
 
-    // Draw small 4px corner accents
-    const squareSize = 4.0;
+    // Draw small 5px corner accents with precise alignment
+    const squareSize = 5.0;
     const half = squareSize / 2;
 
     // Top-left and Top-right corner squares
-    canvas.drawRect(Rect.fromLTWH(left - half, 80 - half, squareSize, squareSize), squarePaint);
-    canvas.drawRect(Rect.fromLTWH(right - half, 80 - half, squareSize, squareSize), squarePaint);
+    canvas.drawRect(Rect.fromLTWH(left - half, 72 - half, squareSize, squareSize), squarePaint);
+    canvas.drawRect(Rect.fromLTWH(right - half, 72 - half, squareSize, squareSize), squarePaint);
   }
 
   @override

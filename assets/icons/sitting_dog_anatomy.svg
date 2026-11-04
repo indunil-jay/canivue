@@ -1,0 +1,147 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <!-- Ground Shadow -->
+    <radialGradient id="groundShadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#042F2C" stop-opacity="0.6"/>
+      <stop offset="60%" stop-color="#042F2C" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#042F2C" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Base Fur Gradient -->
+    <linearGradient id="goldenFurBase" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FCD34D"/>
+      <stop offset="45%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#D97706"/>
+    </linearGradient>
+
+    <!-- Warm Pearl Chest -->
+    <linearGradient id="pearlChest" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="60%" stop-color="#FFFBEB"/>
+      <stop offset="100%" stop-color="#FEF3C7"/>
+    </linearGradient>
+
+    <!-- Shading Tone -->
+    <linearGradient id="furShade" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#D97706"/>
+      <stop offset="100%" stop-color="#B45309"/>
+    </linearGradient>
+
+    <!-- Canivue Smart Collar Gradient -->
+    <linearGradient id="collarCyan" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00F2FE"/>
+      <stop offset="50%" stop-color="#00D2C4"/>
+      <stop offset="100%" stop-color="#14B8A6"/>
+    </linearGradient>
+
+    <!-- Glow for collar pendant -->
+    <filter id="pendantGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="#00F2FE" flood-opacity="0.8"/>
+    </filter>
+  </defs>
+
+  <!-- 1. Ground Contact Shadow (Tone 1) -->
+  <ellipse cx="200" cy="355" rx="105" ry="24" fill="url(#groundShadow)"/>
+
+  <!-- 2. Wagging Tail (Behind Body) -->
+  <path d="M 270,305 C 315,300 345,260 340,225 C 335,195 305,210 295,235 C 285,260 260,290 250,305 Z" 
+        fill="url(#goldenFurBase)"/>
+  <path d="M 340,225 C 345,215 330,205 315,220 C 325,225 335,230 340,225 Z" 
+        fill="#FFFFFF" opacity="0.9"/>
+
+  <!-- 3. Seated Hind Legs & Haunches -->
+  <!-- Left Haunch -->
+  <ellipse cx="140" cy="305" rx="38" ry="32" fill="url(#furShade)"/>
+  <ellipse cx="130" cy="335" rx="26" ry="16" fill="url(#goldenFurBase)"/>
+  <!-- Left Paws -->
+  <circle cx="115" cy="342" r="8" fill="#FDE68A"/>
+  <circle cx="130" cy="345" r="9" fill="#FDE68A"/>
+  <circle cx="145" cy="342" r="8" fill="#FDE68A"/>
+
+  <!-- Right Haunch -->
+  <ellipse cx="260" cy="305" rx="38" ry="32" fill="url(#furShade)"/>
+  <ellipse cx="270" cy="335" rx="26" ry="16" fill="url(#goldenFurBase)"/>
+  <!-- Right Paws -->
+  <circle cx="255" cy="342" r="8" fill="#FDE68A"/>
+  <circle cx="270" cy="345" r="9" fill="#FDE68A"/>
+  <circle cx="285" cy="342" r="8" fill="#FDE68A"/>
+
+  <!-- 4. Body / Torso -->
+  <path d="M 155,210 C 150,265 155,325 170,340 L 230,340 C 245,325 250,265 245,210 Z" 
+        fill="url(#goldenFurBase)"/>
+
+  <!-- 5. Warm Pearl Chest Bib -->
+  <path d="M 175,210 C 165,245 170,290 200,315 C 230,290 235,245 225,210 Z" 
+        fill="url(#pearlChest)"/>
+
+  <!-- 6. Front Legs & Paws -->
+  <!-- Left Front Leg -->
+  <path d="M 172,240 L 168,340 C 168,348 186,348 186,340 L 186,240 Z" fill="url(#goldenFurBase)"/>
+  <ellipse cx="177" cy="344" rx="14" ry="9" fill="#FEF3C7"/>
+  <line x1="172" y1="341" x2="172" y2="348" stroke="#D97706" stroke-width="2" stroke-linecap="round"/>
+  <line x1="182" y1="341" x2="182" y2="348" stroke="#D97706" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- Right Front Leg -->
+  <path d="M 214,240 L 214,340 C 214,348 232,348 232,340 L 228,240 Z" fill="url(#goldenFurBase)"/>
+  <ellipse cx="223" cy="344" rx="14" ry="9" fill="#FEF3C7"/>
+  <line x1="218" y1="341" x2="218" y2="348" stroke="#D97706" stroke-width="2" stroke-linecap="round"/>
+  <line x1="228" y1="341" x2="228" y2="348" stroke="#D97706" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- 7. Canivue Smart Collar -->
+  <path d="M 160,205 C 185,218 215,218 240,205 L 243,217 C 215,230 185,230 157,217 Z" 
+        fill="url(#collarCyan)"/>
+  <ellipse cx="200" cy="224" rx="7" ry="7" fill="#FFFFFF" filter="url(#pendantGlow)"/>
+  <ellipse cx="200" cy="224" rx="4.5" ry="4.5" fill="#00F2FE"/>
+
+  <!-- 8. Head & Cheeks -->
+  <path d="M 148,155 C 135,175 140,205 165,210 C 185,215 215,215 235,210 C 260,205 265,175 252,155 C 248,110 230,85 200,85 C 170,85 152,110 148,155 Z" 
+        fill="url(#goldenFurBase)"/>
+
+  <!-- 9. Droopy Soft Ears -->
+  <!-- Left Ear -->
+  <path d="M 154,115 C 130,115 110,145 112,185 C 114,215 130,225 142,210 C 150,195 152,150 154,115 Z" 
+        fill="url(#furShade)"/>
+  <path d="M 125,145 C 118,165 120,195 130,200 C 138,190 138,165 136,145 Z" 
+        fill="#B45309" opacity="0.65"/>
+
+  <!-- Right Ear -->
+  <path d="M 246,115 C 270,115 290,145 288,185 C 286,215 270,225 258,210 C 250,195 248,150 246,115 Z" 
+        fill="url(#furShade)"/>
+  <path d="M 275,145 C 282,165 280,195 270,200 C 262,190 262,165 264,145 Z" 
+        fill="#B45309" opacity="0.65"/>
+
+  <!-- 10. Muzzle / Snout -->
+  <ellipse cx="200" cy="172" rx="34" ry="24" fill="url(#pearlChest)"/>
+
+  <!-- Truffle Nose -->
+  <path d="M 188,158 C 194,154 206,154 212,158 C 216,161 210,172 200,174 C 190,172 184,161 188,158 Z" 
+        fill="#16171B"/>
+  <ellipse cx="196" cy="159" rx="3.5" ry="1.8" fill="#FFFFFF" opacity="0.8"/>
+
+  <!-- Smile & Whiskers -->
+  <path d="M 200,174 L 200,182 C 192,185 186,183 182,180" 
+        fill="none" stroke="#16171B" stroke-width="2.2" stroke-linecap="round"/>
+  <path d="M 200,182 C 208,185 214,183 218,180" 
+        fill="none" stroke="#16171B" stroke-width="2.2" stroke-linecap="round"/>
+
+  <!-- Subtle Whiskers Dots -->
+  <circle cx="178" cy="173" r="1.5" fill="#D97706"/>
+  <circle cx="174" cy="177" r="1.5" fill="#D97706"/>
+  <circle cx="222" cy="173" r="1.5" fill="#D97706"/>
+  <circle cx="226" cy="177" r="1.5" fill="#D97706"/>
+
+  <!-- 11. Expressive Sparkling Eyes (Apple Catchlights) -->
+  <!-- Left Eye -->
+  <ellipse cx="176" cy="142" rx="8.5" ry="10" fill="#16171B"/>
+  <ellipse cx="178" cy="140" rx="3.2" ry="4" fill="#FFFFFF"/>
+  <circle cx="174" cy="146" r="1.6" fill="#FFFFFF" opacity="0.9"/>
+  <!-- Eyebrow Dot -->
+  <ellipse cx="174" cy="126" rx="5" ry="2.5" fill="#FDE68A"/>
+
+  <!-- Right Eye -->
+  <ellipse cx="224" cy="142" rx="8.5" ry="10" fill="#16171B"/>
+  <ellipse cx="222" cy="140" rx="3.2" ry="4" fill="#FFFFFF"/>
+  <circle cx="226" cy="146" r="1.6" fill="#FFFFFF" opacity="0.9"/>
+  <!-- Eyebrow Dot -->
+  <ellipse cx="226" cy="126" rx="5" ry="2.5" fill="#FDE68A"/>
+</svg>

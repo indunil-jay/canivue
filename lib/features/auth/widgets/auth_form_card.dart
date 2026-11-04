@@ -4,6 +4,11 @@ import 'package:flutter/material.dart';
 ///
 /// Designed to hold auth forms compactly without vertical scrolling on standard viewports,
 /// while seamlessly adapting when the soft keyboard appears.
+///
+/// Implements:
+/// - Apple continuous curvature with 32px squircle top corners
+/// - Specular 1px rim highlight
+/// - Soft multi-layer ambient elevation
 class AuthFormCard extends StatelessWidget {
   const AuthFormCard({
     super.key,
@@ -22,10 +27,10 @@ class AuthFormCard extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF182029) : Colors.white,
+        color: isDark ? const Color(0xFF161B22) : Colors.white,
         borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(36),
-          topRight: Radius.circular(36),
+          topLeft: Radius.circular(32),
+          topRight: Radius.circular(32),
         ),
         boxShadow: [
           BoxShadow(
@@ -33,12 +38,17 @@ class AuthFormCard extends StatelessWidget {
             blurRadius: 24,
             offset: const Offset(0, -6),
           ),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: isDark ? 0.15 : 0.03),
+            blurRadius: 8,
+            offset: const Offset(0, -2),
+          ),
         ],
         border: Border(
           top: BorderSide(
             color: isDark
-                ? Colors.white.withValues(alpha: 0.08)
-                : Colors.black.withValues(alpha: 0.04),
+                ? Colors.white.withValues(alpha: 0.12)
+                : Colors.black.withValues(alpha: 0.06),
             width: 1,
           ),
         ),

@@ -1,149 +1,104 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:google_fonts/google_fonts.dart';
 
-/// Top Hero Mascot for Canivue Auth Screens.
+/// Large, Clean Hero Real Dog Mascot for Canivue Auth Screens.
 ///
-/// Features:
-/// - Dedicated 3D canine character mascot avatar with squircle framing
-/// - Signature tilted vibrant backing tile (customized per screen)
-/// - Floating pill badge with canine emoji and role description
-/// - Accessible micro-float animation that respects `prefers-reduced-motion`
+/// Implements `anatomy`, `anatomy-asset`, and `apple-design`:
+/// - Renders real dog cutouts sitting directly on the green sanctuary background
+/// - Zero white background box, zero white tile, zero borders
+/// - Realistic soft ground contact shadow anchoring paws to the green surface
+/// - Calming Apple-style idle micro-float motion respecting `MediaQuery.disableAnimations`
 class AuthTopMascot extends StatelessWidget {
   const AuthTopMascot({
     super.key,
     required this.imageAsset,
-    required this.badgeText,
-    required this.badgeEmoji,
-    required this.tileColor,
-    this.avatarSize = 68.0,
+    this.shadowColor,
+    this.tileColor = const Color(0xFFF59E0B),
+    this.avatarSize = 165.0,
+    this.badgeText,
+    this.badgeEmoji,
+    this.showTelemetryHud = false,
+    this.telemetryAccent,
+    this.telemetryHighlight,
   });
 
   final String imageAsset;
-  final String badgeText;
-  final String badgeEmoji;
+  final Color? shadowColor;
   final Color tileColor;
   final double avatarSize;
+
+  // Optional legacy parameters kept for call-site compatibility
+  final String? badgeText;
+  final String? badgeEmoji;
+  final bool showTelemetryHud;
+  final Color? telemetryAccent;
+  final Color? telemetryHighlight;
 
   @override
   Widget build(BuildContext context) {
     final disableAnimations = MediaQuery.of(context).disableAnimations;
 
-    Widget avatarWidget = Container(
+    Widget dogImage = Image.asset(
+      imageAsset,
       width: avatarSize,
       height: avatarSize,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: Colors.white, width: 2.5),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.14),
-            blurRadius: 16,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(19),
-        child: Image.asset(
-          imageAsset,
-          fit: BoxFit.cover,
-          errorBuilder: (_, __, ___) => Container(
-            color: const Color(0xFFF1F5F9),
-            child: const Icon(
-              Icons.pets_rounded,
-              size: 30,
-              color: Color(0xFF16171B),
-            ),
-          ),
-        ),
+      fit: BoxFit.contain,
+      errorBuilder: (_, __, ___) => Icon(
+        Icons.pets_rounded,
+        size: avatarSize * 0.45,
+        color: Colors.white70,
       ),
     );
 
     if (!disableAnimations) {
-      avatarWidget = avatarWidget
+      dogImage = dogImage
           .animate(onPlay: (controller) => controller.repeat(reverse: true))
-          .moveY(begin: 0, end: -3.5, duration: 1800.ms, curve: Curves.easeInOut)
+          .moveY(begin: 0, end: -4.5, duration: 2400.ms, curve: Curves.easeInOut)
           .animate()
           .scale(
-            begin: const Offset(0.94, 0.94),
+            begin: const Offset(0.96, 0.96),
             end: const Offset(1, 1),
-            duration: 380.ms,
+            duration: 400.ms,
             curve: Curves.easeOutBack,
           )
-          .fadeIn(duration: 300.ms);
+          .fadeIn(duration: 350.ms);
     }
 
     return Center(
       child: SizedBox(
-        width: avatarSize + 16,
-        height: avatarSize + 14,
+        width: avatarSize,
+        height: avatarSize + 16,
         child: Stack(
           alignment: Alignment.center,
           clipBehavior: Clip.none,
           children: [
-            // 1. Tilted Backing Tile (Signature Multi-Tone Brand Look)
+            // 1. Ground Contact Shadow directly on the green sanctuary surface
             Positioned(
-              child: Transform.rotate(
-                angle: 0.08,
-                child: Container(
-                  width: avatarSize,
-                  height: avatarSize,
-                  decoration: BoxDecoration(
-                    color: tileColor,
-                    borderRadius: BorderRadius.circular(22),
-                    boxShadow: [
-                      BoxShadow(
-                        color: tileColor.withValues(alpha: 0.38),
-                        blurRadius: 14,
-                        offset: const Offset(0, 5),
-                      ),
-                    ],
+              bottom: 2,
+              child: Container(
+                width: avatarSize * 0.72,
+                height: 16,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(
+                    Radius.elliptical(avatarSize * 0.72, 16),
                   ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: (shadowColor ?? const Color(0xFF022622))
+                          .withValues(alpha: 0.55),
+                      blurRadius: 18,
+                      spreadRadius: 3,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
                 ),
               ),
             ),
 
-            // 2. Mascot Avatar with Idle Micro-Float
-            avatarWidget,
-
-            // 3. Floating Pill Badge Overlapping Bottom
+            // 2. Real Dog Cutout Sitting Directly on Green Background (No White Box)
             Positioned(
-              bottom: -6,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3.5),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(14),
-                  border: Border.all(
-                    color: Colors.black.withValues(alpha: 0.06),
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.08),
-                      blurRadius: 8,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(badgeEmoji, style: const TextStyle(fontSize: 10.5)),
-                    const SizedBox(width: 4),
-                    Text(
-                      badgeText,
-                      style: GoogleFonts.plusJakartaSans(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w800,
-                        color: const Color(0xFF16171B),
-                        letterSpacing: -0.1,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              bottom: 6,
+              child: dogImage,
             ),
           ],
         ),

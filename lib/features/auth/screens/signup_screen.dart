@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:canivue/core/widgets/app_feedback.dart';
 import 'package:canivue/features/auth/domain/app_user.dart';
+import 'package:canivue/features/auth/domain/auth_theme_palette.dart';
 import 'package:canivue/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:canivue/features/auth/screens/otp_verification_screen.dart';
 import 'package:canivue/features/auth/widgets/ambient_auth_backdrop.dart';
@@ -14,6 +15,7 @@ import 'package:canivue/features/auth/widgets/custom_text_field.dart';
 import 'package:canivue/features/auth/widgets/signature_auth_button.dart';
 import 'package:canivue/features/auth/widgets/social_auth_button.dart';
 
+/// Redesigned Sign Up Screen for Canivue.
 class SignUpScreen extends ConsumerStatefulWidget {
   const SignUpScreen({super.key});
 
@@ -110,43 +112,33 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    const primaryText = Color(0xFF16171B);
-    const secondaryText = Color(0xFF64748B);
-    const tealAccent = Color(0xFF0D9488);
-    const orangeAccent = Color(0xFFFF9F1C);
+    final primaryText = isDark ? const Color(0xFFF1F5F9) : const Color(0xFF16171B);
+    final secondaryText = isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
+    const palette = AuthThemePalette.sunlitAmber;
+    final tealAccent = palette.accentColor;
     final pwStrength = _calculatePasswordStrength(_passwordController.text);
 
     return AmbientAuthBackdrop(
-      gradient: const LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: [
-          Color(0xFF14B8A6), // Vibrant Teal Mint (Onboarding Slide 2 Style)
-          Color(0xFF2DD4BF),
-          Color(0xFFCCFBF1),
-        ],
-      ),
-      accentColor: tealAccent,
+      palette: palette,
       showBack: true,
       onBack: () => Navigator.of(context).pop(),
       child: Column(
         children: [
-          // 1. Top Hero Mascot (French Bulldog with Orange Tile)
+          // 1. Warm Sunlit Amber Hero Section with Large Mascot (No Tags)
           Padding(
-            padding: const EdgeInsets.fromLTRB(20, 4, 20, 8),
-            child: const AuthTopMascot(
-              imageAsset: 'assets/images/auth/auth_dog_signup.jpg',
-              badgeText: 'New Pack Member',
-              badgeEmoji: '🐾',
-              tileColor: orangeAccent,
-              avatarSize: 64,
+            padding: const EdgeInsets.fromLTRB(20, 10, 20, 18),
+            child: AuthTopMascot(
+              imageAsset: 'assets/images/auth/cutout_dog_signup.png',
+              shadowColor: palette.shadowColor,
+              tileColor: palette.tileColor,
+              avatarSize: 145,
             ),
           ),
 
-          // 2. Compact Bottom Card (Organized on Single Screen)
+          // 2. Bottom Form Card
           Expanded(
             child: AuthFormCard(
-              padding: const EdgeInsets.fromLTRB(20, 14, 20, 12),
+              padding: const EdgeInsets.fromLTRB(22, 18, 22, 14),
               child: Form(
                 key: _formKey,
                 child: Column(
@@ -157,25 +149,25 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                     Text(
                       'Create an Account',
                       style: GoogleFonts.plusJakartaSans(
-                        fontSize: 22,
+                        fontSize: 23,
                         fontWeight: FontWeight.w900,
-                        color: isDark ? Colors.white : primaryText,
+                        color: primaryText,
                         letterSpacing: -0.6,
                       ),
                     ).animate().fadeIn(duration: 250.ms),
 
-                    const SizedBox(height: 2),
+                    const SizedBox(height: 3),
 
                     Text(
                       'Create an account for proactive canine health',
                       style: GoogleFonts.plusJakartaSans(
-                        fontSize: 12,
+                        fontSize: 12.5,
                         fontWeight: FontWeight.w500,
                         color: secondaryText,
                       ),
                     ).animate().fadeIn(delay: 50.ms, duration: 250.ms),
 
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 12),
 
                     // Role Selector Pill (Apple Segmented Style)
                     Container(
@@ -194,7 +186,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                               label: 'Dog Parent',
                               icon: Icons.pets_rounded,
                               isSelected: _selectedRole == UserRole.dogOwner,
-                              activeColor: orangeAccent,
+                              activeColor: palette.accentColor,
                               onTap: () {
                                 setState(() {
                                   _selectedRole = UserRole.dogOwner;
@@ -207,7 +199,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                               label: 'Veterinarian',
                               icon: Icons.medical_services_rounded,
                               isSelected: _selectedRole == UserRole.veterinarian,
-                              activeColor: tealAccent,
+                              activeColor: palette.tileColor,
                               onTap: () {
                                 setState(() {
                                   _selectedRole = UserRole.veterinarian;
@@ -310,7 +302,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                                       ? (pwStrength <= 1
                                           ? const Color(0xFFEF4444)
                                           : pwStrength <= 2
-                                              ? orangeAccent
+                                              ? const Color(0xFFF59E0B)
                                               : tealAccent)
                                       : const Color(0xFFE2E8F0),
                                 ),
@@ -357,12 +349,12 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                             width: 18,
                             child: Checkbox(
                               value: _acceptTerms,
-                              activeColor: primaryText,
+                              activeColor: palette.accentColor,
                               checkColor: Colors.white,
                               materialTapTargetSize:
                                   MaterialTapTargetSize.shrinkWrap,
-                              side: const BorderSide(
-                                color: Color(0xFFCBD5E1),
+                              side: BorderSide(
+                                color: isDark ? const Color(0xFF475569) : const Color(0xFFCBD5E1),
                                 width: 1.4,
                               ),
                               shape: RoundedRectangleBorder(
@@ -390,19 +382,50 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                       ),
                     ),
 
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 16),
 
                     // Primary Create Account Button
                     SignatureAuthButton(
-                      label: 'Sign Up',
-                      icon: Icons.pets_rounded,
-                      accentColor: tealAccent,
-                      isLoading: _isLoading,
-                      height: 48,
-                      onTap: _handleSignUp,
+                          label: 'Sign Up',
+                          icon: Icons.pets_rounded,
+                          accentColor: palette.buttonAccent,
+                          isLoading: _isLoading,
+                          height: 52,
+                          onTap: _handleSignUp,
+                        ),
+
+                    const SizedBox(height: 18),
+
+                    // Divider with Label: ─── or continue with ───
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Divider(
+                            color: isDark ? Colors.white12 : const Color(0xFFE2E8F0),
+                            thickness: 1,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 14),
+                          child: Text(
+                            'or continue with',
+                            style: GoogleFonts.plusJakartaSans(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              color: secondaryText,
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Divider(
+                            color: isDark ? Colors.white12 : const Color(0xFFE2E8F0),
+                            thickness: 1,
+                          ),
+                        ),
+                      ],
                     ),
 
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 16),
 
                     // Social Buttons Row
                     Row(
@@ -411,6 +434,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                           child: CompactSocialButton(
                             label: 'Google',
                             icon: Icons.g_mobiledata_rounded,
+                            height: 48,
                             onTap: () {
                               AppFeedback.showToast(
                                 context,
@@ -421,11 +445,12 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                             },
                           ),
                         ),
-                        const SizedBox(width: 10),
+                        const SizedBox(width: 12),
                         Expanded(
                           child: CompactSocialButton(
                             label: 'Apple',
                             icon: Icons.apple_rounded,
+                            height: 48,
                             onTap: () {
                               AppFeedback.showToast(
                                 context,
@@ -439,7 +464,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                       ],
                     ),
 
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 22),
 
                     // Already Have Account Row
                     Row(
@@ -449,14 +474,14 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                           'Already have an account? ',
                           style: GoogleFonts.plusJakartaSans(
                             color: secondaryText,
-                            fontSize: 12,
+                            fontSize: 13,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
                         TextButton(
                           onPressed: () => Navigator.of(context).pop(),
                           style: TextButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
                             minimumSize: Size.zero,
                             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           ),
@@ -464,8 +489,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                             'Sign In',
                             style: GoogleFonts.plusJakartaSans(
                               fontWeight: FontWeight.w800,
-                              fontSize: 12,
-                              color: tealAccent,
+                              fontSize: 13,
+                              color: palette.accentColor,
                             ),
                           ),
                         ),
@@ -499,6 +524,7 @@ class _CompactRoleTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
@@ -506,7 +532,9 @@ class _CompactRoleTab extends StatelessWidget {
         curve: Curves.easeOutCubic,
         padding: const EdgeInsets.symmetric(vertical: 7),
         decoration: BoxDecoration(
-          color: isSelected ? Colors.white : Colors.transparent,
+          color: isSelected
+              ? (isDark ? const Color(0xFF2D3748) : Colors.white)
+              : Colors.transparent,
           borderRadius: BorderRadius.circular(13),
           boxShadow: isSelected
               ? [
@@ -532,7 +560,9 @@ class _CompactRoleTab extends StatelessWidget {
               style: GoogleFonts.plusJakartaSans(
                 fontSize: 12,
                 fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
-                color: isSelected ? const Color(0xFF16171B) : const Color(0xFF64748B),
+                color: isSelected
+                    ? (isDark ? Colors.white : const Color(0xFF16171B))
+                    : const Color(0xFF64748B),
                 letterSpacing: -0.2,
               ),
             ),

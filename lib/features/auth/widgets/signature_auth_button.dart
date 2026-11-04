@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-/// Signature Matte Charcoal Pill Button for Canivue Authentication.
+/// Signature High-Contrast Action Button for Canivue Authentication.
 ///
-/// Features a dark matte pill body (`#16171B`), high-contrast white typography,
-/// an accent-tinted circular icon badge, and a responsive scale-down bounce on tap (120ms).
+/// Implements:
+/// - Apple fluid press response with 120ms scale curve (`apple-design`)
+/// - High-contrast matte charcoal or brand tinted body (WCAG AAA contrast)
+/// - Vivid accent circular badge with micro-loader or action arrow
+/// - Accessible semantics labels (`better-accessibility`)
 class SignatureAuthButton extends StatefulWidget {
   const SignatureAuthButton({
     super.key,
     required this.label,
     this.icon = Icons.arrow_forward_rounded,
-    this.accentColor = const Color(0xFF10B981),
+    this.accentColor = const Color(0xFF14B8A6),
+    this.backgroundColor,
     this.isLoading = false,
     this.onTap,
     this.fullWidth = true,
@@ -20,6 +24,7 @@ class SignatureAuthButton extends StatefulWidget {
   final String label;
   final IconData? icon;
   final Color accentColor;
+  final Color? backgroundColor;
   final bool isLoading;
   final VoidCallback? onTap;
   final bool fullWidth;
@@ -35,21 +40,22 @@ class _SignatureAuthButtonState extends State<SignatureAuthButton> {
   @override
   Widget build(BuildContext context) {
     final isEnabled = widget.onTap != null && !widget.isLoading;
+    final baseColor = widget.backgroundColor ?? const Color(0xFF16171B);
 
     final buttonContent = AnimatedScale(
       scale: _isPressed ? 0.96 : 1.0,
       duration: const Duration(milliseconds: 120),
-      curve: Curves.easeInOut,
+      curve: Curves.easeOutCubic,
       child: Container(
         height: widget.height,
         padding: const EdgeInsets.fromLTRB(20, 5, 6, 5),
         decoration: BoxDecoration(
-          color: const Color(0xFF16171B),
+          color: isEnabled ? baseColor : baseColor.withValues(alpha: 0.5),
           borderRadius: BorderRadius.circular(30),
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFF16171B).withValues(alpha: 0.22),
-              blurRadius: 14,
+              color: baseColor.withValues(alpha: 0.25),
+              blurRadius: 16,
               offset: const Offset(0, 5),
             ),
           ],
@@ -97,14 +103,17 @@ class _SignatureAuthButtonState extends State<SignatureAuthButton> {
       ),
     );
 
-    return GestureDetector(
-      onTapDown: isEnabled ? (_) => setState(() => _isPressed = true) : null,
-      onTapUp: isEnabled ? (_) => setState(() => _isPressed = false) : null,
-      onTapCancel: () => setState(() => _isPressed = false),
-      onTap: isEnabled ? widget.onTap : null,
-      child: widget.fullWidth
-          ? SizedBox(width: double.infinity, child: buttonContent)
-          : buttonContent,
+    return Semantics(
+      button: true,
+      label: widget.label,
+      enabled: isEnabled,
+      child: GestureDetector(
+        onTapDown: isEnabled ? (_) => setState(() => _isPressed = true) : null,
+        onTapUp: isEnabled ? (_) => setState(() => _isPressed = false) : null,
+        onTapCancel: isEnabled ? () => setState(() => _isPressed = false) : null,
+        onTap: isEnabled ? widget.onTap : null,
+        child: widget.fullWidth ? buttonContent : IntrinsicWidth(child: buttonContent),
+      ),
     );
   }
 }
