@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-/// Modern Warm Form Field for Canivue Authentication.
+/// Modern Compact Form Field for Canivue Authentication.
 ///
 /// Refined with soft squircle borders, dynamic focus elevation,
-/// crisp Plus Jakarta Sans typography, and friendly dog-care aesthetics.
+/// crisp Plus Jakarta Sans typography, and ergonomic proportions
+/// designed to fit perfectly on-screen without scrolling.
 class CustomTextField extends StatefulWidget {
   const CustomTextField({
     super.key,
@@ -93,36 +94,37 @@ class _CustomTextFieldState extends State<CustomTextField> {
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: [
         Text(
           widget.label,
           style: GoogleFonts.plusJakartaSans(
-            fontSize: 13,
+            fontSize: 12.5,
             fontWeight: FontWeight.w700,
             color: labelColor,
             letterSpacing: -0.2,
           ),
         ),
-        const SizedBox(height: 7),
+        const SizedBox(height: 5),
         AnimatedContainer(
-          duration: const Duration(milliseconds: 220),
+          duration: const Duration(milliseconds: 200),
           curve: Curves.easeOutCubic,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(18),
+            borderRadius: BorderRadius.circular(16),
             boxShadow: _isFocused
                 ? [
                     BoxShadow(
-                      color: activeAccent.withValues(alpha: isDark ? 0.28 : 0.2),
-                      blurRadius: 16,
+                      color: activeAccent.withValues(alpha: isDark ? 0.28 : 0.18),
+                      blurRadius: 14,
                       spreadRadius: 1,
-                      offset: const Offset(0, 3),
+                      offset: const Offset(0, 2),
                     ),
                   ]
                 : [
                     BoxShadow(
                       color: Colors.black.withValues(alpha: isDark ? 0.15 : 0.02),
-                      blurRadius: 6,
-                      offset: const Offset(0, 2),
+                      blurRadius: 4,
+                      offset: const Offset(0, 1),
                     ),
                   ],
           ),
@@ -138,76 +140,77 @@ class _CustomTextFieldState extends State<CustomTextField> {
             maxLines: widget.obscureText ? 1 : widget.maxLines,
             style: GoogleFonts.plusJakartaSans(
               color: textColor,
-              fontSize: 15,
+              fontSize: 14.5,
               fontWeight: FontWeight.w600,
             ),
             autovalidateMode: AutovalidateMode.onUserInteraction,
             decoration: InputDecoration(
+              isDense: true,
               hintText: widget.hintText,
               hintStyle: GoogleFonts.plusJakartaSans(
                 color: hintColor,
-                fontSize: 14,
+                fontSize: 13.5,
                 fontWeight: FontWeight.w400,
               ),
               prefixIcon: widget.maxLines > 1
                   ? null
                   : Padding(
-                      padding: const EdgeInsets.only(left: 16, right: 10),
+                      padding: const EdgeInsets.only(left: 14, right: 8),
                       child: Icon(
                         widget.prefixIcon,
                         color: _isFocused
                             ? activeAccent
                             : (isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B)),
-                        size: 20,
+                        size: 19,
                       ),
                     ),
-              prefixIconConstraints: const BoxConstraints(minWidth: 48, minHeight: 48),
+              prefixIconConstraints: const BoxConstraints(minWidth: 42, minHeight: 42),
               suffixIcon: widget.suffixIcon != null
                   ? Padding(
-                      padding: const EdgeInsets.only(right: 8),
+                      padding: const EdgeInsets.only(right: 6),
                       child: widget.suffixIcon,
                     )
                   : null,
               filled: true,
               fillColor: fillColor,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(18),
+                borderRadius: BorderRadius.circular(16),
                 borderSide: BorderSide(
                   color: borderColor,
                   width: 1.2,
                 ),
               ),
               enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(18),
+                borderRadius: BorderRadius.circular(16),
                 borderSide: BorderSide(
                   color: borderColor,
                   width: 1.2,
                 ),
               ),
               focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(18),
+                borderRadius: BorderRadius.circular(16),
                 borderSide: BorderSide(
                   color: activeAccent,
                   width: 2,
                 ),
               ),
               errorBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(18),
+                borderRadius: BorderRadius.circular(16),
                 borderSide: const BorderSide(
                   color: Color(0xFFEF4444),
-                  width: 1.4,
+                  width: 1.2,
                 ),
               ),
               focusedErrorBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(18),
+                borderRadius: BorderRadius.circular(16),
                 borderSide: const BorderSide(
                   color: Color(0xFFEF4444),
-                  width: 2,
+                  width: 1.8,
                 ),
               ),
               errorStyle: GoogleFonts.plusJakartaSans(
-                fontSize: 12,
+                fontSize: 11,
                 fontWeight: FontWeight.w600,
                 color: const Color(0xFFEF4444),
               ),

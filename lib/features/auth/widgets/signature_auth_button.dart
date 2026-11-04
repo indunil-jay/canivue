@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 /// Signature Matte Charcoal Pill Button for Canivue Authentication.
 ///
 /// Features a dark matte pill body (`#16171B`), high-contrast white typography,
-/// an accent-tinted circular icon badge, and a responsive scale-down bounce on tap.
+/// an accent-tinted circular icon badge, and a responsive scale-down bounce on tap (120ms).
 class SignatureAuthButton extends StatefulWidget {
   const SignatureAuthButton({
     super.key,
@@ -14,6 +14,7 @@ class SignatureAuthButton extends StatefulWidget {
     this.isLoading = false,
     this.onTap,
     this.fullWidth = true,
+    this.height = 50.0,
   });
 
   final String label;
@@ -22,6 +23,7 @@ class SignatureAuthButton extends StatefulWidget {
   final bool isLoading;
   final VoidCallback? onTap;
   final bool fullWidth;
+  final double height;
 
   @override
   State<SignatureAuthButton> createState() => _SignatureAuthButtonState();
@@ -39,36 +41,36 @@ class _SignatureAuthButtonState extends State<SignatureAuthButton> {
       duration: const Duration(milliseconds: 120),
       curve: Curves.easeInOut,
       child: Container(
-        height: 56,
-        padding: const EdgeInsets.fromLTRB(24, 7, 8, 7),
+        height: widget.height,
+        padding: const EdgeInsets.fromLTRB(20, 5, 6, 5),
         decoration: BoxDecoration(
           color: const Color(0xFF16171B),
-          borderRadius: BorderRadius.circular(36),
+          borderRadius: BorderRadius.circular(30),
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFF16171B).withValues(alpha: 0.24),
-              blurRadius: 18,
-              offset: const Offset(0, 7),
+              color: const Color(0xFF16171B).withValues(alpha: 0.22),
+              blurRadius: 14,
+              offset: const Offset(0, 5),
             ),
           ],
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            widget.fullWidth ? const SizedBox(width: 8) : const SizedBox(width: 4),
+            widget.fullWidth ? const SizedBox(width: 4) : const SizedBox(width: 2),
             Text(
               widget.label,
               style: GoogleFonts.plusJakartaSans(
-                fontSize: 15.5,
+                fontSize: 14.5,
                 fontWeight: FontWeight.w800,
                 color: Colors.white,
                 letterSpacing: -0.2,
               ),
             ),
             AnimatedContainer(
-              duration: const Duration(milliseconds: 250),
-              width: 42,
-              height: 42,
+              duration: const Duration(milliseconds: 200),
+              width: widget.height - 12,
+              height: widget.height - 12,
               decoration: BoxDecoration(
                 color: widget.accentColor,
                 shape: BoxShape.circle,
@@ -76,16 +78,16 @@ class _SignatureAuthButtonState extends State<SignatureAuthButton> {
               child: Center(
                 child: widget.isLoading
                     ? const SizedBox(
-                        width: 20,
-                        height: 20,
+                        width: 18,
+                        height: 18,
                         child: CircularProgressIndicator(
-                          strokeWidth: 2.4,
+                          strokeWidth: 2.2,
                           valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF16171B)),
                         ),
                       )
                     : Icon(
                         widget.icon,
-                        size: 20,
+                        size: 18,
                         color: const Color(0xFF16171B),
                       ),
               ),

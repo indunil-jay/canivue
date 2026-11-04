@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:canivue/core/widgets/app_feedback.dart';
-import 'package:canivue/core/widgets/canivue_paw_bone_logo.dart';
 import 'package:canivue/features/auth/domain/app_user.dart';
 import 'package:canivue/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:canivue/features/auth/screens/otp_verification_screen.dart';
@@ -109,458 +108,387 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    const primaryText = Color(0xFF16171B);
-    const secondaryText = Color(0xFF475569);
+    final primaryText = isDark ? const Color(0xFFF1F5F9) : const Color(0xFF16171B);
+    final secondaryText = isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
     const tealAccent = Color(0xFF0D9488);
     const orangeAccent = Color(0xFFFF9F1C);
     final pwStrength = _calculatePasswordStrength(_passwordController.text);
 
     return Scaffold(
-      backgroundColor: const Color(0xFF4ECDC4),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: isDark
-              ? const LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Color(0xFF122422),
-                    Color(0xFF16171B),
-                  ],
-                )
-              : const LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Color(0xFF4ECDC4), // Vibrant Teal Mint
-                    Color(0xFF68D8D6),
-                    Color(0xFFE4F9F6),
-                  ],
-                ),
-        ),
+      backgroundColor: isDark ? const Color(0xFF101418) : const Color(0xFFF8FAF9),
+      body: SafeArea(
         child: Stack(
           children: [
-            // Watermark Paw Prints
+            // Compact Back Pill
             Positioned(
-              top: -20,
-              right: -30,
-              child: Opacity(
-                opacity: 0.08,
-                child: Transform.rotate(
-                  angle: 0.35,
-                  child: const CanivuePawBoneLogo(
-                    size: 220,
-                    color: primaryText,
-                  ),
-                ),
-              ),
-            ),
-            Positioned(
-              bottom: 80,
-              left: -40,
-              child: Opacity(
-                opacity: 0.06,
-                child: Transform.rotate(
-                  angle: -0.28,
-                  child: const CanivuePawBoneLogo(
-                    size: 200,
-                    color: primaryText,
-                  ),
-                ),
-              ),
-            ),
-
-            SafeArea(
-              child: Stack(
-                children: [
-                  // Back Button Pill
-                  Positioned(
-                    top: 10,
-                    left: 16,
-                    child: GestureDetector(
-                      onTap: () => Navigator.of(context).pop(),
-                      child: Container(
-                        width: 44,
-                        height: 44,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: Colors.black.withValues(alpha: 0.06),
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.08),
-                              blurRadius: 12,
-                              offset: const Offset(0, 4),
-                            ),
-                          ],
-                        ),
-                        child: const Icon(
-                          Icons.arrow_back_rounded,
-                          size: 20,
-                          color: primaryText,
-                        ),
-                      ),
+              top: 8,
+              left: 14,
+              child: GestureDetector(
+                onTap: () => Navigator.of(context).pop(),
+                child: Container(
+                  width: 38,
+                  height: 38,
+                  decoration: BoxDecoration(
+                    color: isDark ? const Color(0xFF1C222A) : Colors.white,
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: isDark ? Colors.white12 : const Color(0xFFE2E8F0),
                     ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.04),
+                        blurRadius: 6,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
                   ),
+                  child: Icon(
+                    Icons.arrow_back_rounded,
+                    size: 18,
+                    color: primaryText,
+                  ),
+                ),
+              ),
+            ),
 
-                  Center(
-                    child: SingleChildScrollView(
-                      physics: const BouncingScrollPhysics(),
-                      padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 16),
-                      child: ConstrainedBox(
-                        constraints: const BoxConstraints(maxWidth: 460),
-                        child: Form(
-                          key: _formKey,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
+            Center(
+              child: SingleChildScrollView(
+                physics: const ClampingScrollPhysics(),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 440),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        const SizedBox(height: 14),
+
+                        // Animated French Bulldog Mascot
+                        AuthHeroHeader(
+                          imageAsset: 'assets/images/auth/auth_dog_signup.jpg',
+                          badgeText: 'New Pack Member',
+                          badgeEmoji: '🐾',
+                          title: 'Join the Pack',
+                          subtitle: 'Create an account to protect your dog with AI care',
+                          titleColor: primaryText,
+                          subtitleColor: secondaryText,
+                          accentColor: orangeAccent,
+                          avatarSize: 64,
+                        ),
+                        const SizedBox(height: 12),
+
+                        // Role Selector Pill
+                        Container(
+                          padding: const EdgeInsets.all(3),
+                          decoration: BoxDecoration(
+                            color: isDark ? const Color(0xFF182029) : const Color(0xFFEFF4F1),
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: isDark ? Colors.white10 : const Color(0xFFDCE6E1),
+                            ),
+                          ),
+                          child: Row(
                             children: [
-                              const SizedBox(height: 38),
-
-                              // Expressive Hero Avatar & Titles (Image 2 Style)
-                              const AuthHeroHeader(
-                                imageAsset: 'assets/images/onboarding/dog_slide_2.jpg',
-                                tileColor: orangeAccent,
-                                badgeText: 'New Pack Member',
-                                badgeEmoji: '🐾',
-                                title: 'Join the Pack',
-                                subtitle: 'Create an account to protect your dog with AI telemetry',
-                                titleColor: primaryText,
-                                subtitleColor: secondaryText,
+                              Expanded(
+                                child: _CompactRoleTab(
+                                  label: 'Dog Parent',
+                                  icon: Icons.pets_rounded,
+                                  isSelected: _selectedRole == UserRole.dogOwner,
+                                  activeColor: orangeAccent,
+                                  onTap: () {
+                                    setState(() {
+                                      _selectedRole = UserRole.dogOwner;
+                                    });
+                                  },
+                                ),
                               ),
-                              const SizedBox(height: 20),
-
-                              // Role Selection Cards
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: _RoleCard(
-                                      label: 'Dog Parent',
-                                      sublabel: 'Personal Care',
-                                      icon: Icons.pets_rounded,
-                                      isSelected: _selectedRole == UserRole.dogOwner,
-                                      activeColor: orangeAccent,
-                                      onTap: () {
-                                        setState(() {
-                                          _selectedRole = UserRole.dogOwner;
-                                        });
-                                      },
-                                    ),
-                                  ),
-                                  const SizedBox(width: 12),
-                                  Expanded(
-                                    child: _RoleCard(
-                                      label: 'Veterinarian',
-                                      sublabel: 'Clinical Portal',
-                                      icon: Icons.medical_services_rounded,
-                                      isSelected: _selectedRole == UserRole.veterinarian,
-                                      activeColor: tealAccent,
-                                      onTap: () {
-                                        setState(() {
-                                          _selectedRole = UserRole.veterinarian;
-                                        });
-                                      },
-                                    ),
-                                  ),
-                                ],
-                              ).animate().fadeIn(delay: 180.ms),
-                              const SizedBox(height: 20),
-
-                              // Crisp White Form Card
-                              Container(
-                                padding: const EdgeInsets.all(24),
-                                decoration: BoxDecoration(
-                                  color: isDark ? const Color(0xFF1E252E) : Colors.white,
-                                  borderRadius: BorderRadius.circular(34),
-                                  border: Border.all(
-                                    color: isDark
-                                        ? Colors.white.withValues(alpha: 0.1)
-                                        : Colors.white,
-                                    width: 1.5,
-                                  ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: const Color(0xFF16171B).withValues(alpha: 0.09),
-                                      blurRadius: 32,
-                                      offset: const Offset(0, 12),
-                                    ),
-                                  ],
+                              Expanded(
+                                child: _CompactRoleTab(
+                                  label: 'Veterinarian',
+                                  icon: Icons.medical_services_rounded,
+                                  isSelected: _selectedRole == UserRole.veterinarian,
+                                  activeColor: tealAccent,
+                                  onTap: () {
+                                    setState(() {
+                                      _selectedRole = UserRole.veterinarian;
+                                    });
+                                  },
                                 ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                                  children: [
-                                    // Full Name Input
-                                    CustomTextField(
-                                      label: 'Full Name',
-                                      hintText: 'e.g. Alex Morgan',
-                                      prefixIcon: Icons.person_outline_rounded,
-                                      controller: _nameController,
-                                      focusAccentColor: tealAccent,
-                                      validator: (value) {
-                                        if (value == null || value.trim().isEmpty) {
-                                          return 'Please enter your name';
-                                        }
-                                        return null;
-                                      },
-                                    ),
-                                    const SizedBox(height: 16),
-
-                                    // Email Address Input
-                                    CustomTextField(
-                                      label: 'Email Address',
-                                      hintText: 'e.g. alex@example.com',
-                                      prefixIcon: Icons.alternate_email_rounded,
-                                      controller: _emailController,
-                                      keyboardType: TextInputType.emailAddress,
-                                      focusAccentColor: tealAccent,
-                                      validator: (value) {
-                                        if (value == null || value.trim().isEmpty) {
-                                          return 'Please enter your email';
-                                        }
-                                        if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
-                                            .hasMatch(value.trim())) {
-                                          return 'Please enter a valid email';
-                                        }
-                                        return null;
-                                      },
-                                    ),
-                                    const SizedBox(height: 16),
-
-                                    // Password Input
-                                    CustomTextField(
-                                      label: 'Password',
-                                      hintText: 'Create a password (min 6 chars)',
-                                      prefixIcon: Icons.lock_outline_rounded,
-                                      controller: _passwordController,
-                                      obscureText: _obscurePassword,
-                                      focusAccentColor: tealAccent,
-                                      onChanged: (val) {
-                                        setState(() {});
-                                      },
-                                      suffixIcon: IconButton(
-                                        icon: Icon(
-                                          _obscurePassword
-                                              ? Icons.visibility_outlined
-                                              : Icons.visibility_off_outlined,
-                                          color: const Color(0xFF64748B),
-                                          size: 20,
-                                        ),
-                                        onPressed: () {
-                                          setState(() {
-                                            _obscurePassword = !_obscurePassword;
-                                          });
-                                        },
-                                      ),
-                                      validator: (value) {
-                                        if (value == null || value.isEmpty) {
-                                          return 'Please create a password';
-                                        }
-                                        if (value.length < 6) {
-                                          return 'Password must be at least 6 characters';
-                                        }
-                                        return null;
-                                      },
-                                    ),
-                                    if (_passwordController.text.isNotEmpty) ...[
-                                      const SizedBox(height: 8),
-                                      Row(
-                                        children: [
-                                          for (int i = 1; i <= 4; i++)
-                                            Expanded(
-                                              child: Container(
-                                                height: 4,
-                                                margin: EdgeInsets.only(right: i < 4 ? 6 : 0),
-                                                decoration: BoxDecoration(
-                                                  borderRadius: BorderRadius.circular(2),
-                                                  color: pwStrength >= i
-                                                      ? (pwStrength <= 1
-                                                          ? const Color(0xFFEF4444)
-                                                          : pwStrength <= 2
-                                                              ? orangeAccent
-                                                              : tealAccent)
-                                                      : const Color(0xFFE2E8F0),
-                                                ),
-                                              ),
-                                            ),
-                                        ],
-                                      ),
-                                      const SizedBox(height: 5),
-                                      Text(
-                                        pwStrength <= 1
-                                            ? 'Weak password'
-                                            : pwStrength <= 2
-                                                ? 'Fair password'
-                                                : pwStrength == 3
-                                                    ? 'Good password'
-                                                    : 'Strong password 💪',
-                                        style: GoogleFonts.plusJakartaSans(
-                                          fontSize: 11.5,
-                                          fontWeight: FontWeight.w600,
-                                          color: pwStrength <= 1
-                                              ? const Color(0xFFEF4444)
-                                              : pwStrength <= 2
-                                                  ? orangeAccent
-                                                  : tealAccent,
-                                        ),
-                                      ),
-                                    ],
-                                    const SizedBox(height: 16),
-
-                                    // Confirm Password Input
-                                    CustomTextField(
-                                      label: 'Confirm Password',
-                                      hintText: 'Re-enter your password',
-                                      prefixIcon: Icons.lock_reset_rounded,
-                                      controller: _confirmPasswordController,
-                                      obscureText: _obscureConfirmPassword,
-                                      focusAccentColor: tealAccent,
-                                      suffixIcon: IconButton(
-                                        icon: Icon(
-                                          _obscureConfirmPassword
-                                              ? Icons.visibility_outlined
-                                              : Icons.visibility_off_outlined,
-                                          color: const Color(0xFF64748B),
-                                          size: 20,
-                                        ),
-                                        onPressed: () {
-                                          setState(() {
-                                            _obscureConfirmPassword = !_obscureConfirmPassword;
-                                          });
-                                        },
-                                      ),
-                                      validator: (value) {
-                                        if (value == null || value.isEmpty) {
-                                          return 'Please confirm your password';
-                                        }
-                                        if (value != _passwordController.text) {
-                                          return 'Passwords do not match';
-                                        }
-                                        return null;
-                                      },
-                                    ),
-                                    const SizedBox(height: 16),
-
-                                    // Terms & Privacy Checkbox
-                                    InkWell(
-                                      onTap: () {
-                                        setState(() {
-                                          _acceptTerms = !_acceptTerms;
-                                        });
-                                      },
-                                      borderRadius: BorderRadius.circular(6),
-                                      child: Row(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          SizedBox(
-                                            height: 20,
-                                            width: 20,
-                                            child: Checkbox(
-                                              value: _acceptTerms,
-                                              activeColor: primaryText,
-                                              checkColor: Colors.white,
-                                              materialTapTargetSize:
-                                                  MaterialTapTargetSize.shrinkWrap,
-                                              side: const BorderSide(
-                                                color: Color(0xFFCBD5E1),
-                                                width: 1.5,
-                                              ),
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(5),
-                                              ),
-                                              onChanged: (val) {
-                                                setState(() {
-                                                  _acceptTerms = val ?? false;
-                                                });
-                                              },
-                                            ),
-                                          ),
-                                          const SizedBox(width: 10),
-                                          Expanded(
-                                            child: Text.rich(
-                                              TextSpan(
-                                                style: GoogleFonts.plusJakartaSans(
-                                                  fontSize: 12.5,
-                                                  color: secondaryText,
-                                                  height: 1.35,
-                                                ),
-                                                children: const [
-                                                  TextSpan(text: 'I agree to the '),
-                                                  TextSpan(
-                                                    text: 'Terms of Service',
-                                                    style: TextStyle(
-                                                      color: tealAccent,
-                                                      fontWeight: FontWeight.w800,
-                                                    ),
-                                                  ),
-                                                  TextSpan(text: ' and '),
-                                                  TextSpan(
-                                                    text: 'Privacy Policy',
-                                                    style: TextStyle(
-                                                      color: tealAccent,
-                                                      fontWeight: FontWeight.w800,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    const SizedBox(height: 22),
-
-                                    // Signature Pill Button with Tangerine Badge
-                                    SignatureAuthButton(
-                                      label: 'Create Account',
-                                      icon: Icons.arrow_forward_rounded,
-                                      accentColor: orangeAccent,
-                                      isLoading: _isLoading,
-                                      onTap: _handleSignUp,
-                                    ),
-                                  ],
-                                ),
-                              ).animate().fadeIn(delay: 220.ms).slideY(begin: 0.08, end: 0),
-                              const SizedBox(height: 22),
-
-                              // Already Have Account Link
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'Already have an account? ',
-                                    style: GoogleFonts.plusJakartaSans(
-                                      color: primaryText.withValues(alpha: 0.8),
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                  TextButton(
-                                    onPressed: () => Navigator.of(context).pop(),
-                                    style: TextButton.styleFrom(
-                                      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-                                      minimumSize: Size.zero,
-                                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                    ),
-                                    child: Text(
-                                      'Log In',
-                                      style: GoogleFonts.plusJakartaSans(
-                                        fontWeight: FontWeight.w900,
-                                        fontSize: 14,
-                                        color: primaryText,
-                                        decoration: TextDecoration.underline,
-                                      ),
-                                    ),
-                                  ),
-                                ],
                               ),
                             ],
                           ),
+                        ).animate().fadeIn(delay: 100.ms),
+                        const SizedBox(height: 12),
+
+                        // Crisp Form Card
+                        Container(
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                            color: isDark ? const Color(0xFF182029) : Colors.white,
+                            borderRadius: BorderRadius.circular(28),
+                            border: Border.all(
+                              color: isDark ? Colors.white10 : const Color(0xFFEBF0ED),
+                              width: 1.2,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: const Color(0xFF16171B).withValues(alpha: isDark ? 0.3 : 0.05),
+                                blurRadius: 24,
+                                offset: const Offset(0, 8),
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              // Full Name Input
+                              CustomTextField(
+                                label: 'Full Name',
+                                hintText: 'e.g. Alex Morgan',
+                                prefixIcon: Icons.person_outline_rounded,
+                                controller: _nameController,
+                                focusAccentColor: tealAccent,
+                                validator: (value) {
+                                  if (value == null || value.trim().isEmpty) {
+                                    return 'Please enter your name';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 10),
+
+                              // Email Address Input
+                              CustomTextField(
+                                label: 'Email Address',
+                                hintText: 'e.g. alex@example.com',
+                                prefixIcon: Icons.alternate_email_rounded,
+                                controller: _emailController,
+                                keyboardType: TextInputType.emailAddress,
+                                focusAccentColor: tealAccent,
+                                validator: (value) {
+                                  if (value == null || value.trim().isEmpty) {
+                                    return 'Please enter your email';
+                                  }
+                                  if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                                      .hasMatch(value.trim())) {
+                                    return 'Please enter a valid email';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 10),
+
+                              // Password Input
+                              CustomTextField(
+                                label: 'Password',
+                                hintText: 'Min 6 characters',
+                                prefixIcon: Icons.lock_outline_rounded,
+                                controller: _passwordController,
+                                obscureText: _obscurePassword,
+                                focusAccentColor: tealAccent,
+                                onChanged: (val) => setState(() {}),
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    _obscurePassword
+                                        ? Icons.visibility_outlined
+                                        : Icons.visibility_off_outlined,
+                                    color: const Color(0xFF64748B),
+                                    size: 18,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      _obscurePassword = !_obscurePassword;
+                                    });
+                                  },
+                                ),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please create a password';
+                                  }
+                                  if (value.length < 6) {
+                                    return 'At least 6 characters required';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              if (_passwordController.text.isNotEmpty) ...[
+                                const SizedBox(height: 5),
+                                Row(
+                                  children: [
+                                    for (int i = 1; i <= 4; i++)
+                                      Expanded(
+                                        child: Container(
+                                          height: 3,
+                                          margin: EdgeInsets.only(right: i < 4 ? 4 : 0),
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(2),
+                                            color: pwStrength >= i
+                                                ? (pwStrength <= 1
+                                                    ? const Color(0xFFEF4444)
+                                                    : pwStrength <= 2
+                                                        ? orangeAccent
+                                                        : tealAccent)
+                                                : const Color(0xFFE2E8F0),
+                                          ),
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ],
+                              const SizedBox(height: 10),
+
+                              // Confirm Password Input
+                              CustomTextField(
+                                label: 'Confirm Password',
+                                hintText: 'Re-enter your password',
+                                prefixIcon: Icons.lock_reset_rounded,
+                                controller: _confirmPasswordController,
+                                obscureText: _obscureConfirmPassword,
+                                focusAccentColor: tealAccent,
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    _obscureConfirmPassword
+                                        ? Icons.visibility_outlined
+                                        : Icons.visibility_off_outlined,
+                                    color: const Color(0xFF64748B),
+                                    size: 18,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      _obscureConfirmPassword = !_obscureConfirmPassword;
+                                    });
+                                  },
+                                ),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please confirm password';
+                                  }
+                                  if (value != _passwordController.text) {
+                                    return 'Passwords do not match';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 10),
+
+                              // Terms & Privacy Checkbox
+                              InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    _acceptTerms = !_acceptTerms;
+                                  });
+                                },
+                                borderRadius: BorderRadius.circular(6),
+                                child: Row(
+                                  children: [
+                                    SizedBox(
+                                      height: 18,
+                                      width: 18,
+                                      child: Checkbox(
+                                        value: _acceptTerms,
+                                        activeColor: primaryText,
+                                        checkColor: Colors.white,
+                                        materialTapTargetSize:
+                                            MaterialTapTargetSize.shrinkWrap,
+                                        side: const BorderSide(
+                                          color: Color(0xFFCBD5E1),
+                                          width: 1.4,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(4),
+                                        ),
+                                        onChanged: (val) {
+                                          setState(() {
+                                            _acceptTerms = val ?? false;
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Expanded(
+                                      child: Text.rich(
+                                        TextSpan(
+                                          style: GoogleFonts.plusJakartaSans(
+                                            fontSize: 11.5,
+                                            color: secondaryText,
+                                            height: 1.25,
+                                          ),
+                                          children: const [
+                                            TextSpan(text: 'I agree to the '),
+                                            TextSpan(
+                                              text: 'Terms',
+                                              style: TextStyle(
+                                                color: tealAccent,
+                                                fontWeight: FontWeight.w800,
+                                              ),
+                                            ),
+                                            TextSpan(text: ' & '),
+                                            TextSpan(
+                                              text: 'Privacy Policy',
+                                              style: TextStyle(
+                                                color: tealAccent,
+                                                fontWeight: FontWeight.w800,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 14),
+
+                              // Signature Pill Button with Tangerine Badge
+                              SignatureAuthButton(
+                                label: 'Create Account',
+                                icon: Icons.arrow_forward_rounded,
+                                accentColor: orangeAccent,
+                                isLoading: _isLoading,
+                                onTap: _handleSignUp,
+                              ),
+                            ],
+                          ),
+                        ).animate().fadeIn(delay: 160.ms).slideY(begin: 0.06, end: 0),
+                        const SizedBox(height: 12),
+
+                        // Already Have Account Link
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Already have an account? ',
+                              style: GoogleFonts.plusJakartaSans(
+                                color: secondaryText,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(),
+                              style: TextButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                                minimumSize: Size.zero,
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              ),
+                              child: Text(
+                                'Log In',
+                                style: GoogleFonts.plusJakartaSans(
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: 13,
+                                  color: tealAccent,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
+                      ],
                     ),
                   ),
-                ],
+                ),
               ),
             ),
           ],
@@ -570,10 +498,9 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   }
 }
 
-class _RoleCard extends StatelessWidget {
-  const _RoleCard({
+class _CompactRoleTab extends StatelessWidget {
+  const _CompactRoleTab({
     required this.label,
-    required this.sublabel,
     required this.icon,
     required this.isSelected,
     required this.activeColor,
@@ -581,7 +508,6 @@ class _RoleCard extends StatelessWidget {
   });
 
   final String label;
-  final String sublabel;
   final IconData icon;
   final bool isSelected;
   final Color activeColor;
@@ -592,62 +518,28 @@ class _RoleCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 240),
+        duration: const Duration(milliseconds: 200),
         curve: Curves.easeOutCubic,
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        padding: const EdgeInsets.symmetric(vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFF16171B) : Colors.white.withValues(alpha: 0.9),
-          borderRadius: BorderRadius.circular(22),
-          border: Border.all(
-            color: isSelected ? activeColor : Colors.white,
-            width: isSelected ? 2 : 1,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: isSelected
-                  ? activeColor.withValues(alpha: 0.28)
-                  : Colors.black.withValues(alpha: 0.05),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
-            ),
-          ],
+          color: isSelected ? const Color(0xFF16171B) : Colors.transparent,
+          borderRadius: BorderRadius.circular(13),
         ),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: isSelected ? activeColor : const Color(0xFFF1F5F9),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                icon,
-                size: 18,
-                color: isSelected ? const Color(0xFF16171B) : const Color(0xFF475569),
-              ),
+            Icon(
+              icon,
+              size: 15,
+              color: isSelected ? activeColor : const Color(0xFF64748B),
             ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    label,
-                    style: GoogleFonts.plusJakartaSans(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w800,
-                      color: isSelected ? Colors.white : const Color(0xFF16171B),
-                    ),
-                  ),
-                  Text(
-                    sublabel,
-                    style: GoogleFonts.plusJakartaSans(
-                      fontSize: 10.5,
-                      fontWeight: FontWeight.w600,
-                      color: isSelected ? Colors.white70 : const Color(0xFF94A3B8),
-                    ),
-                  ),
-                ],
+            const SizedBox(width: 6),
+            Text(
+              label,
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 12,
+                fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+                color: isSelected ? Colors.white : const Color(0xFF64748B),
               ),
             ),
           ],

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:canivue/core/widgets/app_feedback.dart';
-import 'package:canivue/core/widgets/canivue_paw_bone_logo.dart';
 import 'package:canivue/features/auth/screens/otp_verification_screen.dart';
 import 'package:canivue/features/auth/widgets/auth_hero_header.dart';
 import 'package:canivue/features/auth/widgets/custom_text_field.dart';
@@ -62,263 +61,207 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    const primaryText = Color(0xFF16171B);
-    const secondaryText = Color(0xFF475569);
+    final primaryText = isDark ? const Color(0xFFF1F5F9) : const Color(0xFF16171B);
+    final secondaryText = isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
     const violetAccent = Color(0xFF8B5CF6);
     const yellowAccent = Color(0xFFFFD166);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFC77DFF),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: isDark
-              ? const LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Color(0xFF23162C),
-                    Color(0xFF16171B),
-                  ],
-                )
-              : const LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Color(0xFFC77DFF), // Dreamy Violet
-                    Color(0xFFE0AAFF),
-                    Color(0xFFFAF5FF),
-                  ],
-                ),
-        ),
+      backgroundColor: isDark ? const Color(0xFF101418) : const Color(0xFFF8FAF9),
+      body: SafeArea(
         child: Stack(
           children: [
-            // Watermark Paw Prints
+            // Compact Back Pill
             Positioned(
-              top: -20,
-              right: -30,
-              child: Opacity(
-                opacity: 0.08,
-                child: Transform.rotate(
-                  angle: 0.35,
-                  child: const CanivuePawBoneLogo(
-                    size: 220,
-                    color: primaryText,
-                  ),
-                ),
-              ),
-            ),
-            Positioned(
-              bottom: 80,
-              left: -40,
-              child: Opacity(
-                opacity: 0.06,
-                child: Transform.rotate(
-                  angle: -0.28,
-                  child: const CanivuePawBoneLogo(
-                    size: 200,
-                    color: primaryText,
-                  ),
-                ),
-              ),
-            ),
-
-            SafeArea(
-              child: Stack(
-                children: [
-                  // Back Button Pill
-                  Positioned(
-                    top: 10,
-                    left: 16,
-                    child: GestureDetector(
-                      onTap: () => Navigator.of(context).pop(),
-                      child: Container(
-                        width: 44,
-                        height: 44,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: Colors.black.withValues(alpha: 0.06),
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.08),
-                              blurRadius: 12,
-                              offset: const Offset(0, 4),
-                            ),
-                          ],
-                        ),
-                        child: const Icon(
-                          Icons.arrow_back_rounded,
-                          size: 20,
-                          color: primaryText,
-                        ),
-                      ),
+              top: 8,
+              left: 14,
+              child: GestureDetector(
+                onTap: () => Navigator.of(context).pop(),
+                child: Container(
+                  width: 38,
+                  height: 38,
+                  decoration: BoxDecoration(
+                    color: isDark ? const Color(0xFF1C222A) : Colors.white,
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: isDark ? Colors.white12 : const Color(0xFFE2E8F0),
                     ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.04),
+                        blurRadius: 6,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
                   ),
+                  child: Icon(
+                    Icons.arrow_back_rounded,
+                    size: 18,
+                    color: primaryText,
+                  ),
+                ),
+              ),
+            ),
 
-                  Center(
-                    child: SingleChildScrollView(
-                      physics: const BouncingScrollPhysics(),
-                      padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 16),
-                      child: ConstrainedBox(
-                        constraints: const BoxConstraints(maxWidth: 460),
-                        child: Form(
-                          key: _formKey,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              const SizedBox(height: 38),
+            Center(
+              child: SingleChildScrollView(
+                physics: const ClampingScrollPhysics(),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 440),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        const SizedBox(height: 18),
 
-                              // Expressive Hero Avatar & Titles (Image 3 Style)
-                              const AuthHeroHeader(
-                                imageAsset: 'assets/images/onboarding/dog_slide_3.jpg',
-                                tileColor: yellowAccent,
-                                badgeText: 'Lost Your Bone?',
-                                badgeEmoji: '🦴',
-                                title: 'Forgot Password?',
-                                subtitle: "Don't fret! We'll help you recover your dog's records",
-                                titleColor: primaryText,
-                                subtitleColor: secondaryText,
-                              ),
-                              const SizedBox(height: 24),
+                        // Animated Corgi with Golden Key Mascot
+                        AuthHeroHeader(
+                          imageAsset: 'assets/images/auth/auth_dog_forgot.jpg',
+                          badgeText: 'Key Recovery',
+                          badgeEmoji: '🔑',
+                          title: 'Forgot Password?',
+                          subtitle: "We'll send an instant code to recover your dog's profile",
+                          titleColor: primaryText,
+                          subtitleColor: secondaryText,
+                          accentColor: violetAccent,
+                          avatarSize: 68,
+                        ),
+                        const SizedBox(height: 18),
 
-                              // Crisp White Form Card
-                              Container(
-                                padding: const EdgeInsets.all(24),
-                                decoration: BoxDecoration(
-                                  color: isDark ? const Color(0xFF1E252E) : Colors.white,
-                                  borderRadius: BorderRadius.circular(34),
-                                  border: Border.all(
-                                    color: isDark
-                                        ? Colors.white.withValues(alpha: 0.1)
-                                        : Colors.white,
-                                    width: 1.5,
-                                  ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: const Color(0xFF16171B).withValues(alpha: 0.09),
-                                      blurRadius: 32,
-                                      offset: const Offset(0, 12),
-                                    ),
-                                  ],
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                                  children: [
-                                    // Email Address Input
-                                    CustomTextField(
-                                      label: 'Account Email',
-                                      hintText: 'Enter your registered email',
-                                      prefixIcon: Icons.alternate_email_rounded,
-                                      controller: _emailController,
-                                      keyboardType: TextInputType.emailAddress,
-                                      focusAccentColor: violetAccent,
-                                      validator: (value) {
-                                        if (value == null || value.trim().isEmpty) {
-                                          return 'Please enter your email';
-                                        }
-                                        if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
-                                            .hasMatch(value.trim())) {
-                                          return 'Please enter a valid email';
-                                        }
-                                        return null;
-                                      },
-                                    ),
-                                    const SizedBox(height: 16),
-
-                                    // Helpful Reassurance Pill
-                                    Container(
-                                      padding: const EdgeInsets.all(12),
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xFFFAF5FF),
-                                        borderRadius: BorderRadius.circular(16),
-                                        border: Border.all(
-                                          color: violetAccent.withValues(alpha: 0.2),
-                                        ),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Container(
-                                            padding: const EdgeInsets.all(6),
-                                            decoration: const BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color: yellowAccent,
-                                            ),
-                                            child: const Icon(
-                                              Icons.key_rounded,
-                                              size: 14,
-                                              color: Color(0xFF16171B),
-                                            ),
-                                          ),
-                                          const SizedBox(width: 10),
-                                          Expanded(
-                                            child: Text(
-                                              "We'll send an instant 6-digit verification code to reset your credentials.",
-                                              style: GoogleFonts.plusJakartaSans(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w600,
-                                                color: secondaryText,
-                                                height: 1.35,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    const SizedBox(height: 22),
-
-                                    // Send Code Submit Button
-                                    SignatureAuthButton(
-                                      label: 'Send Recovery Code',
-                                      icon: Icons.arrow_forward_rounded,
-                                      accentColor: yellowAccent,
-                                      isLoading: _isLoading,
-                                      onTap: _handleSendCode,
-                                    ),
-                                  ],
-                                ),
-                              ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.08, end: 0),
-                              const SizedBox(height: 22),
-
-                              // Back to Sign In Link
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'Remember your password? ',
-                                    style: GoogleFonts.plusJakartaSans(
-                                      color: primaryText.withValues(alpha: 0.8),
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                  TextButton(
-                                    onPressed: () => Navigator.of(context).pop(),
-                                    style: TextButton.styleFrom(
-                                      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-                                      minimumSize: Size.zero,
-                                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                    ),
-                                    child: Text(
-                                      'Log In',
-                                      style: GoogleFonts.plusJakartaSans(
-                                        fontWeight: FontWeight.w900,
-                                        fontSize: 14,
-                                        color: primaryText,
-                                        decoration: TextDecoration.underline,
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                        // Crisp Form Card
+                        Container(
+                          padding: const EdgeInsets.all(22),
+                          decoration: BoxDecoration(
+                            color: isDark ? const Color(0xFF182029) : Colors.white,
+                            borderRadius: BorderRadius.circular(28),
+                            border: Border.all(
+                              color: isDark ? Colors.white10 : const Color(0xFFEBF0ED),
+                              width: 1.2,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: const Color(0xFF16171B).withValues(alpha: isDark ? 0.3 : 0.05),
+                                blurRadius: 24,
+                                offset: const Offset(0, 8),
                               ),
                             ],
                           ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              // Email Address Input
+                              CustomTextField(
+                                label: 'Registered Email',
+                                hintText: 'e.g. alex@canivue.com',
+                                prefixIcon: Icons.alternate_email_rounded,
+                                controller: _emailController,
+                                keyboardType: TextInputType.emailAddress,
+                                focusAccentColor: violetAccent,
+                                validator: (value) {
+                                  if (value == null || value.trim().isEmpty) {
+                                    return 'Please enter your email';
+                                  }
+                                  if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                                      .hasMatch(value.trim())) {
+                                    return 'Please enter a valid email';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 14),
+
+                              // Reassurance Pill
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
+                                decoration: BoxDecoration(
+                                  color: isDark ? const Color(0xFF221A30) : const Color(0xFFFAF5FF),
+                                  borderRadius: BorderRadius.circular(14),
+                                  border: Border.all(
+                                    color: violetAccent.withValues(alpha: 0.2),
+                                  ),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.all(5),
+                                      decoration: const BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: yellowAccent,
+                                      ),
+                                      child: const Icon(
+                                        Icons.security_rounded,
+                                        size: 13,
+                                        color: Color(0xFF16171B),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Expanded(
+                                      child: Text(
+                                        "Instant 6-digit verification code will be dispatched securely.",
+                                        style: GoogleFonts.plusJakartaSans(
+                                          fontSize: 11.5,
+                                          fontWeight: FontWeight.w600,
+                                          color: secondaryText,
+                                          height: 1.3,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 18),
+
+                              // Send Code Submit Button
+                              SignatureAuthButton(
+                                label: 'Send Recovery Code',
+                                icon: Icons.arrow_forward_rounded,
+                                accentColor: yellowAccent,
+                                isLoading: _isLoading,
+                                onTap: _handleSendCode,
+                              ),
+                            ],
+                          ),
+                        ).animate().fadeIn(delay: 150.ms).slideY(begin: 0.06, end: 0),
+                        const SizedBox(height: 16),
+
+                        // Back to Sign In Link
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Remember your password? ',
+                              style: GoogleFonts.plusJakartaSans(
+                                color: secondaryText,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(),
+                              style: TextButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                                minimumSize: Size.zero,
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              ),
+                              child: Text(
+                                'Log In',
+                                style: GoogleFonts.plusJakartaSans(
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: 13,
+                                  color: violetAccent,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
+                      ],
                     ),
                   ),
-                ],
+                ),
               ),
             ),
           ],
