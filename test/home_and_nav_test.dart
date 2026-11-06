@@ -161,7 +161,27 @@ void main() {
     expect(find.text('Find Vet'), findsOneWidget);
   });
 
-  testWidgets('FacebookTopAppBar renders brand logo, action buttons, and 5 iconic tabs', (tester) async {
+  testWidgets('FacebookTopAppBar renders brand logo and action buttons, and hides top navigation tabs by default', (tester) async {
+    await tester.pumpWidget(
+      ProviderScope(
+        child: MaterialApp(
+          home: Scaffold(
+            body: FacebookTopAppBar(
+              onSearchTap: () {},
+            ),
+          ),
+        ),
+      ),
+    );
+
+    expect(find.text('canivue'), findsOneWidget);
+    expect(find.byIcon(Icons.search_rounded), findsOneWidget);
+    // Top tabs are removed by default
+    expect(find.byIcon(Icons.home_rounded), findsNothing);
+    expect(find.byIcon(Icons.health_and_safety_outlined), findsNothing);
+  });
+
+  testWidgets('FacebookTopAppBar renders 5 iconic tabs when showTabs is explicitly enabled', (tester) async {
     int selectedTab = 0;
 
     await tester.pumpWidget(
@@ -171,6 +191,7 @@ void main() {
             body: StatefulBuilder(
               builder: (context, setState) {
                 return FacebookTopAppBar(
+                  showTabs: true,
                   selectedTabIndex: selectedTab,
                   onTabSelected: (index) {
                     setState(() => selectedTab = index);
@@ -188,7 +209,7 @@ void main() {
     expect(find.text('canivue'), findsOneWidget);
     expect(find.byIcon(Icons.search_rounded), findsOneWidget);
 
-    // Verify Facebook tabs exist
+    // Verify Facebook tabs exist when showTabs: true
     expect(find.byIcon(Icons.home_rounded), findsOneWidget);
     expect(find.byIcon(Icons.health_and_safety_outlined), findsOneWidget);
     expect(find.byIcon(Icons.pets_outlined), findsOneWidget);

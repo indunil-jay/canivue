@@ -101,17 +101,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           bottom: false,
           child: Column(
             children: [
-              // 1. Facebook-Style Top App Bar (Pinned Header)
+              // 1. Clean Top Header Bar (Branding & Quick Actions, No Top Navigation Tabs)
               FacebookTopAppBar(
-                selectedTabIndex: _facebookTabIndex,
-                onTabSelected: (index) {
-                  setState(() => _facebookTabIndex = index);
-                },
+                showTabs: false,
                 onSearchTap: () => _navigateToSearch(context),
                 onScannerTap: () => _navigateToScanner(context),
               ),
 
-              // 2. Active Tab Content Scroll View
+              // 2. Active Sanctuary Home Scroll View
               Expanded(
                 child: RefreshIndicator(
                   color: AppColors.primary,
@@ -119,27 +116,25 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   child: CustomScrollView(
                     physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
                     slivers: [
-                      // Search & Quick Filter Bar (on Home Overview tab)
-                      if (_facebookTabIndex == 0) ...[
-                        SliverToBoxAdapter(
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
-                            child: _buildSearchBar(context, isDark, a11y),
-                          ),
+                      // Search & Quick Filter Bar
+                      SliverToBoxAdapter(
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+                          child: _buildSearchBar(context, isDark, a11y),
                         ),
-                        SliverToBoxAdapter(
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 8, bottom: 8),
-                            child: _buildSegmentedFilterBar(isDark, a11y),
-                          ),
+                      ),
+                      SliverToBoxAdapter(
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 8, bottom: 8),
+                          child: _buildSegmentedFilterBar(isDark, a11y),
                         ),
-                      ],
+                      ),
 
-                      // Dynamic Tab Body
+                      // Sanctuary Overview Dashboard
                       SliverToBoxAdapter(
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                          child: _buildTabContent(context, ref, isDark, a11y),
+                          child: _buildHomeOverviewTab(context, ref, isDark, a11y),
                         ),
                       ),
 

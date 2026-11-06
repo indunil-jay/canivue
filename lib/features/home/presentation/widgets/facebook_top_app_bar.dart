@@ -21,18 +21,20 @@ import 'package:canivue/features/notifications/widgets/notification_badge_button
 class FacebookTopAppBar extends ConsumerWidget {
   const FacebookTopAppBar({
     super.key,
-    required this.selectedTabIndex,
-    required this.onTabSelected,
+    this.selectedTabIndex = 0,
+    this.onTabSelected,
     required this.onSearchTap,
-    required this.onScannerTap,
+    this.onScannerTap,
     this.badgeCount,
+    this.showTabs = false,
   });
 
   final int selectedTabIndex;
-  final ValueChanged<int> onTabSelected;
+  final ValueChanged<int>? onTabSelected;
   final VoidCallback onSearchTap;
-  final VoidCallback onScannerTap;
+  final VoidCallback? onScannerTap;
   final int? badgeCount;
+  final bool showTabs;
 
   static const List<_FacebookTabSpec> _tabs = [
     _FacebookTabSpec(
@@ -138,10 +140,11 @@ class FacebookTopAppBar extends ConsumerWidget {
               ),
             ),
 
-            // Row 2: Facebook-style Iconic Horizontal Tabs
-            SizedBox(
-              height: 48,
-              child: Row(
+            // Row 2: Optional Horizontal Navigation Tabs (hidden on Home)
+            if (showTabs && onTabSelected != null)
+              SizedBox(
+                height: 48,
+                child: Row(
                 children: List.generate(_tabs.length, (index) {
                   final tab = _tabs[index];
                   final isSelected = index == selectedTabIndex;
@@ -160,7 +163,7 @@ class FacebookTopAppBar extends ConsumerWidget {
                       child: InkWell(
                         onTap: () {
                           HapticFeedback.selectionClick();
-                          onTabSelected(index);
+                          onTabSelected?.call(index);
                         },
                         splashColor: activeColor.withValues(alpha: 0.12),
                         highlightColor: activeColor.withValues(alpha: 0.08),
