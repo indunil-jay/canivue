@@ -34,6 +34,7 @@ import 'package:canivue/features/pets/screens/pet_detail_screen.dart';
 import 'package:canivue/features/pets/screens/pet_list_screen.dart';
 import 'package:canivue/features/predictions/presentation/screens/prediction_history_screen.dart';
 import 'package:canivue/features/preventive_care/presentation/screens/preventive_care_screen.dart';
+import 'package:canivue/features/search/presentation/controllers/search_controller.dart';
 import 'package:canivue/features/search/presentation/screens/search_screen.dart';
 import 'package:canivue/features/vets/presentation/screens/appointments_screen.dart';
 import 'package:canivue/features/vets/presentation/screens/vet_discovery_screen.dart';
@@ -61,18 +62,13 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
-  int _facebookTabIndex = 0;
-  int _selectedFilterIndex = 0;
-  final List<String> _filters = ['Overview', 'Telemetry', 'Medical', 'Schedule'];
-
-  void _navigateToPets(BuildContext context) {
+  void _navigateToSearch(BuildContext context, {String? query, SearchScope? scope}) {
     HapticFeedback.lightImpact();
-    Navigator.of(context).push(MaterialPageRoute(builder: (_) => const PetListScreen()));
-  }
-
-  void _navigateToSearch(BuildContext context) {
-    HapticFeedback.lightImpact();
-    Navigator.of(context).push(MaterialPageRoute(builder: (_) => const SearchScreen()));
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => SearchScreen(initialQuery: query, initialScope: scope),
+      ),
+    );
   }
 
   void _navigateToScanner(BuildContext context, {Pet? pet, List<Pet>? pets}) {
@@ -101,10 +97,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           bottom: false,
           child: Column(
             children: [
-              // 1. Clean Top Header Bar (Branding & Quick Actions, No Top Navigation Tabs)
+              // 1. Clean Top Header Bar (Branding & Notification Badge - No Duplicate Top Search Button)
               FacebookTopAppBar(
                 showTabs: false,
-                onSearchTap: () => _navigateToSearch(context),
+                showSearchAction: false,
                 onScannerTap: () => _navigateToScanner(context),
               ),
 
@@ -147,27 +143,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  Widget _buildTabContent(
-    BuildContext context,
-    WidgetRef ref,
-    bool isDark,
-    AccessibilityState a11y,
-  ) {
-    switch (_facebookTabIndex) {
-      case 1:
-        return _buildAiHealthTab(context, ref, isDark, a11y);
-      case 2:
-        return _buildPetsTab(context, ref, isDark, a11y);
-      case 3:
-        return _buildVetCareTab(context, ref, isDark, a11y);
-      case 4:
-        return _buildCommunityTab(context, ref, isDark, a11y);
-      case 0:
-      default:
-        return _buildHomeOverviewTab(context, ref, isDark, a11y);
-    }
-  }
-
   /// Tab 0: Home Overview & Universal Main Feature Service Hub
   Widget _buildHomeOverviewTab(
     BuildContext context,
@@ -199,577 +174,158 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  /// Tab 1: Dedicated AI Health & Vision Scanner
-  Widget _buildAiHealthTab(
-    BuildContext context,
-    WidgetRef ref,
-    bool isDark,
-    AccessibilityState a11y,
-  ) {
-    final activeDog = ref.watch(activeDogProvider).value ?? Pet.samplePets.first;
-    final dogs = ref.watch(dogsProvider).value ?? Pet.samplePets;
-
+  Widget _buildSearchBar(BuildContext context, bool isDark, AccessibilityState a11y) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // AI Vision Scan Hero Banner
-        Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [Color(0xFF0F766E), Color(0xFF14B8A6), Color(0xFF0D9488)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            borderRadius: BorderRadius.circular(28),
-            boxShadow: [
-              BoxShadow(
-                color: const Color(0xFF0F766E).withValues(alpha: 0.35),
-                blurRadius: 18,
-                offset: const Offset(0, 6),
-              ),
-            ],
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.2),
-                      borderRadius: BorderRadius.circular(14),
+        Hero(
+          tag: 'global_search_bar_hero',
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () => _navigateToSearch(context),
+              borderRadius: BorderRadius.circular(24),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                decoration: BoxDecoration(
+                  color: isDark ? const Color(0xFF1B202C) : Colors.white,
+                  borderRadius: BorderRadius.circular(24),
+                  border: Border.all(
+                    color: a11y.highContrast
+                        ? (isDark ? Colors.white : Colors.black)
+                        : (isDark ? const Color(0x332DD4BF) : const Color(0xFFECE6DC)),
+                    width: a11y.highContrast ? 2.0 : 1.2,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: isDark ? 0.25 : 0.04),
+                      blurRadius: 12,
+                      offset: const Offset(0, 3),
                     ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(Icons.auto_awesome_rounded, color: Colors.white, size: 14),
-                        const SizedBox(width: 6),
-                        Text(
-                          'Multimodal AI Engine Active',
-                          style: GoogleFonts.plusJakartaSans(
-                            color: Colors.white,
-                            fontSize: 11.5,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 14),
-              Text(
-                'Instant Canine Vision Scan',
-                style: GoogleFonts.plusJakartaSans(
-                  color: Colors.white,
-                  fontSize: 22 * a11y.textScaleFactor,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: -0.5,
+                  ],
                 ),
-              ),
-              const SizedBox(height: 6),
-              Text(
-                'Point camera at eyes, skin, coat, mouth or posture. Clinical visual AI detects symptoms and flags early risks.',
-                style: GoogleFonts.plusJakartaSans(
-                  color: Colors.white.withValues(alpha: 0.9),
-                  fontSize: 13,
-                  height: 1.4,
-                ),
-              ),
-              const SizedBox(height: 18),
-              SizedBox(
-                width: double.infinity,
-                height: 48,
-                child: ElevatedButton.icon(
-                  onPressed: () => _navigateToScanner(context, pet: activeDog, pets: dogs),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: const Color(0xFF0F766E),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                    elevation: 0,
-                  ),
-                  icon: const Icon(Icons.document_scanner_rounded, size: 20),
-                  label: Text(
-                    'Launch AI Scanner',
-                    style: GoogleFonts.plusJakartaSans(
-                      fontSize: 14.5,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-
-        const SizedBox(height: 24),
-
-        // Quick Clinical Symptom Triage Checkers
-        Text(
-          'Targeted Visual Checkers',
-          style: GoogleFonts.plusJakartaSans(
-            fontSize: 17 * a11y.textScaleFactor,
-            fontWeight: FontWeight.w800,
-            color: isDark ? Colors.white : const Color(0xFF181A20),
-          ),
-        ),
-        const SizedBox(height: 12),
-
-        GridView.count(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          crossAxisCount: 2,
-          crossAxisSpacing: 12,
-          mainAxisSpacing: 12,
-          childAspectRatio: 1.35,
-          children: [
-            _buildSymptomCard(
-              title: 'Ocular & Eyes',
-              subtitle: 'Discharge, cloudiness, redness',
-              icon: Icons.remove_red_eye_rounded,
-              color: const Color(0xFF0284C7),
-              onTap: () => _navigateToScanner(context, pet: activeDog, pets: dogs),
-              isDark: isDark,
-            ),
-            _buildSymptomCard(
-              title: 'Dermal & Coat',
-              subtitle: 'Alopecia, hotspots, lesions',
-              icon: Icons.pets_rounded,
-              color: const Color(0xFFD97706),
-              onTap: () => _navigateToScanner(context, pet: activeDog, pets: dogs),
-              isDark: isDark,
-            ),
-            _buildSymptomCard(
-              title: 'Oral & Dental',
-              subtitle: 'Tartar, inflamed gums, teeth',
-              icon: Icons.sentiment_satisfied_alt_rounded,
-              color: const Color(0xFF7C3AED),
-              onTap: () => _navigateToScanner(context, pet: activeDog, pets: dogs),
-              isDark: isDark,
-            ),
-            _buildSymptomCard(
-              title: 'Gait & Posture',
-              subtitle: 'Stiffness, limping, spine',
-              icon: Icons.directions_walk_rounded,
-              color: const Color(0xFF059669),
-              onTap: () => _navigateToScanner(context, pet: activeDog, pets: dogs),
-              isDark: isDark,
-            ),
-          ],
-        ),
-
-        const SizedBox(height: 24),
-
-        // Prediction History Shortcut
-        ListTile(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(18),
-            side: BorderSide(color: isDark ? const Color(0x22FFFFFF) : const Color(0xFFE2E8F0)),
-          ),
-          tileColor: isDark ? const Color(0xFF1E2430) : Colors.white,
-          leading: Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: const Color(0xFF0F766E).withValues(alpha: 0.15),
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(Icons.history_rounded, color: Color(0xFF0F766E)),
-          ),
-          title: Text(
-            'View Past Health Checks & History',
-            style: GoogleFonts.plusJakartaSans(
-              fontWeight: FontWeight.w700,
-              fontSize: 14.5,
-              color: isDark ? Colors.white : const Color(0xFF181A20),
-            ),
-          ),
-          subtitle: Text(
-            'Timeline of previous scans, confidence scores & flags',
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 11.5,
-              color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
-            ),
-          ),
-          trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 14),
-          onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => PredictionHistoryScreen(dogId: activeDog.id, dogName: activeDog.name),
-              ),
-            );
-          },
-        ),
-      ],
-    );
-  }
-
-  /// Tab 2: Pets & Profiles Hub
-  Widget _buildPetsTab(
-    BuildContext context,
-    WidgetRef ref,
-    bool isDark,
-    AccessibilityState a11y,
-  ) {
-    final dogsAsync = ref.watch(dogsProvider);
-    final activeDog = ref.watch(activeDogProvider).value;
-    final dogs = dogsAsync.value ?? Pet.samplePets;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              'My Registered Dogs',
-              style: GoogleFonts.plusJakartaSans(
-                fontWeight: FontWeight.w800,
-                fontSize: 18 * a11y.textScaleFactor,
-                color: isDark ? Colors.white : const Color(0xFF181A20),
-              ),
-            ),
-            ElevatedButton.icon(
-              onPressed: () async {
-                HapticFeedback.lightImpact();
-                final newPet = await Navigator.of(context).push<Pet>(
-                  MaterialPageRoute(builder: (_) => const AddEditPetScreen()),
-                );
-                if (newPet != null) {
-                  await ref.read(dogsProvider.notifier).addDog(newPet);
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-              ),
-              icon: const Icon(Icons.add_rounded, size: 18),
-              label: const Text('Add Dog'),
-            ),
-          ],
-        ),
-        const SizedBox(height: 14),
-
-        // Dogs List
-        ListView.separated(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: dogs.length,
-          separatorBuilder: (_, _) => const SizedBox(height: 12),
-          itemBuilder: (context, index) {
-            final dog = dogs[index];
-            final isActive = dog.id == activeDog?.id;
-
-            return Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: isDark ? const Color(0xFF1E2430) : Colors.white,
-                borderRadius: BorderRadius.circular(22),
-                border: Border.all(
-                  color: isActive
-                      ? const Color(0xFFFED25E)
-                      : (isDark ? const Color(0x22FFFFFF) : const Color(0xFFE2E8F0)),
-                  width: isActive ? 2.0 : 1.0,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
-                    blurRadius: 10,
-                    offset: const Offset(0, 3),
-                  ),
-                ],
-              ),
-              child: Row(
-                children: [
-                  Container(
-                    height: 56,
-                    width: 56,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: isActive ? const Color(0xFFFED25E) : Colors.transparent,
-                        width: 2,
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: isDark ? const Color(0x2214B8A6) : AppColors.pastelMint,
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      color: const Color(0xFFFED25E).withValues(alpha: 0.2),
-                      image: dog.assetImagePath != null && dog.assetImagePath!.isNotEmpty
-                          ? DecorationImage(
-                              image: AssetImage(dog.assetImagePath!),
-                              fit: BoxFit.cover,
-                            )
-                          : null,
+                      child: Icon(
+                        Icons.search_rounded,
+                        color: isDark ? const Color(0xFF2DD4BF) : const Color(0xFF0F766E),
+                        size: 18,
+                      ),
                     ),
-                    child: dog.assetImagePath == null || dog.assetImagePath!.isEmpty
-                        ? Center(child: Text(dog.avatarEmoji.isNotEmpty ? dog.avatarEmoji : '🐕', style: const TextStyle(fontSize: 24)))
-                        : null,
-                  ),
-                  const SizedBox(width: 14),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              dog.name,
-                              style: GoogleFonts.plusJakartaSans(
-                                fontWeight: FontWeight.w800,
-                                fontSize: 16,
-                                color: isDark ? Colors.white : const Color(0xFF181A20),
-                              ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'Search Canivue Hub',
+                            style: GoogleFonts.plusJakartaSans(
+                              color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                              fontSize: 13.5 * a11y.textScaleFactor,
+                              fontWeight: FontWeight.w700,
                             ),
-                            if (isActive) ...[
-                              const SizedBox(width: 6),
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFF10B981).withValues(alpha: 0.15),
-                                  borderRadius: BorderRadius.circular(6),
-                                ),
-                                child: Text(
-                                  'ACTIVE',
-                                  style: GoogleFonts.plusJakartaSans(
-                                    fontSize: 9.5,
-                                    fontWeight: FontWeight.w800,
-                                    color: const Color(0xFF10B981),
-                                  ),
-                                ),
-                              ),
-                            ],
+                          ),
+                          Text(
+                            'Pets, clinicians, symptoms, groups...',
+                            style: GoogleFonts.plusJakartaSans(
+                              color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF78716C),
+                              fontSize: 11.5 * a11y.textScaleFactor,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () => _navigateToSearch(context, scope: SearchScope.diseaseGroups),
+                      borderRadius: BorderRadius.circular(12),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFFED25E),
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color(0xFFFED25E).withValues(alpha: 0.35),
+                              blurRadius: 6,
+                              offset: const Offset(0, 2),
+                            ),
                           ],
                         ),
-                        const SizedBox(height: 2),
-                        Text(
-                          '${dog.breed} • ${dog.ageYears} yrs • ${dog.weightKg.toStringAsFixed(1)} kg',
-                          style: GoogleFonts.plusJakartaSans(
-                            fontSize: 12,
-                            color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.arrow_forward_ios_rounded, size: 16),
-                    onPressed: () {
-                      ref.read(activeDogIdProvider.notifier).state = dog.id;
-                      Navigator.of(context).push(
-                        MaterialPageRoute(builder: (_) => PetDetailScreen(pet: dog)),
-                      );
-                    },
-                    tooltip: 'View ${dog.name} Profile',
-                  ),
-                ],
-              ),
-            );
-          },
-        ),
-      ],
-    );
-  }
-
-  /// Tab 3: Vet Care & Discovery Hub
-  Widget _buildVetCareTab(
-    BuildContext context,
-    WidgetRef ref,
-    bool isDark,
-    AccessibilityState a11y,
-  ) {
-    final activeDog = ref.watch(activeDogProvider).value ?? Pet.samplePets.first;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Clinic Search Hero
-        Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [Color(0xFF1E3A8A), Color(0xFF2563EB)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            borderRadius: BorderRadius.circular(26),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Veterinary Clinics & Consults',
-                style: GoogleFonts.plusJakartaSans(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w900,
-                  fontSize: 20 * a11y.textScaleFactor,
-                ),
-              ),
-              const SizedBox(height: 6),
-              Text(
-                'Book trusted clinic checkups, specialist reviews & emergency consultations.',
-                style: GoogleFonts.plusJakartaSans(
-                  color: Colors.white.withValues(alpha: 0.9),
-                  fontSize: 13,
-                ),
-              ),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  Expanded(
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => VetDiscoveryScreen(
-                              dogId: activeDog.id,
-                              dogName: activeDog.name,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(
+                              Icons.tune_rounded,
+                              size: 14,
+                              color: Color(0xFF181A20),
                             ),
-                          ),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        foregroundColor: const Color(0xFF1E3A8A),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                      ),
-                      icon: const Icon(Icons.search_rounded, size: 18),
-                      label: const Text('Find Nearby Vets'),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => AppointmentsScreen(
-                            dogId: activeDog.id,
-                            dogName: activeDog.name,
-                          ),
+                            const SizedBox(width: 4),
+                            Text(
+                              'Filter',
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 11.5,
+                                fontWeight: FontWeight.w800,
+                                color: const Color(0xFF181A20),
+                              ),
+                            ),
+                          ],
                         ),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white.withValues(alpha: 0.2),
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
-                    ),
-                    icon: const Icon(Icons.calendar_month_rounded, size: 18),
-                    label: const Text('My Bookings'),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-
-        const SizedBox(height: 24),
-
-        // Emergency Veterinary Hotline Banner
-        Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: const Color(0xFFFEF2F2),
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: const Color(0xFFFCA5A5)),
-          ),
-          child: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: const BoxDecoration(
-                  color: Color(0xFFEF4444),
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(Icons.emergency_rounded, color: Colors.white, size: 22),
-              ),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '24/7 Canine Emergency Triage',
-                      style: GoogleFonts.plusJakartaSans(
-                        fontWeight: FontWeight.w800,
-                        fontSize: 14,
-                        color: const Color(0xFF991B1B),
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      'Hotline: 1-800-PET-911 • Poison Control & Urgent Care',
-                      style: GoogleFonts.plusJakartaSans(
-                        fontSize: 11.5,
-                        color: const Color(0xFFB91C1C),
                       ),
                     ),
                   ],
                 ),
               ),
-            ],
+            ),
           ),
         ),
-      ],
-    );
-  }
-
-  /// Tab 4: Community & Social Hub
-  Widget _buildCommunityTab(
-    BuildContext context,
-    WidgetRef ref,
-    bool isDark,
-    AccessibilityState a11y,
-  ) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [Color(0xFF7C3AED), Color(0xFFA855F7)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            borderRadius: BorderRadius.circular(26),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+        const SizedBox(height: 10),
+        // Quick Trending Searches under the search bar
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          physics: const BouncingScrollPhysics(),
+          child: Row(
             children: [
-              Text(
-                'Canivue Pet Parent Community',
-                style: GoogleFonts.plusJakartaSans(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w900,
-                  fontSize: 20 * a11y.textScaleFactor,
-                ),
+              _homeSearchPill(
+                emoji: '🐾',
+                label: 'Skin Allergies',
+                onTap: () => _navigateToSearch(context, query: 'Skin Allergies'),
+                isDark: isDark,
               ),
-              const SizedBox(height: 6),
-              Text(
-                'Connect with fellow dog parents, share recovery stories & get peer health tips.',
-                style: GoogleFonts.plusJakartaSans(
-                  color: Colors.white.withValues(alpha: 0.9),
-                  fontSize: 13,
-                ),
+              const SizedBox(width: 8),
+              _homeSearchPill(
+                emoji: '🦴',
+                label: 'Arthritis',
+                onTap: () => _navigateToSearch(context, query: 'Arthritis'),
+                isDark: isDark,
               ),
-              const SizedBox(height: 16),
-              ElevatedButton.icon(
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => const CommunityScreen()),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: const Color(0xFF7C3AED),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                  padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
-                ),
-                icon: const Icon(Icons.forum_rounded, size: 18),
-                label: const Text('Open Community Feed'),
+              const SizedBox(width: 8),
+              _homeSearchPill(
+                emoji: '🩺',
+                label: 'Dr. Amara Osei',
+                onTap: () => _navigateToSearch(context, query: 'Dr. Amara Osei'),
+                isDark: isDark,
+              ),
+              const SizedBox(width: 8),
+              _homeSearchPill(
+                emoji: '🩸',
+                label: 'Diabetes',
+                onTap: () => _navigateToSearch(context, query: 'Diabetes'),
+                isDark: isDark,
+              ),
+              const SizedBox(width: 8),
+              _homeSearchPill(
+                emoji: '🥗',
+                label: 'Weight Loss',
+                onTap: () => _navigateToSearch(context, query: 'Weight Loss'),
+                isDark: isDark,
               ),
             ],
           ),
@@ -778,204 +334,51 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  Widget _buildSearchBar(BuildContext context, bool isDark, AccessibilityState a11y) {
-    return InkWell(
-      onTap: () => _navigateToSearch(context),
-      borderRadius: BorderRadius.circular(24),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF1B202C) : Colors.white,
-          borderRadius: BorderRadius.circular(24),
-          border: Border.all(
-            color: a11y.highContrast
-                ? (isDark ? Colors.white : Colors.black)
-                : (isDark ? const Color(0x332DD4BF) : const Color(0xFFECE6DC)),
-            width: a11y.highContrast ? 2.0 : 1.2,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: isDark ? 0.25 : 0.04),
-              blurRadius: 12,
-              offset: const Offset(0, 3),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                color: isDark ? const Color(0x2214B8A6) : AppColors.pastelMint,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Icon(
-                Icons.search_rounded,
-                color: isDark ? const Color(0xFF2DD4BF) : const Color(0xFF0F766E),
-                size: 18,
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    'Search Canivue Hub',
-                    style: GoogleFonts.plusJakartaSans(
-                      color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
-                      fontSize: 13.5 * a11y.textScaleFactor,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  Text(
-                    'Pets, clinicians, symptoms, groups...',
-                    style: GoogleFonts.plusJakartaSans(
-                      color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF78716C),
-                      fontSize: 11.5 * a11y.textScaleFactor,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-              decoration: BoxDecoration(
-                color: const Color(0xFFFED25E),
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xFFFED25E).withValues(alpha: 0.35),
-                    blurRadius: 6,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(
-                    Icons.tune_rounded,
-                    size: 14,
-                    color: Color(0xFF181A20),
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    'Filter',
-                    style: GoogleFonts.plusJakartaSans(
-                      fontSize: 11.5,
-                      fontWeight: FontWeight.w800,
-                      color: const Color(0xFF181A20),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSegmentedFilterBar(bool isDark, AccessibilityState a11y) {
-    return SizedBox(
-      height: 38,
-      child: ListView.separated(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        scrollDirection: Axis.horizontal,
-        physics: const BouncingScrollPhysics(),
-        itemCount: _filters.length,
-        separatorBuilder: (_, _) => const SizedBox(width: 10),
-        itemBuilder: (context, index) {
-          final isSelected = index == _selectedFilterIndex;
-          final title = _filters[index];
-
-          return GestureDetector(
-            onTap: () {
-              HapticFeedback.selectionClick();
-              setState(() => _selectedFilterIndex = index);
-            },
-            child: AnimatedContainer(
-              duration: a11y.reduceMotion ? Duration.zero : const Duration(milliseconds: 200),
-              curve: Curves.easeOutCubic,
-              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
-              decoration: BoxDecoration(
-                color: isSelected
-                    ? (isDark ? const Color(0xFF2DD4BF) : const Color(0xFF181A20))
-                    : (isDark ? const Color(0x1AFFFFFF) : Colors.white),
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                  color: isSelected
-                      ? Colors.transparent
-                      : (isDark ? const Color(0x22FFFFFF) : const Color(0xFFECE6DC)),
-                ),
-                boxShadow: isSelected
-                    ? [
-                        BoxShadow(
-                          color: (isDark ? const Color(0xFF2DD4BF) : const Color(0xFF181A20))
-                              .withValues(alpha: 0.25),
-                          blurRadius: 8,
-                          offset: const Offset(0, 3),
-                        ),
-                      ]
-                    : null,
-              ),
-              child: Center(
-                child: Text(
-                  title,
-                  style: GoogleFonts.plusJakartaSans(
-                    fontSize: 12.5,
-                    fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
-                    color: isSelected
-                        ? (isDark ? const Color(0xFF181A20) : Colors.white)
-                        : (isDark ? const Color(0xFF94A3B8) : const Color(0xFF57534E)),
-                  ),
-                ),
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildSymptomCard({
-    required String title,
-    required String subtitle,
-    required IconData icon,
-    required Color color,
+  Widget _homeSearchPill({
+    required String emoji,
+    required String label,
     required VoidCallback onTap,
     required bool isDark,
   }) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(18),
-      child: Container(
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF1E2430) : Colors.white,
-          borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: isDark ? const Color(0x22FFFFFF) : const Color(0xFFE2E8F0)),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, color: color, size: 24),
-            const Spacer(),
-            Text(
-              title,
-              style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w700, fontSize: 13),
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () {
+          HapticFeedback.lightImpact();
+          onTap();
+        },
+        borderRadius: BorderRadius.circular(16),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 6),
+          decoration: BoxDecoration(
+            color: isDark ? const Color(0xFF1F2430) : Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: isDark ? const Color(0x22FFFFFF) : const Color(0xFFE2E8F0),
             ),
-            Text(
-              subtitle,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: GoogleFonts.plusJakartaSans(fontSize: 10, color: const Color(0xFF64748B)),
-            ),
-          ],
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: isDark ? 0.15 : 0.02),
+                blurRadius: 4,
+                offset: const Offset(0, 1),
+              ),
+            ],
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(emoji, style: const TextStyle(fontSize: 12)),
+              const SizedBox(width: 5),
+              Text(
+                label,
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 11.5,
+                  fontWeight: FontWeight.w600,
+                  color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

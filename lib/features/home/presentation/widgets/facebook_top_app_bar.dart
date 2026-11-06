@@ -23,18 +23,20 @@ class FacebookTopAppBar extends ConsumerWidget {
     super.key,
     this.selectedTabIndex = 0,
     this.onTabSelected,
-    required this.onSearchTap,
+    this.onSearchTap,
     this.onScannerTap,
     this.badgeCount,
     this.showTabs = false,
+    this.showSearchAction = true,
   });
 
   final int selectedTabIndex;
   final ValueChanged<int>? onTabSelected;
-  final VoidCallback onSearchTap;
+  final VoidCallback? onSearchTap;
   final VoidCallback? onScannerTap;
   final int? badgeCount;
   final bool showTabs;
+  final bool showSearchAction;
 
   static const List<_FacebookTabSpec> _tabs = [
     _FacebookTabSpec(
@@ -124,16 +126,18 @@ class FacebookTopAppBar extends ConsumerWidget {
 
                   const Spacer(),
 
-                  // Action buttons: Search & Notifications
-                  _buildCircleActionButton(
-                    icon: Icons.search_rounded,
-                    tooltip: 'Search dogs, vets, records',
-                    semanticsLabel: 'Search all services and records',
-                    onTap: onSearchTap,
-                    isDark: isDark,
-                    a11y: a11y,
-                  ),
-                  const SizedBox(width: 8),
+                  // Action buttons: Optional Search & Notifications
+                  if (showSearchAction && onSearchTap != null) ...[
+                    _buildCircleActionButton(
+                      icon: Icons.search_rounded,
+                      tooltip: 'Search dogs, vets, records',
+                      semanticsLabel: 'Search all services and records',
+                      onTap: onSearchTap!,
+                      isDark: isDark,
+                      a11y: a11y,
+                    ),
+                    const SizedBox(width: 8),
+                  ],
 
                   const NotificationBadgeButton(),
                 ],

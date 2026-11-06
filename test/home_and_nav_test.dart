@@ -181,6 +181,23 @@ void main() {
     expect(find.byIcon(Icons.health_and_safety_outlined), findsNothing);
   });
 
+  testWidgets('FacebookTopAppBar hides duplicate search action button when showSearchAction is false', (tester) async {
+    await tester.pumpWidget(
+      const ProviderScope(
+        child: MaterialApp(
+          home: Scaffold(
+            body: FacebookTopAppBar(
+              showSearchAction: false,
+            ),
+          ),
+        ),
+      ),
+    );
+
+    expect(find.text('canivue'), findsOneWidget);
+    expect(find.byIcon(Icons.search_rounded), findsNothing);
+  });
+
   testWidgets('FacebookTopAppBar renders 5 iconic tabs when showTabs is explicitly enabled', (tester) async {
     int selectedTab = 0;
 

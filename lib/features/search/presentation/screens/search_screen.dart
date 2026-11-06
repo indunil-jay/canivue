@@ -131,30 +131,34 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
                     // Interactive Search Bar Input
                     Expanded(
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 200),
-                        height: 48,
-                        padding: const EdgeInsets.symmetric(horizontal: 14),
-                        decoration: BoxDecoration(
-                          color: isDark ? AppColors.darkCard : Colors.white,
-                          borderRadius: BorderRadius.circular(24),
-                          border: Border.all(
-                            color: _isFocused
-                                ? (isDark ? const Color(0xFF2DD4BF) : const Color(0xFF0F766E))
-                                : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
-                            width: _isFocused ? 1.8 : 1.2,
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: _isFocused
-                                  ? const Color(0xFF0F766E).withValues(alpha: isDark ? 0.3 : 0.12)
-                                  : Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
-                              blurRadius: _isFocused ? 14 : 8,
-                              offset: const Offset(0, 3),
+                      child: Hero(
+                        tag: 'global_search_bar_hero',
+                        child: Material(
+                          color: Colors.transparent,
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 200),
+                            height: 48,
+                            padding: const EdgeInsets.symmetric(horizontal: 14),
+                            decoration: BoxDecoration(
+                              color: isDark ? AppColors.darkCard : Colors.white,
+                              borderRadius: BorderRadius.circular(24),
+                              border: Border.all(
+                                color: _isFocused
+                                    ? (isDark ? const Color(0xFF2DD4BF) : const Color(0xFF0F766E))
+                                    : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
+                                width: _isFocused ? 1.8 : 1.2,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: _isFocused
+                                      ? const Color(0xFF0F766E).withValues(alpha: isDark ? 0.3 : 0.12)
+                                      : Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
+                                  blurRadius: _isFocused ? 14 : 8,
+                                  offset: const Offset(0, 3),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                        child: Row(
+                            child: Row(
                           children: [
                             Icon(
                               Icons.search_rounded,
@@ -212,9 +216,11 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                         ),
                       ),
                     ),
-                  ],
+                  ),
                 ),
-              ),
+              ],
+            ),
+          ),
 
               // 2. Horizontal Scope Filter Pills (All, Groups, Clinicians, Dogs, Feed)
               if (query.trim().isNotEmpty)
