@@ -8,11 +8,7 @@ import 'package:canivue/core/design_system/components/skeleton_loader.dart';
 import 'package:canivue/core/design_system/tokens/tokens.dart';
 import 'package:canivue/core/widgets/ambient_paw_backdrop.dart';
 import 'package:canivue/core/widgets/app_feedback.dart';
-import 'package:canivue/core/widgets/luxury_biometric_ring.dart';
 import 'package:canivue/core/widgets/luxury_stat_card.dart';
-import 'package:canivue/features/auth/presentation/controllers/auth_controller.dart';
-import 'package:canivue/features/community/presentation/screens/community_screen.dart';
-import 'package:canivue/features/devices/presentation/screens/device_management_screen.dart';
 import 'package:canivue/features/health_check/screens/health_check_capture_screen.dart';
 import 'package:canivue/features/home/domain/dashboard_summary.dart';
 import 'package:canivue/features/home/presentation/controllers/dashboard_controller.dart';
@@ -22,16 +18,10 @@ import 'package:canivue/features/home/presentation/widgets/appointment_card.dart
 import 'package:canivue/features/home/presentation/widgets/care_reminders_section.dart';
 import 'package:canivue/features/home/presentation/widgets/device_status_chip.dart';
 import 'package:canivue/features/home/presentation/widgets/facebook_top_app_bar.dart';
-import 'package:canivue/features/home/presentation/widgets/home_category_pills.dart';
 import 'package:canivue/features/home/presentation/widgets/home_feature_service_hub.dart';
 import 'package:canivue/features/home/presentation/widgets/home_hero_pet_card.dart';
-import 'package:canivue/features/home/presentation/widgets/home_quick_action_tiles.dart';
-import 'package:canivue/features/nutrition/presentation/screens/nutrition_screen.dart';
 import 'package:canivue/features/pets/models/pet_model.dart';
 import 'package:canivue/features/pets/presentation/controllers/dogs_controller.dart';
-import 'package:canivue/features/pets/screens/add_edit_pet_screen.dart';
-import 'package:canivue/features/pets/screens/pet_detail_screen.dart';
-import 'package:canivue/features/pets/screens/pet_list_screen.dart';
 import 'package:canivue/features/predictions/presentation/screens/prediction_history_screen.dart';
 import 'package:canivue/features/preventive_care/presentation/screens/preventive_care_screen.dart';
 import 'package:canivue/features/search/presentation/controllers/search_controller.dart';
@@ -410,23 +400,9 @@ class _DashboardOverviewContent extends ConsumerWidget {
     );
   }
 
-  String _getDisplayName(WidgetRef ref) {
-    final user = ref.watch(authControllerProvider);
-    if (user?.name != null && user!.name!.isNotEmpty) {
-      return user.name!;
-    }
-    final email = user?.email ?? 'user@example.com';
-    final emailPrefix = email.split('@').first;
-    if (emailPrefix.isNotEmpty) {
-      return emailPrefix[0].toUpperCase() + emailPrefix.substring(1);
-    }
-    return 'Pet Parent';
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final summaryAsync = ref.watch(dashboardSummaryProvider((id: effectiveDog.id, name: effectiveDog.name)));
-    final displayName = _getDisplayName(ref);
 
     return summaryAsync.when(
       loading: () => const _DashboardSkeleton(),
@@ -437,50 +413,6 @@ class _DashboardOverviewContent extends ConsumerWidget {
       data: (summary) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Greeting Row
-          Padding(
-            padding: const EdgeInsets.only(bottom: 14),
-            child: Row(
-              children: [
-                Container(
-                  height: 42,
-                  width: 42,
-                  decoration: BoxDecoration(
-                    color: isDark ? const Color(0xFF242A38) : Colors.white,
-                    shape: BoxShape.circle,
-                    border: Border.all(color: const Color(0xFFFED25E), width: 2),
-                  ),
-                  child: const Center(child: Text('🐶', style: TextStyle(fontSize: 20))),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Hello, $displayName 👋',
-                        style: GoogleFonts.plusJakartaSans(
-                          fontWeight: FontWeight.w800,
-                          fontSize: 17 * a11y.textScaleFactor,
-                          color: isDark ? Colors.white : const Color(0xFF181A20),
-                          letterSpacing: -0.3,
-                        ),
-                      ),
-                      Text(
-                        'Good pets make a great life!',
-                        style: GoogleFonts.plusJakartaSans(
-                          color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-
           // 1. HERO SPOTLIGHT: Instant Multimodal Canine AI Health Scan
           _buildAiHeroSpotlight(context, isDark),
 
