@@ -164,7 +164,7 @@ class AccessibilityBottomSheet extends ConsumerWidget {
                         ),
                       ),
                       Text(
-                        'Tailor Canive for your visual & motor preferences',
+                        'Tailor Canivue for your visual & motor preferences',
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 12.5,
                           color: textMuted,

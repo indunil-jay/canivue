@@ -107,44 +107,22 @@ class FacebookTopAppBar extends ConsumerWidget {
                   Semantics(
                     header: true,
                     label: 'Canivue Pet Health App',
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          'canive',
-                          style: GoogleFonts.plusJakartaSans(
-                            fontSize: 27,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: -1.2,
-                            color: a11y.highContrast
-                                ? (isDark ? const Color(0xFF2DD4BF) : const Color(0xFF0F766E))
-                                : (isDark ? Colors.white : const Color(0xFF0F766E)),
-                          ),
-                        ),
-                        const SizedBox(width: 4),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFFED25E),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Text(
-                            'HUB',
-                            style: GoogleFonts.plusJakartaSans(
-                              fontSize: 9.5,
-                              fontWeight: FontWeight.w900,
-                              color: const Color(0xFF181A20),
-                              letterSpacing: 0.5,
-                            ),
-                          ),
-                        ),
-                      ],
+                    child: Text(
+                      'canivue',
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 27,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: -1.2,
+                        color: a11y.highContrast
+                            ? (isDark ? const Color(0xFF2DD4BF) : const Color(0xFF0F766E))
+                            : (isDark ? Colors.white : const Color(0xFF0F766E)),
+                      ),
                     ),
                   ),
 
                   const Spacer(),
 
-                  // Facebook-style circular action buttons
+                  // Action buttons: Search & Notifications
                   _buildCircleActionButton(
                     icon: Icons.search_rounded,
                     tooltip: 'Search dogs, vets, records',
@@ -155,30 +133,7 @@ class FacebookTopAppBar extends ConsumerWidget {
                   ),
                   const SizedBox(width: 8),
 
-                  _buildCircleActionButton(
-                    icon: Icons.add_a_photo_rounded,
-                    tooltip: 'Launch AI Health Scanner',
-                    semanticsLabel: 'Open AI Vision camera scanner',
-                    highlightColor: const Color(0xFF10B981),
-                    onTap: onScannerTap,
-                    isDark: isDark,
-                    a11y: a11y,
-                  ),
-                  const SizedBox(width: 8),
-
                   const NotificationBadgeButton(),
-                  const SizedBox(width: 8),
-
-                  // Accessibility button (Universal quick tools)
-                  _buildCircleActionButton(
-                    icon: Icons.accessibility_new_rounded,
-                    tooltip: 'Accessibility options',
-                    semanticsLabel: 'Open accessibility controls',
-                    highlightColor: const Color(0xFF3B82F6),
-                    onTap: () => AccessibilityBottomSheet.show(context),
-                    isDark: isDark,
-                    a11y: a11y,
-                  ),
                 ],
               ),
             ),

@@ -159,7 +159,7 @@ class _PredictionHistoryScreenState extends ConsumerState<PredictionHistoryScree
                           const SizedBox(width: 10),
                           Expanded(
                             child: Text(
-                              'Canive Multimodal AI Engine',
+                              'Canivue Multimodal AI Engine',
                               style: GoogleFonts.plusJakartaSans(
                                 color: const Color(0xFFFED25E),
                                 fontWeight: FontWeight.w700,

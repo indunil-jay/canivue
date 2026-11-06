@@ -40,7 +40,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final confirmed = await AppFeedback.showLuxuryDialog(
       context,
       title: 'Log Out',
-      message: 'Are you sure you want to log out of Canive?',
+      message: 'Are you sure you want to log out of Canivue?',
       confirmText: 'Log Out',
       cancelText: 'Cancel',
       icon: Icons.logout_rounded,
@@ -95,7 +95,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final user = ref.watch(authControllerProvider);
     final displayName = user?.name.isNotEmpty == true ? user!.name : 'Pet Parent';
-    final email = user?.email ?? 'guest@canive.com';
+    final email = user?.email ?? 'guest@canivue.com';
     final pets = ref.watch(dogsProvider).value ?? const [];
     final activeDog = ref.watch(activeDogProvider).value;
 
@@ -394,7 +394,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   iconBg: const Color(0xFFFFEDD5),
                   iconColor: const Color(0xFFEA580C),
                   title: 'Membership & Billing',
-                  subtitle: 'Canive Protection & Insurance Plans',
+                  subtitle: 'Canivue Protection & Insurance Plans',
                   onTap: () => Navigator.of(context).push(
                     MaterialPageRoute(builder: (_) => const SubscriptionScreen()),
                   ),

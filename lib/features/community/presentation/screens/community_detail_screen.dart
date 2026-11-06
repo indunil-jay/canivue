@@ -87,7 +87,7 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> w
                     ),
                     onPressed: () {
                       HapticFeedback.lightImpact();
-                      Clipboard.setData(ClipboardData(text: 'Join the ${community.name} canine support group on Canive!'));
+                      Clipboard.setData(ClipboardData(text: 'Join the ${community.name} canine support group on Canivue!'));
                       AppFeedback.showToast(
                         context,
                         title: 'Group Link Copied 📋',

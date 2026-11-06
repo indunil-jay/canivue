@@ -8,8 +8,8 @@ class CommunityMember {
     this.isVeterinarian = false,
     this.dogName,
     this.dogBreed,
-    String? joinedDate,
-  }) : _joinedDate = joinedDate;
+    this.joinedDate = 'Active member',
+  });
 
   final String id;
   final String name;
@@ -18,9 +18,7 @@ class CommunityMember {
   final bool isVeterinarian;
   final String? dogName;
   final String? dogBreed;
-  final String? _joinedDate;
-
-  String get joinedDate => _joinedDate ?? 'Active member';
+  final String joinedDate;
 }
 
 /// Comment on a community post with like & reaction support.
@@ -30,22 +28,20 @@ class PostComment {
     required this.authorName,
     required this.authorInitials,
     required this.content,
-    DateTime? createdAt,
+    required this.createdAt,
     this.isVeterinarian = false,
     this.likeCount = 0,
     this.likedByMe = false,
-  }) : _createdAt = createdAt;
+  });
 
   final String id;
   final String authorName;
   final String authorInitials;
   final String content;
-  final DateTime? _createdAt;
+  final DateTime createdAt;
   final bool isVeterinarian;
   final int likeCount;
   final bool likedByMe;
-
-  DateTime get createdAt => _createdAt ?? DateTime.now();
 
   PostComment copyWith({int? likeCount, bool? likedByMe}) {
     return PostComment(
@@ -78,9 +74,9 @@ class CommunityPost {
     required this.shareCount,
     this.likedByMe = false,
     this.savedByMe = false,
-    List<PostComment>? comments,
+    this.comments = const [],
     this.imageUrl,
-  }) : _comments = comments;
+  });
 
   final String id;
   final String authorName;
@@ -96,10 +92,8 @@ class CommunityPost {
   final int shareCount;
   final bool likedByMe;
   final bool savedByMe;
-  final List<PostComment>? _comments;
+  final List<PostComment> comments;
   final String? imageUrl;
-
-  List<PostComment> get comments => _comments ?? const [];
 
   CommunityPost copyWith({
     bool? likedByMe,
@@ -135,38 +129,28 @@ class DiseaseCommunity {
     required this.description,
     required this.memberCount,
     this.joined = false,
-    String? leadVetName,
-    String? leadVetRole,
-    String? coverEmoji,
-    List<String>? rules,
-    List<CommunityMember>? members,
-  })  : _leadVetName = leadVetName,
-        _leadVetRole = leadVetRole,
-        _coverEmoji = coverEmoji,
-        _rules = rules,
-        _members = members;
+    this.leadVetName = 'Dr. Amara Osei, DVM',
+    this.leadVetRole = 'Clinical Dermatology Specialist',
+    this.coverEmoji = '🐾',
+    this.rules = const [
+      'Share honest pet care experiences and recovery journeys.',
+      'Veterinary advice requires a verified license badge.',
+      'Always consult your veterinarian before administering prescription medication.',
+      'Be respectful, supportive, and kind to fellow pet parents.',
+    ],
+    this.members = const [],
+  });
 
   final String id;
   final String name;
   final String description;
   final int memberCount;
   final bool joined;
-  final String? _leadVetName;
-  final String? _leadVetRole;
-  final String? _coverEmoji;
-  final List<String>? _rules;
-  final List<CommunityMember>? _members;
-
-  String get leadVetName => _leadVetName ?? 'Dr. Amara Osei, DVM';
-  String get leadVetRole => _leadVetRole ?? 'Clinical Dermatology Specialist';
-  String get coverEmoji => _coverEmoji ?? '🐾';
-  List<String> get rules => _rules ?? const [
-    'Share honest pet care experiences and recovery journeys.',
-    'Veterinary advice requires a verified license badge.',
-    'Always consult your veterinarian before administering prescription medication.',
-    'Be respectful, supportive, and kind to fellow pet parents.',
-  ];
-  List<CommunityMember> get members => _members ?? const [];
+  final String leadVetName;
+  final String leadVetRole;
+  final String coverEmoji;
+  final List<String> rules;
+  final List<CommunityMember> members;
 
   DiseaseCommunity copyWith({
     bool? joined,

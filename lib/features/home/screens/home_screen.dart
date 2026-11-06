@@ -302,9 +302,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                     elevation: 0,
                   ),
-                  icon: const Icon(Icons.camera_alt_rounded, size: 20),
+                  icon: const Icon(Icons.document_scanner_rounded, size: 20),
                   label: Text(
-                    'Launch Camera Scanner',
+                    'Launch AI Scanner',
                     style: GoogleFonts.plusJakartaSans(
                       fontSize: 14.5,
                       fontWeight: FontWeight.w800,
@@ -751,7 +751,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Canive Pet Parent Community',
+                'Canivue Pet Parent Community',
                 style: GoogleFonts.plusJakartaSans(
                   color: Colors.white,
                   fontWeight: FontWeight.w900,

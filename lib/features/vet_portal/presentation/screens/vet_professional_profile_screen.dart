@@ -188,7 +188,7 @@ class VetProfessionalProfileScreen extends ConsumerWidget {
                   final confirmed = await AppFeedback.showLuxuryDialog(
                     context,
                     title: 'Log Out',
-                    message: 'Are you sure you want to log out of Canive Clinical Portal?',
+                    message: 'Are you sure you want to log out of Canivue Clinical Portal?',
                     confirmText: 'Log Out',
                     cancelText: 'Cancel',
                     icon: Icons.logout_rounded,

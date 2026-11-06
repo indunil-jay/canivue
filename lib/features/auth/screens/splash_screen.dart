@@ -197,7 +197,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
                 const SizedBox(height: 22),
 
-                // "canive" app name
+                // "canivue" app name
                 AnimatedBuilder(
                   animation: _animController,
                   builder: (context, child) {
@@ -215,7 +215,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                     textBaseline: TextBaseline.alphabetic,
                     children: [
                       Text(
-                        'canive',
+                        'canivue',
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 38,
                           fontWeight: FontWeight.w900,

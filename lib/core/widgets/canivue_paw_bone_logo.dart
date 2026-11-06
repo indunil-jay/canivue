@@ -70,7 +70,7 @@ class CanivuePawBoneLogo extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'Canive',
+                  'Canivue',
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: size * 0.52,
                     fontWeight: FontWeight.w800,

@@ -466,7 +466,7 @@ class _NotPairedView extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              'Pair Canive Smart Collar with $dogName to begin real-time activity, sleep and heart rate telemetry monitoring.',
+              'Pair Canivue Smart Collar with $dogName to begin real-time activity, sleep and heart rate telemetry monitoring.',
               textAlign: TextAlign.center,
               style: GoogleFonts.plusJakartaSans(
                 fontSize: 13.5,
@@ -509,7 +509,7 @@ class _PairingSheet extends StatelessWidget {
           const CircularProgressIndicator(color: Color(0xFF0F766E)),
           const SizedBox(height: 18),
           Text(
-            'Searching for nearby Canive collar…',
+            'Searching for nearby Canivue collar…',
             style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w800, fontSize: 16),
           ),
           const SizedBox(height: 6),

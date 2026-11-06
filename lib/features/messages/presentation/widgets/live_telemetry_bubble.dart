@@ -138,7 +138,7 @@ class LiveTelemetryBubble extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Synced via Canive Smart Collar',
+                        'Synced via Canivue Smart Collar',
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 10.5,
                           fontWeight: FontWeight.w500,

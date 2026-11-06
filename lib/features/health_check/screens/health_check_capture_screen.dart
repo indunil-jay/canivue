@@ -466,7 +466,7 @@ class _HealthCheckCaptureScreenState extends State<HealthCheckCaptureScreen> {
                                 Text(
                                   _collarConnecting
                                       ? 'Pairing with collar…'
-                                      : (_collarConnected ? 'Connected · Real-time Synced' : 'Canive Smart Collar'),
+                                      : (_collarConnected ? 'Connected · Real-time Synced' : 'Canivue Smart Collar'),
                                   style: GoogleFonts.plusJakartaSans(
                                     fontWeight: FontWeight.w800,
                                     fontSize: 14,

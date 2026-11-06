@@ -23,7 +23,7 @@ import 'package:canivue/main.dart';
 /// gated behind [authControllerProvider] can be smoke-tested in isolation.
 class _SignedInAuthController extends AuthController {
   @override
-  AppUser? build() => const AppUser(email: 'alex@canive.com', name: 'Alex');
+  AppUser? build() => const AppUser(email: 'alex@canivue.com', name: 'Alex');
 }
 
 void main() {
@@ -130,7 +130,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 700));
     await tester.pump(const Duration(milliseconds: 700));
 
-    expect(find.text('canive'), findsOneWidget);
+    expect(find.text('canivue'), findsOneWidget);
     expect(find.text('Main Feature Services'), findsOneWidget);
     expect(find.text('AI Health Scanner'), findsOneWidget);
     expect(find.text('Vet Consult & Bookings'), findsOneWidget);
@@ -148,7 +148,7 @@ void main() {
 
     expect(find.text('Profile & Settings'), findsOneWidget);
     expect(find.text('Alex'), findsOneWidget);
-    expect(find.text('alex@canive.com'), findsOneWidget);
+    expect(find.text('alex@canivue.com'), findsOneWidget);
     expect(find.text('MY DOGS'), findsOneWidget);
     expect(find.text('Buddy'), findsOneWidget);
     expect(find.text('Luna'), findsOneWidget);
@@ -160,7 +160,7 @@ void main() {
     await tester.pumpWidget(
       const MaterialApp(
         home: PersonalInformationScreen(
-          userEmail: 'alex@canive.com',
+          userEmail: 'alex@canivue.com',
           userName: 'Alex Taylor',
         ),
       ),

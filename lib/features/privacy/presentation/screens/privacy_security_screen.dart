@@ -22,7 +22,7 @@ class _PrivacySecurityScreenState extends State<PrivacySecurityScreen> {
 
   final _sessions = const [
     (device: 'Chrome on Windows', location: 'San Francisco, CA', lastActive: 'Active now', isCurrent: true),
-    (device: 'Canive iOS App', location: 'San Francisco, CA', lastActive: '2 hours ago', isCurrent: false),
+    (device: 'Canivue iOS App', location: 'San Francisco, CA', lastActive: '2 hours ago', isCurrent: false),
     (device: 'Safari on macOS', location: 'Oakland, CA', lastActive: '5 days ago', isCurrent: false),
   ];
 
@@ -109,7 +109,7 @@ class _PrivacySecurityScreenState extends State<PrivacySecurityScreen> {
                   Divider(height: 1, color: isDark ? AppColors.darkBorder : AppColors.lightBorder),
                   _switchTile(
                     title: 'Share anonymized telemetry for model research',
-                    subtitle: 'Improves Canive AI models. Identifying patient information is stripped.',
+                    subtitle: 'Improves Canivue AI models. Identifying patient information is stripped.',
                     value: _shareAnonymizedResearch,
                     onChanged: (v) {
                       HapticFeedback.lightImpact();
@@ -311,7 +311,7 @@ class _PrivacySecurityScreenState extends State<PrivacySecurityScreen> {
               onPressed: _confirmDeleteAccount,
               icon: const Icon(Icons.delete_forever_rounded, color: Color(0xFFF43F5E), size: 18),
               label: Text(
-                'Delete Canive Account',
+                'Delete Canivue Account',
                 style: GoogleFonts.plusJakartaSans(
                   color: const Color(0xFFF43F5E),
                   fontWeight: FontWeight.w800,

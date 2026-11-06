@@ -55,7 +55,7 @@ class HomeQuickActionTiles extends StatelessWidget {
               size: 110,
               color: Color(0x1AFFFFFF),
             ),
-            icon: Icons.camera_alt_rounded,
+            icon: Icons.document_scanner_rounded,
             onTap: () => _onLaunchScan(context),
           ),
         ),

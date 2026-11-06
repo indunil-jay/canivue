@@ -233,7 +233,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                     // Email Address Input
                     CustomTextField(
                       label: 'Email Address',
-                      hintText: 'e.g. alex@canive.com',
+                      hintText: 'e.g. alex@canivue.com',
                       prefixIcon: Icons.alternate_email_rounded,
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
@@ -370,7 +370,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                           const SizedBox(width: 6),
                           Expanded(
                             child: Text(
-                              'I agree to Canive Terms of Service & Privacy Policy',
+                              'I agree to Canivue Terms of Service & Privacy Policy',
                               style: GoogleFonts.plusJakartaSans(
                                 fontSize: 11,
                                 fontWeight: FontWeight.w500,

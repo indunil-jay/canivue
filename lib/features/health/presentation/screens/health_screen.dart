@@ -716,7 +716,7 @@ class _AiPredictionSection extends ConsumerWidget {
           return EmptyState(
             icon: Icons.auto_awesome_outlined,
             title: 'No active predictions',
-            message: 'Canive is continuously monitoring — run a scan anytime to generate new AI diagnostics for ${dog.name}.',
+            message: 'Canivue is continuously monitoring — run a scan anytime to generate new AI diagnostics for ${dog.name}.',
             actionLabel: 'Run AI Health Check',
             onAction: () => _onLaunchScan(context),
           );

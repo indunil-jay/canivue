@@ -14,7 +14,7 @@ class FakeDeviceRepository implements DeviceRepository {
     return switch (variant) {
       0 => SmartCollar(
           dogId: dogId,
-          name: 'Canive Smart Collar',
+          name: 'Canivue Smart Collar',
           state: CollarConnectionState.connected,
           batteryPercent: 78,
           lastSyncedAt: now.subtract(const Duration(minutes: 2)),
@@ -26,7 +26,7 @@ class FakeDeviceRepository implements DeviceRepository {
         ),
       1 => SmartCollar(
           dogId: dogId,
-          name: 'Canive Smart Collar',
+          name: 'Canivue Smart Collar',
           state: CollarConnectionState.disconnected,
           batteryPercent: 12,
           lastSyncedAt: now.subtract(const Duration(hours: 6)),
@@ -34,7 +34,7 @@ class FakeDeviceRepository implements DeviceRepository {
             SyncEvent(timestamp: now.subtract(const Duration(hours: 6)), recordsSynced: 74),
           ],
         ),
-      _ => SmartCollar(dogId: dogId, name: 'Canive Smart Collar', state: CollarConnectionState.notPaired),
+      _ => SmartCollar(dogId: dogId, name: 'Canivue Smart Collar', state: CollarConnectionState.notPaired),
     };
   }
 
@@ -53,7 +53,7 @@ class FakeDeviceRepository implements DeviceRepository {
     final now = DateTime.now();
     final updated = SmartCollar(
       dogId: dogId,
-      name: 'Canive Smart Collar',
+      name: 'Canivue Smart Collar',
       state: CollarConnectionState.connected,
       batteryPercent: 100,
       lastSyncedAt: now,

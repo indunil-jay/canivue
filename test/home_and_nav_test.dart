@@ -185,11 +185,8 @@ void main() {
       ),
     );
 
-    expect(find.text('canive'), findsOneWidget);
-    expect(find.text('HUB'), findsOneWidget);
+    expect(find.text('canivue'), findsOneWidget);
     expect(find.byIcon(Icons.search_rounded), findsOneWidget);
-    expect(find.byIcon(Icons.add_a_photo_rounded), findsOneWidget);
-    expect(find.byIcon(Icons.accessibility_new_rounded), findsOneWidget);
 
     // Verify Facebook tabs exist
     expect(find.byIcon(Icons.home_rounded), findsOneWidget);

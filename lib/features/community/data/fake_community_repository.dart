@@ -247,6 +247,8 @@ class FakeCommunityRepository implements CommunityRepository {
       name: 'Diabetes',
       description: 'Managing canine diabetes — blood glucose monitoring, insulin schedules, and carbohydrate-controlled diets.',
       memberCount: 2140,
+      leadVetName: 'Dr. Amara Osei, DVM',
+      leadVetRole: 'Endocrine Specialist',
       coverEmoji: '🩸',
       members: [
         CommunityMember(
@@ -255,6 +257,7 @@ class FakeCommunityRepository implements CommunityRepository {
           initials: 'AO',
           roleDescription: 'Endocrine Advisor',
           isVeterinarian: true,
+          joinedDate: 'Joined Jan 2025',
         ),
       ],
     ),
@@ -263,6 +266,8 @@ class FakeCommunityRepository implements CommunityRepository {
       name: 'Heart Conditions',
       description: 'Cardiac telemetry, resting respiratory rates, low-sodium nutrition, and heart murmur monitoring.',
       memberCount: 1870,
+      leadVetName: 'Dr. Robert Miller, DVM',
+      leadVetRole: 'Cardiology Specialist',
       coverEmoji: '❤️',
       members: [
         CommunityMember(
@@ -271,6 +276,7 @@ class FakeCommunityRepository implements CommunityRepository {
           initials: 'RM',
           roleDescription: 'Cardiology Advisor',
           isVeterinarian: true,
+          joinedDate: 'Joined March 2025',
         ),
       ],
     ),
@@ -279,6 +285,8 @@ class FakeCommunityRepository implements CommunityRepository {
       name: 'Digestive Problems',
       description: 'Gastrointestinal sensitivity, pancreatitis recovery, food elimination trials, and gut microbiome health.',
       memberCount: 4630,
+      leadVetName: 'Dr. Sarah Jenkins, DVM',
+      leadVetRole: 'Gastroenterology Specialist',
       coverEmoji: '🥣',
       members: [
         CommunityMember(
@@ -287,6 +295,7 @@ class FakeCommunityRepository implements CommunityRepository {
           initials: 'SJ',
           roleDescription: 'GI Lead',
           isVeterinarian: true,
+          joinedDate: 'Lead since Feb 2025',
         ),
         CommunityMember(
           id: 'mem-62',
@@ -295,6 +304,7 @@ class FakeCommunityRepository implements CommunityRepository {
           roleDescription: 'Pet Parent',
           dogName: 'Archie',
           dogBreed: 'French Bulldog',
+          joinedDate: 'Member for 4 months',
         ),
       ],
     ),

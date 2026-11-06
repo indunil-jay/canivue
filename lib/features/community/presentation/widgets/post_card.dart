@@ -129,7 +129,7 @@ class PostCard extends StatelessWidget {
                 ),
                 onTap: () {
                   Navigator.of(ctx).pop();
-                  Clipboard.setData(ClipboardData(text: '${post.authorName} on Canive: "${post.content}"'));
+                  Clipboard.setData(ClipboardData(text: '${post.authorName} on Canivue: "${post.content}"'));
                   AppFeedback.showToast(
                     context,
                     title: 'Copied to Clipboard 📋',

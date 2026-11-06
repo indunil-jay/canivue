@@ -24,7 +24,7 @@ class FakePredictionRepository implements PredictionRepository {
         combinedRiskPercent: 84,
         confidencePercent: 88,
         predictionDate: now.subtract(const Duration(hours: 6)),
-        modelVersion: 'canive-fusion-v2.3',
+        modelVersion: 'canivue-fusion-v2.3',
         affectedIndicators: const ['Respiratory Rate', 'Activity Level', 'Coughing Frequency'],
         recommendedNextStep: 'Schedule a veterinary consultation within the next few days to evaluate further.',
         modelContributions: const [
@@ -48,9 +48,9 @@ class FakePredictionRepository implements PredictionRepository {
       combinedRiskPercent: 41,
       confidencePercent: 76,
       predictionDate: now.subtract(const Duration(hours: 14)),
-      modelVersion: 'canive-fusion-v2.3',
+      modelVersion: 'canivue-fusion-v2.3',
       affectedIndicators: const ['Activity Level', 'Sleep Duration'],
-      recommendedNextStep: 'No immediate action needed — Canive will keep monitoring over the next 7 days.',
+      recommendedNextStep: 'No immediate action needed — Canivue will keep monitoring over the next 7 days.',
       modelContributions: const [
         ModelContribution(modelName: 'Activity Model', contributionPercent: 58),
         ModelContribution(modelName: 'Behavior Model', contributionPercent: 47),
@@ -79,7 +79,7 @@ class FakePredictionRepository implements PredictionRepository {
         combinedRiskPercent: 62,
         confidencePercent: 81,
         predictionDate: now.subtract(const Duration(days: 18)),
-        modelVersion: 'canive-fusion-v2.2',
+        modelVersion: 'canivue-fusion-v2.2',
         affectedIndicators: const ['Heart Rate', 'Activity Level'],
         recommendedNextStep: 'Vet visit completed — condition resolved.',
         modelContributions: const [
@@ -99,7 +99,7 @@ class FakePredictionRepository implements PredictionRepository {
         combinedRiskPercent: 70,
         confidencePercent: 84,
         predictionDate: now.subtract(const Duration(days: 47)),
-        modelVersion: 'canive-fusion-v2.1',
+        modelVersion: 'canivue-fusion-v2.1',
         affectedIndicators: const ['Movement Pattern', 'Restlessness'],
         recommendedNextStep: 'Vet review recommended to assess joint health.',
         modelContributions: const [
