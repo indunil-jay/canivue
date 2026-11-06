@@ -172,6 +172,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                               child: TextField(
                                 controller: _controller,
                                 focusNode: _focusNode,
+                                textAlignVertical: TextAlignVertical.center,
                                 textInputAction: TextInputAction.search,
                                 onChanged: (value) {
                                   ref.read(searchQueryProvider.notifier).state = value;
@@ -191,6 +192,13 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                                     fontWeight: FontWeight.w500,
                                   ),
                                   border: InputBorder.none,
+                                  enabledBorder: InputBorder.none,
+                                  focusedBorder: InputBorder.none,
+                                  errorBorder: InputBorder.none,
+                                  disabledBorder: InputBorder.none,
+                                  focusedErrorBorder: InputBorder.none,
+                                  filled: false,
+                                  fillColor: Colors.transparent,
                                   isDense: true,
                                   contentPadding: const EdgeInsets.symmetric(vertical: 12),
                                 ),

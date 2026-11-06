@@ -6,65 +6,69 @@ import 'package:canivue/core/accessibility/accessibility_provider.dart';
 import 'package:canivue/core/design_system/tokens/tokens.dart';
 import 'package:canivue/features/notifications/widgets/notification_badge_button.dart';
 
-/// Top bar inspired by Facebook's signature mobile header and top navigation.
+/// Clean, signature top application bar for Canivue.
 ///
 /// Features:
 /// 1. Top Header Row:
 ///    - Bold branded lowercase "canivue" logo with modern typography
-///    - Facebook-style circular action icons: Search, AI Camera Scan (+), Notifications, Accessibility
-/// 2. Iconic Facebook Navigation Tab Bar:
+///    - Circular action icons: Add Pet Profile (+), Search, Notifications
+/// 2. Optional Navigation Tab Bar:
 ///    - 5 horizontal tabs: [Home/Services, AI Health, Pets, Vet Care, Community]
 ///    - Fluid active indicator underline & high-contrast tint
 ///    - Large 48x48+ tap targets for WCAG 2.2 accessibility
 ///    - Tactile Apple-style haptic feedback
 ///    - Screen reader semantics
-class FacebookTopAppBar extends ConsumerWidget {
-  const FacebookTopAppBar({
+class CanivueTopAppBar extends ConsumerWidget {
+  const CanivueTopAppBar({
     super.key,
     this.selectedTabIndex = 0,
     this.onTabSelected,
     this.onSearchTap,
     this.onScannerTap,
+    this.onAddPetTap,
     this.badgeCount,
     this.showTabs = false,
     this.showSearchAction = true,
+    this.showAddPetAction = true,
   });
 
   final int selectedTabIndex;
   final ValueChanged<int>? onTabSelected;
   final VoidCallback? onSearchTap;
   final VoidCallback? onScannerTap;
+  final VoidCallback? onAddPetTap;
   final int? badgeCount;
   final bool showTabs;
   final bool showSearchAction;
+  final bool showAddPetAction;
 
-  static const List<_FacebookTabSpec> _tabs = [
-    _FacebookTabSpec(
+  static const List<_CanivueTabSpec> _tabs = [
+    _CanivueTabSpec(
       icon: Icons.home_rounded,
       selectedIcon: Icons.home_rounded,
       label: 'Home & Services',
       shortLabel: 'Home',
     ),
-    _FacebookTabSpec(
+    _CanivueTabSpec(
       icon: Icons.health_and_safety_outlined,
       selectedIcon: Icons.health_and_safety_rounded,
       label: 'AI Health Scanner',
       shortLabel: 'AI Health',
       showBadgeDot: true,
     ),
-    _FacebookTabSpec(
+    _CanivueTabSpec(
       icon: Icons.pets_outlined,
       selectedIcon: Icons.pets_rounded,
       label: 'My Dogs & Profiles',
       shortLabel: 'Pets',
     ),
-    _FacebookTabSpec(
+    _CanivueTabSpec(
       icon: Icons.medical_services_outlined,
       selectedIcon: Icons.medical_services_rounded,
       label: 'Vet Care & Clinics',
       shortLabel: 'Vet Care',
     ),
-    _FacebookTabSpec(
+    _CanivueTabSpec(
       icon: Icons.groups_outlined,
       selectedIcon: Icons.groups_rounded,
       label: 'Pet Parent Community',
@@ -102,12 +106,12 @@ class FacebookTopAppBar extends ConsumerWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Row 1: Facebook App Branding & Quick Actions
+            // Row 1: App Branding & Quick Actions
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 6),
               child: Row(
                 children: [
-                  // Facebook-style bold brand logo
+                  // Bold brand logo
                   Semantics(
                     header: true,
                     label: 'Canivue Pet Health App',
@@ -125,6 +129,19 @@ class FacebookTopAppBar extends ConsumerWidget {
                   ),
 
                   const Spacer(),
+
+                  // Plus / Add Pet Profile Action
+                  if (showAddPetAction && onAddPetTap != null) ...[
+                    _buildCircleActionButton(
+                      icon: Icons.add_rounded,
+                      tooltip: 'Add pet profile',
+                      semanticsLabel: 'Add a new pet profile',
+                      onTap: onAddPetTap!,
+                      isDark: isDark,
+                      a11y: a11y,
+                    ),
+                    const SizedBox(width: 8),
+                  ],
 
                   // Action buttons: Optional Search & Notifications
                   if (showSearchAction && onSearchTap != null) ...[
@@ -149,95 +166,95 @@ class FacebookTopAppBar extends ConsumerWidget {
               SizedBox(
                 height: 48,
                 child: Row(
-                children: List.generate(_tabs.length, (index) {
-                  final tab = _tabs[index];
-                  final isSelected = index == selectedTabIndex;
+                  children: List.generate(_tabs.length, (index) {
+                    final tab = _tabs[index];
+                    final isSelected = index == selectedTabIndex;
 
-                  final activeColor = a11y.highContrast
-                      ? (isDark ? const Color(0xFF2DD4BF) : const Color(0xFF0F766E))
-                      : (isDark ? const Color(0xFF2DD4BF) : const Color(0xFF0F766E));
-                  final inactiveColor =
-                      isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
+                    final activeColor = a11y.highContrast
+                        ? (isDark ? const Color(0xFF2DD4BF) : const Color(0xFF0F766E))
+                        : (isDark ? const Color(0xFF2DD4BF) : const Color(0xFF0F766E));
+                    final inactiveColor =
+                        isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
 
-                  return Expanded(
-                    child: Semantics(
-                      button: true,
-                      selected: isSelected,
-                      label: '${tab.label} tab, ${index + 1} of ${_tabs.length}',
-                      child: InkWell(
-                        onTap: () {
-                          HapticFeedback.selectionClick();
-                          onTabSelected?.call(index);
-                        },
-                        splashColor: activeColor.withValues(alpha: 0.12),
-                        highlightColor: activeColor.withValues(alpha: 0.08),
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            // Tab Icon with optional badge dot
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 8),
-                              child: Stack(
-                                clipBehavior: Clip.none,
-                                children: [
-                                  Icon(
-                                    isSelected ? tab.selectedIcon : tab.icon,
-                                    size: isSelected ? 26 : 24,
-                                    color: isSelected ? activeColor : inactiveColor,
-                                  ),
-                                  if (tab.showBadgeDot)
-                                    Positioned(
-                                      top: -1,
-                                      right: -3,
-                                      child: Container(
-                                        height: 8,
-                                        width: 8,
-                                        decoration: const BoxDecoration(
-                                          color: Color(0xFFEF4444),
-                                          shape: BoxShape.circle,
+                    return Expanded(
+                      child: Semantics(
+                        button: true,
+                        selected: isSelected,
+                        label: '${tab.label} tab, ${index + 1} of ${_tabs.length}',
+                        child: InkWell(
+                          onTap: () {
+                            HapticFeedback.selectionClick();
+                            onTabSelected?.call(index);
+                          },
+                          splashColor: activeColor.withValues(alpha: 0.12),
+                          highlightColor: activeColor.withValues(alpha: 0.08),
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              // Tab Icon with optional badge dot
+                              Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 8),
+                                child: Stack(
+                                  clipBehavior: Clip.none,
+                                  children: [
+                                    Icon(
+                                      isSelected ? tab.selectedIcon : tab.icon,
+                                      size: isSelected ? 26 : 24,
+                                      color: isSelected ? activeColor : inactiveColor,
+                                    ),
+                                    if (tab.showBadgeDot)
+                                      Positioned(
+                                        top: -1,
+                                        right: -3,
+                                        child: Container(
+                                          height: 8,
+                                          width: 8,
+                                          decoration: const BoxDecoration(
+                                            color: Color(0xFFEF4444),
+                                            shape: BoxShape.circle,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                ],
-                              ),
-                            ),
-
-                            // Facebook-style active bottom underline bar
-                            Positioned(
-                              bottom: 0,
-                              left: 8,
-                              right: 8,
-                              child: AnimatedContainer(
-                                duration: a11y.reduceMotion
-                                    ? Duration.zero
-                                    : const Duration(milliseconds: 220),
-                                curve: Curves.easeOutCubic,
-                                height: isSelected ? 3.5 : 0,
-                                decoration: BoxDecoration(
-                                  color: activeColor,
-                                  borderRadius: const BorderRadius.vertical(
-                                    top: Radius.circular(3),
-                                  ),
-                                  boxShadow: isSelected
-                                      ? [
-                                          BoxShadow(
-                                            color: activeColor.withValues(alpha: 0.4),
-                                            blurRadius: 4,
-                                            offset: const Offset(0, -1),
-                                          ),
-                                        ]
-                                      : null,
+                                  ],
                                 ),
                               ),
-                            ),
-                          ],
+
+                              // Active bottom underline bar
+                              Positioned(
+                                bottom: 0,
+                                left: 8,
+                                right: 8,
+                                child: AnimatedContainer(
+                                  duration: a11y.reduceMotion
+                                      ? Duration.zero
+                                      : const Duration(milliseconds: 220),
+                                  curve: Curves.easeOutCubic,
+                                  height: isSelected ? 3.5 : 0,
+                                  decoration: BoxDecoration(
+                                    color: activeColor,
+                                    borderRadius: const BorderRadius.vertical(
+                                      top: Radius.circular(3),
+                                    ),
+                                    boxShadow: isSelected
+                                        ? [
+                                            BoxShadow(
+                                              color: activeColor.withValues(alpha: 0.4),
+                                              blurRadius: 4,
+                                              offset: const Offset(0, -1),
+                                            ),
+                                          ]
+                                        : null,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  );
-                }),
+                    );
+                  }),
+                ),
               ),
-            ),
           ],
         ),
       ),
@@ -297,8 +314,8 @@ class FacebookTopAppBar extends ConsumerWidget {
   }
 }
 
-class _FacebookTabSpec {
-  const _FacebookTabSpec({
+class _CanivueTabSpec {
+  const _CanivueTabSpec({
     required this.icon,
     required this.selectedIcon,
     required this.label,

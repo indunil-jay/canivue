@@ -1,33 +1,33 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:canivue/features/home/domain/dashboard_summary.dart';
 import 'package:canivue/features/pets/models/pet_model.dart';
-import 'package:canivue/features/pets/screens/pet_detail_screen.dart';
 import 'package:canivue/features/health_check/screens/health_check_capture_screen.dart';
 
-/// Reimagined Hero Pet Showcase Card inspired by Pawsure, PawAdopt, and PawMate.
+/// Reimagined Hero Pet Promotional Card for Canivue's Flagship Feature:
+/// Multimodal Canine AI Health Scanner.
 ///
-/// Features:
-/// - Radiant Warm Honey Amber & Sunlit Peach gradient backplate
-/// - High-resolution pet portrait with playful layered offset backing
-/// - Live AI Guardian telemetry badge with glowing status dot
-/// - Dedicated "Launch AI Scanner" tactile button
-/// - Floating frosted glass info bar (Due date / vitals / score)
-/// - Directional arrow `↗` button with micro-bounce
-/// - Apple-style press scaling (scale 0.96)
+/// Highlights:
+/// - Radiant Warm Honey Amber & Sunlit Gold gradient backplate
+/// - High-resolution pet portrait with playful layered offset backing & "AI Ready" indicator
+/// - Multimodal AI feature promotion badge with glowing sparkle icon
+/// - Compelling AI triage headline and early-symptom description
+/// - Prominent "Launch AI Scanner ➔" action pill
+/// - Tapping anywhere on the banner navigates directly to [HealthCheckCaptureScreen],
+///   where users can select their pet profile and perform diagnostics.
+/// - Apple-style press scaling (scale 0.97)
 class HomeHeroPetCard extends StatefulWidget {
   const HomeHeroPetCard({
     super.key,
     required this.dog,
     required this.dogs,
-    required this.summary,
+    this.summary,
   });
 
   final Pet dog;
   final List<Pet> dogs;
-  final DashboardSummary summary;
+  final DashboardSummary? summary;
 
   @override
   State<HomeHeroPetCard> createState() => _HomeHeroPetCardState();
@@ -35,13 +35,6 @@ class HomeHeroPetCard extends StatefulWidget {
 
 class _HomeHeroPetCardState extends State<HomeHeroPetCard> {
   bool _isPressed = false;
-
-  void _openPetDetail(BuildContext context) {
-    HapticFeedback.lightImpact();
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => PetDetailScreen(pet: widget.dog)),
-    );
-  }
 
   void _openScanner(BuildContext context) {
     HapticFeedback.mediumImpact();
@@ -69,7 +62,7 @@ class _HomeHeroPetCardState extends State<HomeHeroPetCard> {
           )
         : const LinearGradient(
             colors: [
-              Color(0xFFFED25E), // Sunshine Honey Gold (Pawsure reference)
+              Color(0xFFFED25E), // Sunshine Honey Gold
               Color(0xFFFDC64A),
               Color(0xFFFFB638),
             ],
@@ -84,7 +77,7 @@ class _HomeHeroPetCardState extends State<HomeHeroPetCard> {
       onTapDown: (_) => setState(() => _isPressed = true),
       onTapUp: (_) => setState(() => _isPressed = false),
       onTapCancel: () => setState(() => _isPressed = false),
-      onTap: () => _openPetDetail(context),
+      onTap: () => _openScanner(context),
       child: AnimatedScale(
         scale: _isPressed ? 0.97 : 1.0,
         duration: const Duration(milliseconds: 140),
@@ -93,7 +86,7 @@ class _HomeHeroPetCardState extends State<HomeHeroPetCard> {
           width: double.infinity,
           decoration: BoxDecoration(
             gradient: cardGradient,
-            borderRadius: BorderRadius.circular(32),
+            borderRadius: BorderRadius.circular(30),
             border: Border.all(
               color: isDark ? const Color(0x33FED25E) : const Color(0x66FFFFFF),
               width: 1.5,
@@ -116,15 +109,30 @@ class _HomeHeroPetCardState extends State<HomeHeroPetCard> {
           ),
           child: Stack(
             children: [
-              // Subtle background circle motif
+              // Subtle background circle motifs
               Positioned(
-                top: -15,
-                right: -15,
+                top: -20,
+                right: -20,
                 child: Opacity(
-                  opacity: isDark ? 0.08 : 0.12,
+                  opacity: isDark ? 0.08 : 0.14,
                   child: Container(
-                    width: 160,
-                    height: 160,
+                    width: 180,
+                    height: 180,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+                bottom: -35,
+                left: 40,
+                child: Opacity(
+                  opacity: isDark ? 0.05 : 0.09,
+                  child: Container(
+                    width: 120,
+                    height: 120,
                     decoration: const BoxDecoration(
                       shape: BoxShape.circle,
                       color: Colors.white,
@@ -134,20 +142,20 @@ class _HomeHeroPetCardState extends State<HomeHeroPetCard> {
               ),
 
               Padding(
-                padding: const EdgeInsets.all(22),
+                padding: const EdgeInsets.all(20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Top row: AI Status Badge + Action Pill
+                    // Top row: AI Feature Badge + Circular Arrow Launch Button
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                          padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 5.5),
                           decoration: BoxDecoration(
                             color: isDark
                                 ? const Color(0x33FFFFFF)
-                                : Colors.white.withValues(alpha: 0.85),
+                                : Colors.white.withValues(alpha: 0.88),
                             borderRadius: BorderRadius.circular(20),
                             boxShadow: [
                               BoxShadow(
@@ -159,20 +167,18 @@ class _HomeHeroPetCardState extends State<HomeHeroPetCard> {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Container(
-                                width: 8,
-                                height: 8,
-                                decoration: const BoxDecoration(
-                                  color: Color(0xFF10B981),
-                                  shape: BoxShape.circle,
-                                ),
+                              const Icon(
+                                Icons.auto_awesome,
+                                size: 13,
+                                color: Color(0xFFD97706),
                               ),
                               const SizedBox(width: 6),
                               Text(
-                                'Guardian Synced',
+                                'MULTIMODAL AI 2.0',
                                 style: GoogleFonts.plusJakartaSans(
-                                  fontSize: 11.5,
-                                  fontWeight: FontWeight.w700,
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w800,
+                                  letterSpacing: 0.4,
                                   color: const Color(0xFF181A20),
                                 ),
                               ),
@@ -180,27 +186,24 @@ class _HomeHeroPetCardState extends State<HomeHeroPetCard> {
                           ),
                         ),
                         // Circular arrow button (Pawsure signature ↗)
-                        GestureDetector(
-                          onTap: () => _openScanner(context),
-                          child: Container(
-                            height: 38,
-                            width: 38,
-                            decoration: BoxDecoration(
-                              color: isDark ? const Color(0xFF242A38) : Colors.white,
-                              shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withValues(alpha: 0.1),
-                                  blurRadius: 8,
-                                  offset: const Offset(0, 2),
-                                ),
-                              ],
-                            ),
-                            child: const Icon(
-                              Icons.arrow_outward_rounded,
-                              size: 18,
-                              color: Color(0xFF181A20),
-                            ),
+                        Container(
+                          height: 38,
+                          width: 38,
+                          decoration: BoxDecoration(
+                            color: isDark ? const Color(0xFF242A38) : Colors.white,
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.1),
+                                blurRadius: 8,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: const Icon(
+                            Icons.arrow_outward_rounded,
+                            size: 18,
+                            color: Color(0xFF181A20),
                           ),
                         ),
                       ],
@@ -208,19 +211,18 @@ class _HomeHeroPetCardState extends State<HomeHeroPetCard> {
 
                     const SizedBox(height: 16),
 
-                    // Middle content: Pet headline + portrait
+                    // Middle content: Headline, description, CTA button + Pet portrait with AI badge
                     Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Expanded(
-                          flex: 6,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Keep ${widget.dog.name}\nSafe & Happy',
+                                'Instant Canine\nAI Health Scan',
                                 style: GoogleFonts.plusJakartaSans(
-                                  fontSize: 24,
+                                  fontSize: 22,
                                   fontWeight: FontWeight.w800,
                                   color: textColor,
                                   height: 1.15,
@@ -229,36 +231,41 @@ class _HomeHeroPetCardState extends State<HomeHeroPetCard> {
                               ),
                               const SizedBox(height: 8),
                               Text(
-                                '${widget.dog.breed} • ${widget.dog.ageYears}y ${widget.dog.ageMonths}m\n${widget.dog.weightKg.toStringAsFixed(1)} kg weight',
+                                'Early visual triage across eyes, coat, skin, and gait powered by veterinary AI.',
                                 style: GoogleFonts.plusJakartaSans(
-                                  fontSize: 13,
+                                  fontSize: 12,
                                   fontWeight: FontWeight.w500,
                                   color: subtitleColor,
                                   height: 1.35,
                                 ),
                               ),
-                              const SizedBox(height: 14),
-                              // Dedicated "Launch AI Scanner" button pill
-                              GestureDetector(
-                                onTap: () => _openScanner(context),
+                              const SizedBox(height: 16),
+                              // Dedicated "Launch AI Scanner" CTA button wrapped with FittedBox to prevent overflow
+                              FittedBox(
+                                fit: BoxFit.scaleDown,
+                                alignment: Alignment.centerLeft,
                                 child: Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
                                   decoration: BoxDecoration(
                                     color: isDark ? const Color(0xFF242A38) : const Color(0xFF181A20),
-                                    borderRadius: BorderRadius.circular(16),
+                                    borderRadius: BorderRadius.circular(18),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.15),
-                                        blurRadius: 8,
-                                        offset: const Offset(0, 2),
+                                        color: Colors.black.withValues(alpha: isDark ? 0.35 : 0.2),
+                                        blurRadius: 10,
+                                        offset: const Offset(0, 3),
                                       ),
                                     ],
                                   ),
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      const Icon(Icons.auto_awesome, color: Colors.white, size: 14),
-                                      const SizedBox(width: 6),
+                                      const Icon(
+                                        Icons.document_scanner_rounded,
+                                        color: Color(0xFFFED25E),
+                                        size: 15,
+                                      ),
+                                      const SizedBox(width: 7),
                                       Text(
                                         'Launch AI Scanner',
                                         style: GoogleFonts.plusJakartaSans(
@@ -267,122 +274,124 @@ class _HomeHeroPetCardState extends State<HomeHeroPetCard> {
                                           fontWeight: FontWeight.w700,
                                         ),
                                       ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        // Pet portrait with rounded frame & offset backing
-                        Expanded(
-                          flex: 4,
-                          child: Center(
-                            child: Stack(
-                              clipBehavior: Clip.none,
-                              children: [
-                                // Offset playful backplate
-                                Positioned(
-                                  top: -4,
-                                  right: -4,
-                                  child: Container(
-                                    width: 104,
-                                    height: 104,
-                                    decoration: BoxDecoration(
-                                      color: isDark
-                                          ? const Color(0x336C63FF)
-                                          : const Color(0xFFFFAE33),
-                                      borderRadius: BorderRadius.circular(28),
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  width: 104,
-                                  height: 104,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(28),
-                                    border: Border.all(color: Colors.white, width: 2.5),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black.withValues(alpha: 0.12),
-                                        blurRadius: 16,
-                                        offset: const Offset(0, 6),
+                                      const SizedBox(width: 3),
+                                      const Icon(
+                                        Icons.chevron_right_rounded,
+                                        color: Colors.white70,
+                                        size: 16,
                                       ),
                                     ],
                                   ),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(26),
-                                    child: widget.dog.assetImagePath != null
-                                        ? Image.asset(
-                                            widget.dog.assetImagePath!,
-                                            fit: BoxFit.cover,
-                                            errorBuilder: (_, _, _) => Center(
-                                              child: Text(widget.dog.avatarEmoji, style: const TextStyle(fontSize: 40)),
-                                            ),
-                                          )
-                                        : Container(
-                                            color: const Color(0xFFFFF9EE),
-                                            child: Center(
-                                              child: Text(widget.dog.avatarEmoji, style: const TextStyle(fontSize: 40)),
-                                            ),
-                                          ),
-                                  ),
                                 ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 20),
-
-                    // Floating frosted glass footer pill (Pawsure & Pupora inspired)
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
-                      child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                          decoration: BoxDecoration(
-                            color: isDark
-                                ? const Color(0x4016181F)
-                                : Colors.white.withValues(alpha: 0.55),
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(
-                              color: isDark
-                                  ? const Color(0x33FFFFFF)
-                                  : Colors.white.withValues(alpha: 0.8),
-                              width: 1.2,
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              _TelemetryItem(
-                                label: 'Heart Rate',
-                                value: '${widget.summary.vitals.heartRateBpm} bpm',
-                                isDark: isDark,
-                              ),
-                              Container(height: 22, width: 1, color: isDark ? const Color(0x33FFFFFF) : const Color(0x33181A20)),
-                              _TelemetryItem(
-                                label: 'Temperature',
-                                value: '${widget.summary.vitals.temperatureC.toStringAsFixed(1)}°C',
-                                isDark: isDark,
-                              ),
-                              Container(height: 22, width: 1, color: isDark ? const Color(0x33FFFFFF) : const Color(0x33181A20)),
-                              _TelemetryItem(
-                                label: 'Health Score',
-                                value: '${widget.summary.healthScore}%',
-                                isDark: isDark,
-                                isAccent: true,
                               ),
                             ],
                           ),
                         ),
-                      ),
+                        const SizedBox(width: 14),
+                        // Pet portrait with rounded frame, offset backing, and "AI Ready" indicator
+                        SizedBox(
+                          width: 96,
+                          height: 96,
+                          child: Stack(
+                            clipBehavior: Clip.none,
+                            children: [
+                              // Offset playful backplate
+                              Positioned(
+                                top: -4,
+                                right: -4,
+                                child: Container(
+                                  width: 96,
+                                  height: 96,
+                                  decoration: BoxDecoration(
+                                    color: isDark
+                                        ? const Color(0x336C63FF)
+                                        : const Color(0xFFFFAE33),
+                                    borderRadius: BorderRadius.circular(26),
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                width: 96,
+                                height: 96,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(26),
+                                  border: Border.all(color: Colors.white, width: 2.5),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withValues(alpha: 0.12),
+                                      blurRadius: 16,
+                                      offset: const Offset(0, 6),
+                                    ),
+                                  ],
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(24),
+                                  child: widget.dog.assetImagePath != null
+                                      ? Image.asset(
+                                          widget.dog.assetImagePath!,
+                                          fit: BoxFit.cover,
+                                          errorBuilder: (_, _, _) => Center(
+                                            child: Text(widget.dog.avatarEmoji, style: const TextStyle(fontSize: 36)),
+                                          ),
+                                        )
+                                      : Container(
+                                          color: const Color(0xFFFFF9EE),
+                                          child: Center(
+                                            child: Text(widget.dog.avatarEmoji, style: const TextStyle(fontSize: 36)),
+                                          ),
+                                        ),
+                                ),
+                              ),
+                              // Floating AI Ready chip at bottom of avatar
+                              Positioned(
+                                bottom: -7,
+                                left: 0,
+                                right: 0,
+                                child: Center(
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2.5),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFF181A20),
+                                      borderRadius: BorderRadius.circular(12),
+                                      border: Border.all(color: const Color(0xFFFED25E), width: 1),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withValues(alpha: 0.2),
+                                          blurRadius: 6,
+                                          offset: const Offset(0, 2),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Container(
+                                          width: 5.5,
+                                          height: 5.5,
+                                          decoration: const BoxDecoration(
+                                            color: Color(0xFF10B981),
+                                            shape: BoxShape.circle,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 4),
+                                        Text(
+                                          'AI Ready',
+                                          style: GoogleFonts.plusJakartaSans(
+                                            color: Colors.white,
+                                            fontSize: 9,
+                                            fontWeight: FontWeight.w800,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -391,50 +400,6 @@ class _HomeHeroPetCardState extends State<HomeHeroPetCard> {
           ),
         ),
       ),
-    );
-  }
-}
-
-class _TelemetryItem extends StatelessWidget {
-  const _TelemetryItem({
-    required this.label,
-    required this.value,
-    required this.isDark,
-    this.isAccent = false,
-  });
-
-  final String label;
-  final String value;
-  final bool isDark;
-  final bool isAccent;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(
-          label,
-          style: GoogleFonts.plusJakartaSans(
-            fontSize: 10.5,
-            fontWeight: FontWeight.w600,
-            color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF57534E),
-          ),
-        ),
-        const SizedBox(height: 2),
-        Text(
-          value,
-          style: GoogleFonts.plusJakartaSans(
-            fontSize: 13,
-            fontWeight: FontWeight.w800,
-            color: isAccent
-                ? (isDark ? const Color(0xFF2DD4BF) : const Color(0xFF0F766E))
-                : (isDark ? Colors.white : const Color(0xFF181A20)),
-            letterSpacing: -0.2,
-          ),
-        ),
-      ],
     );
   }
 }

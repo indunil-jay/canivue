@@ -332,7 +332,7 @@ class _HealthCheckCaptureScreenState extends State<HealthCheckCaptureScreen> {
                     _buildSampleDemoCard(isDark),
                     const SizedBox(height: 20),
 
-                    if (!widget.lockPetSelection && widget.pets.length > 1) ...[
+                    if (!widget.lockPetSelection && widget.pets.isNotEmpty) ...[
                       _sectionHeader('SELECT PET FOR DIAGNOSTICS', isDark),
                       const SizedBox(height: 10),
                       SizedBox(
@@ -774,8 +774,10 @@ class _PetChip extends StatelessWidget {
               backgroundColor: Colors.white,
               backgroundImage: pet.imagePath != null && File(pet.imagePath!).existsSync()
                   ? FileImage(File(pet.imagePath!))
+                  : (pet.assetImagePath != null ? AssetImage(pet.assetImagePath!) as ImageProvider : null),
+              child: (pet.imagePath == null && pet.assetImagePath == null)
+                  ? Text(pet.avatarEmoji, style: const TextStyle(fontSize: 20))
                   : null,
-              child: pet.imagePath == null ? Text(pet.avatarEmoji, style: const TextStyle(fontSize: 20)) : null,
             ),
             const SizedBox(height: 6),
             Text(
