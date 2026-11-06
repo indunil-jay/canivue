@@ -801,45 +801,87 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           border: Border.all(
             color: a11y.highContrast
                 ? (isDark ? Colors.white : Colors.black)
-                : (isDark ? const Color(0x22FFFFFF) : const Color(0xFFECE6DC)),
-            width: a11y.highContrast ? 2.0 : 1.0,
+                : (isDark ? const Color(0x332DD4BF) : const Color(0xFFECE6DC)),
+            width: a11y.highContrast ? 2.0 : 1.2,
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.03),
-              blurRadius: 10,
+              color: Colors.black.withValues(alpha: isDark ? 0.25 : 0.04),
+              blurRadius: 12,
               offset: const Offset(0, 3),
             ),
           ],
         ),
         child: Row(
           children: [
-            Icon(
-              Icons.search_rounded,
-              color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF78716C),
-              size: 20,
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Text(
-                'Search dogs, health records, vets...',
-                style: GoogleFonts.plusJakartaSans(
-                  color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF78716C),
-                  fontSize: 13.5 * a11y.textScaleFactor,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
             Container(
               padding: const EdgeInsets.all(6),
               decoration: BoxDecoration(
-                color: const Color(0xFFFED25E),
+                color: isDark ? const Color(0x2214B8A6) : AppColors.pastelMint,
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: const Icon(
-                Icons.tune_rounded,
-                size: 16,
-                color: Color(0xFF181A20),
+              child: Icon(
+                Icons.search_rounded,
+                color: isDark ? const Color(0xFF2DD4BF) : const Color(0xFF0F766E),
+                size: 18,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Search Canivue Hub',
+                    style: GoogleFonts.plusJakartaSans(
+                      color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                      fontSize: 13.5 * a11y.textScaleFactor,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  Text(
+                    'Pets, clinicians, symptoms, groups...',
+                    style: GoogleFonts.plusJakartaSans(
+                      color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF78716C),
+                      fontSize: 11.5 * a11y.textScaleFactor,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(
+                color: const Color(0xFFFED25E),
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFFFED25E).withValues(alpha: 0.35),
+                    blurRadius: 6,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(
+                    Icons.tune_rounded,
+                    size: 14,
+                    color: Color(0xFF181A20),
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    'Filter',
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 11.5,
+                      fontWeight: FontWeight.w800,
+                      color: const Color(0xFF181A20),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],

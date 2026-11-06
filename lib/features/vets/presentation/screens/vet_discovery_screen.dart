@@ -26,6 +26,7 @@ class VetDiscoveryScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final resultsAsync = ref.watch(vetSearchResultsProvider);
     final filters = ref.watch(vetSearchFiltersProvider);
+    final searchQuery = ref.watch(vetSearchQueryProvider);
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
@@ -145,6 +146,25 @@ class VetDiscoveryScreen extends ConsumerWidget {
                           ),
                         ),
                       ),
+                      if (searchQuery.isNotEmpty)
+                        GestureDetector(
+                          onTap: () {
+                            HapticFeedback.lightImpact();
+                            ref.read(vetSearchQueryProvider.notifier).state = '';
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                              color: isDark ? const Color(0x33FFFFFF) : const Color(0xFFE5E7EB),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              Icons.close_rounded,
+                              size: 14,
+                              color: isDark ? Colors.white : const Color(0xFF4B5563),
+                            ),
+                          ),
+                        ),
                     ],
                   ),
                 ),
