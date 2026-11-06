@@ -10,9 +10,13 @@ import 'package:canivue/features/auth/screens/signup_screen.dart';
 import 'package:canivue/features/auth/screens/splash_screen.dart';
 import 'package:canivue/features/community/presentation/screens/community_screen.dart';
 import 'package:canivue/features/health/presentation/screens/health_screen.dart';
+import 'package:canivue/features/health_check/screens/health_check_capture_screen.dart';
 import 'package:canivue/features/home/screens/home_screen.dart';
 import 'package:canivue/features/messages/presentation/screens/messages_screen.dart';
 import 'package:canivue/features/onboarding/screens/onboarding_screen.dart';
+import 'package:canivue/features/pets/models/pet_model.dart';
+import 'package:canivue/features/pets/presentation/controllers/dogs_controller.dart';
+import 'package:canivue/features/predictions/presentation/screens/prediction_history_screen.dart';
 import 'package:canivue/features/profile/screens/profile_screen.dart';
 import 'package:canivue/features/vet_portal/presentation/screens/vet_dashboard_screen.dart';
 import 'package:canivue/features/vet_portal/presentation/screens/vet_patient_list_screen.dart';
@@ -57,6 +61,25 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(path: '/sign-in', builder: (context, state) => const SignInScreen()),
       GoRoute(path: '/sign-up', builder: (context, state) => const SignUpScreen()),
       GoRoute(path: '/forgot-password', builder: (context, state) => const ForgotPasswordScreen()),
+      GoRoute(
+        path: '/ai-health-check',
+        builder: (context, state) {
+          final dogs = ref.read(dogsProvider).value ?? Pet.samplePets;
+          final activeDog = ref.read(activeDogProvider).value;
+          return HealthCheckCaptureScreen(pets: dogs, initialPet: activeDog);
+        },
+      ),
+      GoRoute(
+        path: '/health-check',
+        redirect: (context, state) => '/ai-health-check',
+      ),
+      GoRoute(
+        path: '/predictions',
+        builder: (context, state) {
+          final activeDog = ref.read(activeDogProvider).value ?? Pet.samplePets.first;
+          return PredictionHistoryScreen(dogId: activeDog.id, dogName: activeDog.name);
+        },
+      ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) => OwnerShell(navigationShell: navigationShell),
         branches: [

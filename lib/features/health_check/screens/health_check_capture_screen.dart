@@ -1,18 +1,20 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:canivue/core/design_system/tokens/tokens.dart';
 import 'package:canivue/core/theme/app_theme.dart';
 import 'package:canivue/core/utils/page_transitions.dart';
+import 'package:canivue/core/widgets/ambient_paw_backdrop.dart';
 import 'package:canivue/features/auth/widgets/custom_text_field.dart';
 import 'package:canivue/features/health_check/screens/health_check_result_screen.dart';
 import 'package:canivue/features/health_check/services/fusion_risk_engine.dart';
 import 'package:canivue/features/pets/models/pet_model.dart';
 
-/// Owner-facing entry point for a single AI Health Check run. Collects the
-/// three evidence streams described in the proposal — a photo, smart-collar
-/// status, and a free-text symptom description — then runs them through the
-/// [FusionRiskEngine] and hands the result to [HealthCheckResultScreen].
+/// Owner-facing entry point for an AI Health Check run:
+/// combines photo evidence, smart collar telemetry, and symptom observations.
 class HealthCheckCaptureScreen extends StatefulWidget {
   const HealthCheckCaptureScreen({
     super.key,
@@ -59,49 +61,57 @@ class _HealthCheckCaptureScreenState extends State<HealthCheckCaptureScreen> {
         maxHeight: 1000,
         imageQuality: 85,
       );
+
       if (pickedFile != null) {
-        setState(() => _imageFile = File(pickedFile.path));
+        setState(() {
+          _imageFile = File(pickedFile.path);
+        });
       }
     } catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Could not access image: $e'),
-          backgroundColor: Theme.of(context).colorScheme.error,
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Could not access image: $e')),
+        );
+      }
     }
   }
 
   void _showPhotoOptions() {
+    HapticFeedback.lightImpact();
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
       ),
       builder: (context) {
+        final isDark = Theme.of(context).brightness == Brightness.dark;
         return SafeArea(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Add Symptom Photo',
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                Center(
+                  child: Container(
+                    height: 4,
+                    width: 36,
+                    decoration: BoxDecoration(
+                      color: isDark ? Colors.white24 : Colors.black12,
+                      borderRadius: BorderRadius.circular(2),
                     ),
-                    IconButton(
-                      icon: const Icon(Icons.close_rounded),
-                      onPressed: () => Navigator.of(context).pop(),
-                    ),
-                  ],
+                  ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 16),
+                Text(
+                  'Add Symptom Photo',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.plusJakartaSans(
+                    fontWeight: FontWeight.w800,
+                    fontSize: 17,
+                  ),
+                ),
+                const SizedBox(height: 16),
                 Row(
                   children: [
                     Expanded(
@@ -109,7 +119,7 @@ class _HealthCheckCaptureScreenState extends State<HealthCheckCaptureScreen> {
                         icon: Icons.camera_alt_rounded,
                         label: 'Take Photo',
                         onTap: () {
-                          Navigator.of(context).pop();
+                          Navigator.pop(context);
                           _pickImage(ImageSource.camera);
                         },
                       ),
@@ -120,7 +130,7 @@ class _HealthCheckCaptureScreenState extends State<HealthCheckCaptureScreen> {
                         icon: Icons.photo_library_rounded,
                         label: 'From Gallery',
                         onTap: () {
-                          Navigator.of(context).pop();
+                          Navigator.pop(context);
                           _pickImage(ImageSource.gallery);
                         },
                       ),
@@ -128,17 +138,22 @@ class _HealthCheckCaptureScreenState extends State<HealthCheckCaptureScreen> {
                   ],
                 ),
                 if (_imageFile != null) ...[
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 12),
                   TextButton.icon(
                     onPressed: () {
+                      Navigator.pop(context);
                       setState(() => _imageFile = null);
-                      Navigator.of(context).pop();
                     },
-                    icon: const Icon(Icons.delete_outline_rounded, color: Colors.red, size: 20),
-                    label: const Text('Remove Photo', style: TextStyle(color: Colors.red)),
+                    icon: const Icon(Icons.delete_outline_rounded, color: Color(0xFFF43F5E), size: 18),
+                    label: Text(
+                      'Remove photo',
+                      style: GoogleFonts.plusJakartaSans(
+                        color: const Color(0xFFF43F5E),
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
                   ),
                 ],
-                const SizedBox(height: 8),
               ],
             ),
           ),
@@ -148,16 +163,48 @@ class _HealthCheckCaptureScreenState extends State<HealthCheckCaptureScreen> {
   }
 
   Future<void> _toggleCollar(bool value) async {
+    HapticFeedback.lightImpact();
     if (!value) {
       setState(() => _collarConnected = false);
       return;
     }
     setState(() => _collarConnecting = true);
-    await Future.delayed(const Duration(milliseconds: 700));
+    await Future.delayed(const Duration(milliseconds: 900));
     if (!mounted) return;
     setState(() {
       _collarConnecting = false;
       _collarConnected = true;
+    });
+  }
+
+  void _loadSampleCase({
+    required String symptoms,
+    bool collar = true,
+  }) {
+    HapticFeedback.lightImpact();
+    setState(() {
+      _symptomController.text = symptoms;
+      _collarConnected = collar;
+    });
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Loaded sample observation & paired smart collar data! Tap "Run AI Analysis" below.'),
+          behavior: SnackBarBehavior.floating,
+          duration: Duration(seconds: 2),
+        ),
+      );
+    }
+  }
+
+  void _applySymptom(String symptom) {
+    HapticFeedback.selectionClick();
+    setState(() {
+      if (_symptomController.text.trim().isEmpty) {
+        _symptomController.text = symptom;
+      } else {
+        _symptomController.text = '${_symptomController.text.trim()}, $symptom';
+      }
     });
   }
 
@@ -179,9 +226,8 @@ class _HealthCheckCaptureScreenState extends State<HealthCheckCaptureScreen> {
       return;
     }
 
+    HapticFeedback.mediumImpact();
     setState(() => _isAnalyzing = true);
-    // Simulated on-device fusion latency, keeping within the proposal's
-    // "current multimodal inference <= 3 seconds" performance target.
     await Future.delayed(const Duration(milliseconds: 1800));
     if (!mounted) return;
 
@@ -193,294 +239,460 @@ class _HealthCheckCaptureScreenState extends State<HealthCheckCaptureScreen> {
     );
 
     setState(() => _isAnalyzing = false);
-
     Navigator.of(context).push(fadeSlidePageRoute(HealthCheckResultScreen(result: result)));
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
+    final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
+      backgroundColor: isDark ? AppColors.darkBackground : AppColors.lightBackground,
       appBar: AppBar(
-        backgroundColor: colorScheme.surface,
+        backgroundColor: Colors.transparent,
         elevation: 0,
+        surfaceTintColor: Colors.transparent,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new_rounded, color: colorScheme.onSurface),
+          icon: Icon(
+            Icons.arrow_back_ios_new_rounded,
+            color: isDark ? Colors.white : const Color(0xFF181A20),
+            size: 20,
+          ),
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
           'AI Health Check',
-          style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+          style: GoogleFonts.plusJakartaSans(
+            fontWeight: FontWeight.w800,
+            fontSize: 18,
+            color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+          ),
         ),
       ),
-      body: AbsorbPointer(
-        absorbing: _isAnalyzing,
-        child: Stack(
-          children: [
-            SafeArea(
-              child: Center(
-                child: SingleChildScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 540),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        // Intro banner
-                        Container(
-                          padding: const EdgeInsets.all(18),
-                          decoration: BoxDecoration(
-                            gradient: AppTheme.heroGradient,
-                            borderRadius: BorderRadius.circular(20),
-                            boxShadow: [
-                              BoxShadow(
-                                color: AppTheme.primaryBlue.withValues(alpha: 0.3),
-                                blurRadius: 16,
-                                offset: const Offset(0, 8),
-                              ),
-                            ],
+      body: AmbientPawBackdrop(
+        showContainerLines: false,
+        showPawWatermarks: true,
+        showParticles: false,
+        child: AbsorbPointer(
+          absorbing: _isAnalyzing,
+          child: Stack(
+            children: [
+              SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                padding: const EdgeInsets.fromLTRB(20, 6, 20, 36),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // Intro banner
+                    Container(
+                      padding: const EdgeInsets.all(18),
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFF0F766E), Color(0xFF14B8A6)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(24),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.primary.withValues(alpha: 0.35),
+                            blurRadius: 16,
+                            offset: const Offset(0, 6),
                           ),
-                          child: Row(
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                  color: Colors.white.withValues(alpha: 0.2),
-                                  borderRadius: BorderRadius.circular(14),
-                                ),
-                                child: const Icon(Icons.biotech_rounded, color: Colors.white, size: 26),
-                              ),
-                              const SizedBox(width: 14),
-                              Expanded(
-                                child: Text(
-                                  'Combine a photo, your smart collar and a symptom note. Our confidence-weighted adaptive fusion engine analyses them together.',
-                                  style: TextStyle(color: Colors.white.withValues(alpha: 0.95), fontSize: 12.5, height: 1.4),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ).animate().fadeIn(duration: 350.ms).slideY(begin: 0.15, end: 0),
-                        const SizedBox(height: 22),
-
-                        if (!widget.lockPetSelection && widget.pets.length > 1) ...[
-                          _SectionLabel(text: 'SELECT PET'),
-                          const SizedBox(height: 10),
-                          SizedBox(
-                            height: 84,
-                            child: ListView.separated(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: widget.pets.length,
-                              separatorBuilder: (_, _) => const SizedBox(width: 10),
-                              itemBuilder: (context, index) {
-                                final pet = widget.pets[index];
-                                final selected = pet.id == _selectedPet?.id;
-                                return _PetChip(
-                                  pet: pet,
-                                  selected: selected,
-                                  onTap: () => setState(() => _selectedPet = pet),
-                                );
-                              },
-                            ),
-                          ),
-                          const SizedBox(height: 24),
                         ],
-
-                        _SectionLabel(text: '1 · PHOTO EVIDENCE (OPTIONAL)'),
-                        const SizedBox(height: 10),
-                        InkWell(
-                          onTap: _showPhotoOptions,
-                          borderRadius: BorderRadius.circular(18),
-                          child: Container(
-                            height: 150,
-                            width: double.infinity,
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(10),
                             decoration: BoxDecoration(
-                              color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
-                              borderRadius: BorderRadius.circular(18),
-                              border: Border.all(
-                                color: colorScheme.outlineVariant.withValues(alpha: 0.6),
-                                style: BorderStyle.solid,
+                              color: Colors.white.withValues(alpha: 0.22),
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                            child: const Icon(Icons.biotech_rounded, color: Colors.white, size: 26),
+                          ),
+                          const SizedBox(width: 14),
+                          Expanded(
+                            child: Text(
+                              'Combine a photo, smart collar vitals and your observation note. Our multi-modal neural fusion engine evaluates disease trajectories.',
+                              style: GoogleFonts.plusJakartaSans(
+                                color: Colors.white.withValues(alpha: 0.95),
+                                fontSize: 12.5,
+                                fontWeight: FontWeight.w500,
+                                height: 1.4,
                               ),
                             ),
-                            clipBehavior: Clip.antiAlias,
-                            child: _imageFile != null
-                                ? Stack(
-                                    fit: StackFit.expand,
-                                    children: [
-                                      Image.file(_imageFile!, fit: BoxFit.cover),
-                                      Positioned(
-                                        right: 8,
-                                        top: 8,
-                                        child: CircleAvatar(
-                                          radius: 14,
-                                          backgroundColor: Colors.black.withValues(alpha: 0.55),
-                                          child: const Icon(Icons.edit_rounded, size: 14, color: Colors.white),
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                                : Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(Icons.add_a_photo_rounded, color: colorScheme.primary, size: 30),
-                                      const SizedBox(height: 8),
-                                      Text(
-                                        'Add a photo of the affected area',
-                                        style: TextStyle(color: colorScheme.onSurfaceVariant, fontSize: 13, fontWeight: FontWeight.w600),
-                                      ),
-                                    ],
-                                  ),
                           ),
-                        ),
-                        const SizedBox(height: 24),
+                        ],
+                      ),
+                    ).animate().fadeIn(duration: 350.ms).slideY(begin: 0.1, end: 0),
+                    const SizedBox(height: 14),
 
-                        _SectionLabel(text: '2 · SMART COLLAR (OPTIONAL)'),
-                        const SizedBox(height: 10),
-                        Container(
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
-                            borderRadius: BorderRadius.circular(18),
-                            border: Border.all(color: colorScheme.outlineVariant.withValues(alpha: 0.6)),
-                          ),
-                          child: Row(
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                  color: (_collarConnected ? AppTheme.successGreen : colorScheme.primary).withValues(alpha: 0.12),
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: Icon(
-                                  Icons.sensors_rounded,
-                                  color: _collarConnected ? AppTheme.successGreen : colorScheme.primary,
-                                  size: 22,
-                                ),
-                              ),
-                              const SizedBox(width: 14),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      _collarConnecting
-                                          ? 'Pairing with collar…'
-                                          : (_collarConnected ? 'Connected · Motion data synced' : 'ESP32 + MPU6050 Smart Collar'),
-                                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13.5),
-                                    ),
-                                    const SizedBox(height: 2),
-                                    Text(
-                                      _collarConnected
-                                          ? 'Scratching, activity and gait signals included'
-                                          : 'Adds behavioural motion data to the analysis',
-                                      style: TextStyle(fontSize: 11.5, color: colorScheme.onSurfaceVariant),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              _collarConnecting
-                                  ? const SizedBox(
-                                      height: 22,
-                                      width: 22,
-                                      child: CircularProgressIndicator(strokeWidth: 2.4),
-                                    )
-                                  : Switch(
-                                      value: _collarConnected,
-                                      onChanged: _toggleCollar,
-                                      activeThumbColor: AppTheme.successGreen,
-                                    ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 24),
+                    // Quick Demo / Sample Pre-fill Card
+                    _buildSampleDemoCard(isDark),
+                    const SizedBox(height: 20),
 
-                        _SectionLabel(text: '3 · DESCRIBE WHAT YOU\'RE SEEING'),
-                        const SizedBox(height: 10),
-                        CustomTextField(
-                          controller: _symptomController,
-                          label: '',
-                          hintText: 'e.g. "Scratching a lot for 3 days, redness behind the ears, seems worse today"',
-                          prefixIcon: Icons.notes_rounded,
-                          maxLines: 4,
-                          textInputAction: TextInputAction.done,
+                    if (!widget.lockPetSelection && widget.pets.length > 1) ...[
+                      _sectionHeader('SELECT PET FOR DIAGNOSTICS', isDark),
+                      const SizedBox(height: 10),
+                      SizedBox(
+                        height: 90,
+                        child: ListView.separated(
+                          scrollDirection: Axis.horizontal,
+                          physics: const BouncingScrollPhysics(),
+                          itemCount: widget.pets.length,
+                          separatorBuilder: (_, _) => const SizedBox(width: 10),
+                          itemBuilder: (context, index) {
+                            final pet = widget.pets[index];
+                            final selected = pet.id == _selectedPet?.id;
+                            return _PetChip(
+                              pet: pet,
+                              selected: selected,
+                              onTap: () => setState(() => _selectedPet = pet),
+                              isDark: isDark,
+                            );
+                          },
                         ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'The more detail you give, the more the text stream can contribute to the fused result.',
-                          style: TextStyle(fontSize: 11.5, color: colorScheme.onSurfaceVariant),
-                        ),
-                        const SizedBox(height: 28),
+                      ),
+                      const SizedBox(height: 20),
+                    ],
 
-                        // Run analysis button
-                        Container(
-                          height: 54,
-                          decoration: BoxDecoration(
-                            gradient: AppTheme.primaryGradient,
-                            borderRadius: BorderRadius.circular(16),
-                            boxShadow: [
-                              BoxShadow(
-                                color: AppTheme.primaryBlue.withValues(alpha: 0.35),
-                                blurRadius: 14,
-                                offset: const Offset(0, 5),
-                              ),
-                            ],
+                    _sectionHeader('1 · PHOTO EVIDENCE (OPTIONAL)', isDark),
+                    const SizedBox(height: 10),
+                    InkWell(
+                      onTap: _showPhotoOptions,
+                      borderRadius: BorderRadius.circular(22),
+                      child: Container(
+                        height: 155,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: isDark ? AppColors.darkCard : Colors.white,
+                          borderRadius: BorderRadius.circular(22),
+                          border: Border.all(
+                            color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                            width: 1.2,
                           ),
-                          child: ElevatedButton.icon(
-                            onPressed: _isAnalyzing ? null : _runAnalysis,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.transparent,
-                              shadowColor: Colors.transparent,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                            ),
-                            icon: const Icon(Icons.auto_awesome_rounded, color: Colors.white),
-                            label: const Text(
-                              'Run AI Analysis',
-                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 14),
-                        Row(
-                          children: [
-                            Icon(Icons.info_outline_rounded, size: 14, color: colorScheme.onSurfaceVariant),
-                            const SizedBox(width: 6),
-                            Expanded(
-                              child: Text(
-                                'A preliminary decision-support result, not a substitute for veterinary examination.',
-                                style: TextStyle(fontSize: 11, color: colorScheme.onSurfaceVariant),
-                              ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
+                              blurRadius: 12,
+                              offset: const Offset(0, 4),
                             ),
                           ],
                         ),
+                        clipBehavior: Clip.antiAlias,
+                        child: _imageFile != null
+                            ? Stack(
+                                fit: StackFit.expand,
+                                children: [
+                                  Image.file(_imageFile!, fit: BoxFit.cover),
+                                  Positioned(
+                                    right: 10,
+                                    top: 10,
+                                    child: CircleAvatar(
+                                      radius: 16,
+                                      backgroundColor: Colors.black.withValues(alpha: 0.6),
+                                      child: const Icon(Icons.edit_rounded, size: 16, color: Colors.white),
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.all(12),
+                                    decoration: BoxDecoration(
+                                      color: isDark ? const Color(0x2214B8A6) : AppColors.pastelMint,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: const Icon(Icons.add_a_photo_rounded, color: Color(0xFF0F766E), size: 26),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Text(
+                                    'Add a photo of the affected area',
+                                    style: GoogleFonts.plusJakartaSans(
+                                      color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                                      fontSize: 13.5,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    'Skin, eyes, gait, or oral symptoms',
+                                    style: GoogleFonts.plusJakartaSans(
+                                      color: isDark ? AppColors.darkMutedText : AppColors.lightMutedText,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+
+                    _sectionHeader('2 · SMART COLLAR (OPTIONAL)', isDark),
+                    const SizedBox(height: 10),
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: isDark ? AppColors.darkCard : Colors.white,
+                        borderRadius: BorderRadius.circular(22),
+                        border: Border.all(
+                          color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                          width: 1.2,
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: (_collarConnected ? const Color(0xFF10B981) : const Color(0xFF0F766E))
+                                  .withValues(alpha: isDark ? 0.2 : 0.1),
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                            child: Icon(
+                              Icons.sensors_rounded,
+                              color: _collarConnected ? const Color(0xFF10B981) : const Color(0xFF0F766E),
+                              size: 24,
+                            ),
+                          ),
+                          const SizedBox(width: 14),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  _collarConnecting
+                                      ? 'Pairing with collar…'
+                                      : (_collarConnected ? 'Connected · Real-time Synced' : 'Canivue Smart Collar'),
+                                  style: GoogleFonts.plusJakartaSans(
+                                    fontWeight: FontWeight.w800,
+                                    fontSize: 14,
+                                    color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                                  ),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  _collarConnected
+                                      ? 'Scratching, resting heart rate & gait active'
+                                      : 'Fuses motion telemetry with visual symptoms',
+                                  style: GoogleFonts.plusJakartaSans(
+                                    fontSize: 12,
+                                    color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          _collarConnecting
+                              ? const SizedBox(
+                                  height: 22,
+                                  width: 22,
+                                  child: CircularProgressIndicator(strokeWidth: 2.4),
+                                )
+                              : Switch(
+                                  value: _collarConnected,
+                                  onChanged: _toggleCollar,
+                                  activeColor: const Color(0xFF10B981),
+                                ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+
+                    _sectionHeader('3 · DESCRIBE OBSERVATIONS', isDark),
+                    const SizedBox(height: 10),
+                    CustomTextField(
+                      controller: _symptomController,
+                      label: '',
+                      hintText: 'e.g. "Frequent scratching around left ear for 3 days, mild redness, lethargic after walks"',
+                      prefixIcon: Icons.notes_rounded,
+                      maxLines: 4,
+                      textInputAction: TextInputAction.done,
+                    ),
+                    const SizedBox(height: 10),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: [
+                        _QuickSymptomChip(
+                          label: '🐾 Limping / Stiffness',
+                          onTap: () => _applySymptom('Mild limping on left rear leg after exercise, stiff when standing up.'),
+                          isDark: isDark,
+                        ),
+                        _QuickSymptomChip(
+                          label: '🩺 Scratching & Redness',
+                          onTap: () => _applySymptom('Frequent scratching around ears and neck for 3 days with mild redness.'),
+                          isDark: isDark,
+                        ),
+                        _QuickSymptomChip(
+                          label: '😮‍💨 Persistent Cough',
+                          onTap: () => _applySymptom('Dry hacking cough especially after running, slight wheezing at rest.'),
+                          isDark: isDark,
+                        ),
+                        _QuickSymptomChip(
+                          label: '🥣 Low Appetite',
+                          onTap: () => _applySymptom('Refusing dry kibble for 2 days, lethargic, drinking normal water.'),
+                          isDark: isDark,
+                        ),
                       ],
                     ),
-                  ),
+                    const SizedBox(height: 24),
+
+                    // Run Analysis Button
+                    FilledButton(
+                      onPressed: _isAnalyzing ? null : _runAnalysis,
+                      style: FilledButton.styleFrom(
+                        backgroundColor: isDark ? AppColors.charcoalBlack : const Color(0xFF181A20),
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        elevation: 3,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(Icons.auto_awesome_rounded, size: 20, color: Color(0xFF00F2FE)),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Run AI Analysis',
+                            style: GoogleFonts.plusJakartaSans(
+                              fontSize: 15.5,
+                              fontWeight: FontWeight.w800,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ),
-            if (_isAnalyzing) const _AnalyzingOverlay(),
-          ],
+              if (_isAnalyzing) const _AnalyzingOverlay(),
+            ],
+          ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildSampleDemoCard(bool isDark) {
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF1E2430) : const Color(0xFFF1F5F9),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(
+          color: isDark ? const Color(0x33FED25E) : const Color(0xFFE2E8F0),
+        ),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: const Color(0xFFFED25E).withValues(alpha: 0.2),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(Icons.flash_on_rounded, size: 18, color: Color(0xFFD97706)),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Quick Demo / Test Run',
+                  style: GoogleFonts.plusJakartaSans(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 12.5,
+                    color: isDark ? Colors.white : const Color(0xFF0F172A),
+                  ),
+                ),
+                Text(
+                  'Pre-fill sample symptoms & collar telemetry',
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 11,
+                    color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          TextButton(
+            onPressed: () => _loadSampleCase(
+              symptoms: 'Scratching a lot for 3 days, redness behind the ears, seems worse today',
+              collar: true,
+            ),
+            style: TextButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              backgroundColor: const Color(0xFFFED25E),
+              foregroundColor: const Color(0xFF181A20),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            ),
+            child: Text(
+              'Fill Demo',
+              style: GoogleFonts.plusJakartaSans(
+                fontWeight: FontWeight.w800,
+                fontSize: 11.5,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _sectionHeader(String text, bool isDark) {
+    return Text(
+      text,
+      style: GoogleFonts.plusJakartaSans(
+        fontWeight: FontWeight.w800,
+        fontSize: 11.5,
+        letterSpacing: 0.6,
+        color: isDark ? AppColors.darkMutedText : AppColors.lightMutedText,
       ),
     );
   }
 }
 
-class _SectionLabel extends StatelessWidget {
-  const _SectionLabel({required this.text});
-  final String text;
+class _QuickSymptomChip extends StatelessWidget {
+  const _QuickSymptomChip({
+    required this.label,
+    required this.onTap,
+    required this.isDark,
+  });
+
+  final String label;
+  final VoidCallback onTap;
+  final bool isDark;
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      text,
-      style: Theme.of(context).textTheme.labelSmall?.copyWith(
-            fontWeight: FontWeight.bold,
-            letterSpacing: 1.1,
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(14),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+        decoration: BoxDecoration(
+          color: isDark ? const Color(0x1AFFFFFF) : const Color(0xFFF1F5F9),
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: isDark ? const Color(0x22FFFFFF) : const Color(0xFFE2E8F0),
           ),
+        ),
+        child: Text(
+          label,
+          style: GoogleFonts.plusJakartaSans(
+            fontSize: 11.5,
+            fontWeight: FontWeight.w600,
+            color: isDark ? Colors.white70 : const Color(0xFF334155),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -493,21 +705,29 @@ class _PhotoOptionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(20),
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 16),
+        padding: const EdgeInsets.symmetric(vertical: 18),
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.5),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.4)),
+          color: isDark ? const Color(0x2214B8A6) : AppColors.pastelMint,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: const Color(0xFF14B8A6).withValues(alpha: 0.3)),
         ),
         child: Column(
           children: [
-            Icon(icon, size: 28, color: Theme.of(context).colorScheme.primary),
+            Icon(icon, size: 28, color: const Color(0xFF0F766E)),
             const SizedBox(height: 8),
-            Text(label, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
+            Text(
+              label,
+              style: GoogleFonts.plusJakartaSans(
+                fontWeight: FontWeight.w700,
+                fontSize: 13,
+                color: isDark ? Colors.white : const Color(0xFF181A20),
+              ),
+            ),
           ],
         ),
       ),
@@ -516,40 +736,58 @@ class _PhotoOptionTile extends StatelessWidget {
 }
 
 class _PetChip extends StatelessWidget {
-  const _PetChip({required this.pet, required this.selected, required this.onTap});
+  const _PetChip({
+    required this.pet,
+    required this.selected,
+    required this.onTap,
+    required this.isDark,
+  });
+
   final Pet pet;
   final bool selected;
   final VoidCallback onTap;
+  final bool isDark;
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(20),
       child: Container(
-        width: 76,
+        width: 82,
         padding: const EdgeInsets.symmetric(vertical: 10),
         decoration: BoxDecoration(
-          color: selected ? colorScheme.primaryContainer.withValues(alpha: 0.6) : colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
-          borderRadius: BorderRadius.circular(16),
+          color: selected
+              ? (isDark ? const Color(0xFF152D28) : AppColors.pastelMint)
+              : (isDark ? AppColors.darkCard : Colors.white),
+          borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: selected ? colorScheme.primary : colorScheme.outlineVariant.withValues(alpha: 0.5),
-            width: selected ? 1.6 : 1,
+            color: selected
+                ? const Color(0xFF10B981)
+                : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
+            width: selected ? 1.8 : 1.2,
           ),
         ),
         child: Column(
           children: [
             CircleAvatar(
-              radius: 18,
+              radius: 20,
               backgroundColor: Colors.white,
-              backgroundImage: pet.imagePath != null && File(pet.imagePath!).existsSync() ? FileImage(File(pet.imagePath!)) : null,
-              child: pet.imagePath == null ? Text(pet.avatarEmoji, style: const TextStyle(fontSize: 18)) : null,
+              backgroundImage: pet.imagePath != null && File(pet.imagePath!).existsSync()
+                  ? FileImage(File(pet.imagePath!))
+                  : null,
+              child: pet.imagePath == null ? Text(pet.avatarEmoji, style: const TextStyle(fontSize: 20)) : null,
             ),
             const SizedBox(height: 6),
             Text(
               pet.name,
-              style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: selected ? colorScheme.primary : null),
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 11.5,
+                fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
+                color: selected
+                    ? (isDark ? const Color(0xFF34D399) : const Color(0xFF0F766E))
+                    : (isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary),
+              ),
               overflow: TextOverflow.ellipsis,
             ),
           ],
@@ -564,16 +802,23 @@ class _AnalyzingOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Positioned.fill(
       child: Container(
-        color: Colors.black.withValues(alpha: 0.55),
+        color: Colors.black.withValues(alpha: 0.65),
         child: Center(
           child: Container(
             padding: const EdgeInsets.all(28),
-            margin: const EdgeInsets.symmetric(horizontal: 40),
+            margin: const EdgeInsets.symmetric(horizontal: 36),
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surface,
-              borderRadius: BorderRadius.circular(24),
+              color: isDark ? AppColors.darkSurface : Colors.white,
+              borderRadius: BorderRadius.circular(28),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.3),
+                  blurRadius: 24,
+                ),
+              ],
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -589,15 +834,23 @@ class _AnalyzingOverlay extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 20),
-                const Text(
-                  'Fusing multimodal evidence…',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                Text(
+                  'Fusing Multi-Modal Evidence…',
+                  style: GoogleFonts.plusJakartaSans(
+                    fontWeight: FontWeight.w800,
+                    fontSize: 16,
+                    color: isDark ? Colors.white : const Color(0xFF181A20),
+                  ),
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  'Weighting image, collar & text by confidence and quality',
+                  'Synthesizing computer vision, smart collar accelerometer telemetry, and clinical symptom tokens.',
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurfaceVariant),
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 12.5,
+                    color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                    height: 1.4,
+                  ),
                 ),
               ],
             ),
@@ -618,7 +871,7 @@ class _PulsingIcon extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        gradient: AppTheme.primaryGradient,
+        gradient: AppColors.primaryGradient,
         shape: BoxShape.circle,
       ),
       child: Icon(icon, color: Colors.white, size: 20),

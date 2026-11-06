@@ -96,6 +96,8 @@ class _PredictionHistoryScreenState extends ConsumerState<PredictionHistoryScree
                 icon: Icons.auto_awesome_rounded,
                 title: 'No AI predictions yet',
                 message: 'Run an AI health check to generate the first fused diagnostic for ${widget.dogName}.',
+                actionLabel: 'Run AI Health Check',
+                onAction: _onLaunchScan,
               );
             }
 
