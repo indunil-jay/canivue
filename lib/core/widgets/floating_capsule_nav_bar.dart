@@ -29,6 +29,7 @@ class CapsuleNavItem {
 /// - Fluid animated pill selector for active tab
 /// - Apple-style press-scaling & haptic feedback
 /// - Subtle ambient drop shadow with dark-mode adaptation
+/// - Scroll-to-hide slide & opacity animation (`isVisible` property)
 /// - Respects safe area and reduced-motion preferences
 class FloatingCapsuleNavBar extends StatelessWidget {
   const FloatingCapsuleNavBar({
@@ -36,11 +37,13 @@ class FloatingCapsuleNavBar extends StatelessWidget {
     required this.items,
     required this.currentIndex,
     required this.onTap,
+    this.isVisible = true,
   });
 
   final List<CapsuleNavItem> items;
   final int currentIndex;
   final ValueChanged<int> onTap;
+  final bool isVisible;
 
   @override
   Widget build(BuildContext context) {
@@ -56,57 +59,72 @@ class FloatingCapsuleNavBar extends StatelessWidget {
         ? const Color(0x33FFFFFF)
         : const Color(0x1F181A20);
 
+    final transitionDuration = reduceMotion ? Duration.zero : const Duration(milliseconds: 280);
+
     return Align(
       alignment: Alignment.bottomCenter,
-      child: SafeArea(
-        top: false,
-        child: Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20, bottom: 12),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(36),
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                decoration: BoxDecoration(
-                  color: navBackground,
+      child: AnimatedSlide(
+        offset: isVisible ? Offset.zero : const Offset(0, 1.4),
+        duration: transitionDuration,
+        curve: Curves.easeOutCubic,
+        child: AnimatedOpacity(
+          opacity: isVisible ? 1.0 : 0.0,
+          duration: transitionDuration,
+          curve: Curves.easeOut,
+          child: IgnorePointer(
+            ignoring: !isVisible,
+            child: SafeArea(
+              top: false,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20, bottom: 12),
+                child: ClipRRect(
                   borderRadius: BorderRadius.circular(36),
-                  border: Border.all(color: borderColor, width: 1.2),
-                  boxShadow: [
-                    BoxShadow(
-                      color: isDark
-                          ? Colors.black.withValues(alpha: 0.5)
-                          : const Color(0x1A181A20),
-                      blurRadius: 28,
-                      offset: const Offset(0, 10),
-                      spreadRadius: -2,
-                    ),
-                    BoxShadow(
-                      color: isDark
-                          ? const Color(0x1A0F766E)
-                          : const Color(0x0D0F766E),
-                      blurRadius: 16,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: List.generate(items.length, (index) {
-                    final item = items[index];
-                    final isSelected = index == currentIndex;
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: navBackground,
+                        borderRadius: BorderRadius.circular(36),
+                        border: Border.all(color: borderColor, width: 1.2),
+                        boxShadow: [
+                          BoxShadow(
+                            color: isDark
+                                ? Colors.black.withValues(alpha: 0.5)
+                                : const Color(0x1A181A20),
+                            blurRadius: 28,
+                            offset: const Offset(0, 10),
+                            spreadRadius: -2,
+                          ),
+                          BoxShadow(
+                            color: isDark
+                                ? const Color(0x1A0F766E)
+                                : const Color(0x0D0F766E),
+                            blurRadius: 16,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: List.generate(items.length, (index) {
+                          final item = items[index];
+                          final isSelected = index == currentIndex;
 
-                    return _CapsuleNavItemWidget(
-                      item: item,
-                      isSelected: isSelected,
-                      isDark: isDark,
-                      reduceMotion: reduceMotion,
-                      onTap: () {
-                        HapticFeedback.lightImpact();
-                        onTap(index);
-                      },
-                    );
-                  }),
+                          return _CapsuleNavItemWidget(
+                            item: item,
+                            isSelected: isSelected,
+                            isDark: isDark,
+                            reduceMotion: reduceMotion,
+                            onTap: () {
+                              HapticFeedback.lightImpact();
+                              onTap(index);
+                            },
+                          );
+                        }),
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),

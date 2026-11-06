@@ -2,19 +2,17 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:canivue/core/widgets/canivue_paw_bone_logo.dart';
 
-/// Ambient backdrop offering soft paw watermarks, restrained ambient particle drift,
-/// and subtle structural container guide lines with corner squares.
+/// Ambient backdrop offering soft paw watermarks and restrained ambient particle drift.
 ///
 /// Implements skills:
 /// - `ambient-section-particles`: restrained subtle floating motes that pause on reduced motion
-/// - `container-lines`: fine vertical layout margins with 5px corner markers
 /// - `anatomy-asset`: branded canine paw-bone silhouettes
 /// - `accessible-animation`: fully respects `MediaQuery.disableAnimations`
 class AmbientPawBackdrop extends StatefulWidget {
   const AmbientPawBackdrop({
     super.key,
     required this.child,
-    this.showContainerLines = true,
+    this.showContainerLines = false,
     this.showPawWatermarks = true,
     this.showParticles = true,
     this.particleCount = 6,
@@ -58,14 +56,6 @@ class _AmbientPawBackdropState extends State<AmbientPawBackdrop>
     final watermarkColor = isDark
         ? const Color(0x0FFFFFFF)
         : const Color(0x0C181A20);
-
-    final guideLineColor = isDark
-        ? const Color(0x12FFFFFF)
-        : const Color(0x0F181A20);
-
-    final cornerSquareColor = isDark
-        ? const Color(0x28FFFFFF)
-        : const Color(0x1F181A20);
 
     return Stack(
       children: [
@@ -124,77 +114,11 @@ class _AmbientPawBackdropState extends State<AmbientPawBackdrop>
             ),
           ),
 
-        // 3. Container structural guide lines with corner squares
-        if (widget.showContainerLines)
-          Positioned.fill(
-            child: IgnorePointer(
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  return CustomPaint(
-                    size: Size(constraints.maxWidth, constraints.maxHeight),
-                    painter: _ContainerLinesPainter(
-                      lineColor: guideLineColor,
-                      cornerColor: cornerSquareColor,
-                      horizontalInset: 16.0,
-                    ),
-                  );
-                },
-              ),
-            ),
-          ),
-
-        // 4. Main Foreground Content
+        // 3. Main Foreground Content
         widget.child,
       ],
     );
   }
-}
-
-class _ContainerLinesPainter extends CustomPainter {
-  const _ContainerLinesPainter({
-    required this.lineColor,
-    required this.cornerColor,
-    required this.horizontalInset,
-  });
-
-  final Color lineColor;
-  final Color cornerColor;
-  final double horizontalInset;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final linePaint = Paint()
-      ..color = lineColor
-      ..strokeWidth = 1.0
-      ..style = PaintingStyle.stroke;
-
-    final cornerPaint = Paint()
-      ..color = cornerColor
-      ..style = PaintingStyle.fill;
-
-    final left = horizontalInset;
-    final right = size.width - horizontalInset;
-    const cornerSize = 4.0;
-
-    // Left vertical guide line
-    canvas.drawLine(Offset(left, 0), Offset(left, size.height), linePaint);
-    // Right vertical guide line
-    canvas.drawLine(Offset(right, 0), Offset(right, size.height), linePaint);
-
-    // Subtle corner markers at header area (y = 80)
-    canvas.drawRect(
-      Rect.fromCenter(center: Offset(left, 80), width: cornerSize, height: cornerSize),
-      cornerPaint,
-    );
-    canvas.drawRect(
-      Rect.fromCenter(center: Offset(right, 80), width: cornerSize, height: cornerSize),
-      cornerPaint,
-    );
-  }
-
-  @override
-  bool shouldRepaint(covariant _ContainerLinesPainter oldDelegate) =>
-      oldDelegate.lineColor != lineColor || oldDelegate.cornerColor != cornerColor;
 }
 
 class _RestrainedParticlesPainter extends CustomPainter {

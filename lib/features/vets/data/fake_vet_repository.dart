@@ -90,7 +90,7 @@ class FakeVetRepository implements VetRepository {
       availableToday: true,
       consultationTypes: [ConsultationType.chat, ConsultationType.video],
       bio: 'General wellness, nutrition planning and routine checkups for dogs of every life stage.',
-      clinics: ['Canivue Care Network'],
+      clinics: ['Canive Care Network'],
       qualifications: ['DVM, Colorado State University'],
       followUpRatePercent: 70,
       recommendationsAcceptedPercent: 75,

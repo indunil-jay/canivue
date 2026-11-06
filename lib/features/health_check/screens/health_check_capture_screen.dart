@@ -271,7 +271,6 @@ class _HealthCheckCaptureScreenState extends State<HealthCheckCaptureScreen> {
         ),
       ),
       body: AmbientPawBackdrop(
-        showContainerLines: false,
         showPawWatermarks: true,
         showParticles: false,
         child: AbsorbPointer(
@@ -467,7 +466,7 @@ class _HealthCheckCaptureScreenState extends State<HealthCheckCaptureScreen> {
                                 Text(
                                   _collarConnecting
                                       ? 'Pairing with collar…'
-                                      : (_collarConnected ? 'Connected · Real-time Synced' : 'Canivue Smart Collar'),
+                                      : (_collarConnected ? 'Connected · Real-time Synced' : 'Canive Smart Collar'),
                                   style: GoogleFonts.plusJakartaSans(
                                     fontWeight: FontWeight.w800,
                                     fontSize: 14,

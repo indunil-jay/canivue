@@ -12,6 +12,7 @@ import 'package:canivue/features/pets/models/pet_model.dart';
 import 'package:canivue/features/pets/presentation/controllers/dogs_controller.dart';
 import 'package:canivue/features/pets/screens/pet_list_screen.dart';
 import 'package:canivue/features/pets/screens/pet_detail_screen.dart';
+import 'package:canivue/features/pets/screens/add_edit_pet_screen.dart';
 import 'package:canivue/features/billing/presentation/screens/subscription_screen.dart';
 import 'package:canivue/features/medical_records/presentation/screens/medical_records_screen.dart';
 import 'package:canivue/features/predictions/presentation/screens/prediction_history_screen.dart';
@@ -39,7 +40,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final confirmed = await AppFeedback.showLuxuryDialog(
       context,
       title: 'Log Out',
-      message: 'Are you sure you want to log out of Canivue?',
+      message: 'Are you sure you want to log out of Canive?',
       confirmText: 'Log Out',
       cancelText: 'Cancel',
       icon: Icons.logout_rounded,
@@ -64,6 +65,16 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     );
   }
 
+  void _onAddNewPet() async {
+    HapticFeedback.lightImpact();
+    final newPet = await Navigator.of(context).push<Pet>(
+      MaterialPageRoute(builder: (_) => const AddEditPetScreen()),
+    );
+    if (newPet != null) {
+      await ref.read(dogsProvider.notifier).addDog(newPet);
+    }
+  }
+
   void _navigateToPets() {
     HapticFeedback.lightImpact();
     Navigator.of(context).push(MaterialPageRoute(builder: (_) => const PetListScreen()));
@@ -84,7 +95,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final user = ref.watch(authControllerProvider);
     final displayName = user?.name.isNotEmpty == true ? user!.name : 'Pet Parent';
-    final email = user?.email ?? 'guest@canivue.com';
+    final email = user?.email ?? 'guest@canive.com';
     final pets = ref.watch(dogsProvider).value ?? const [];
     final activeDog = ref.watch(activeDogProvider).value;
 
@@ -99,7 +110,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         elevation: 0,
       ),
       body: AmbientPawBackdrop(
-        showContainerLines: false,
         showPawWatermarks: true,
         showParticles: true,
         child: SafeArea(
@@ -265,7 +275,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     },
                   ),
                 InkWell(
-                  onTap: _navigateToPets,
+                  onTap: _onAddNewPet,
                   borderRadius: BorderRadius.circular(18),
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
@@ -384,7 +394,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   iconBg: const Color(0xFFFFEDD5),
                   iconColor: const Color(0xFFEA580C),
                   title: 'Membership & Billing',
-                  subtitle: 'Canivue Protection & Insurance Plans',
+                  subtitle: 'Canive Protection & Insurance Plans',
                   onTap: () => Navigator.of(context).push(
                     MaterialPageRoute(builder: (_) => const SubscriptionScreen()),
                   ),

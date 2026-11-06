@@ -121,7 +121,7 @@ class NotificationService extends ChangeNotifier {
       NotificationItem(
         id: 'notif-11',
         title: 'Payment Received',
-        message: 'Your Canivue Premium subscription renewed successfully.',
+        message: 'Your Canive Premium subscription renewed successfully.',
         timestamp: now.subtract(const Duration(days: 3)),
         type: NotificationType.billing,
         petName: 'Buddy',

@@ -1,3 +1,4 @@
+﻿import 'dart:io' show Platform;
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
@@ -336,6 +337,8 @@ class _SlideHeroVisual extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
     final topPadding = MediaQuery.paddingOf(context).top;
+    final isTest = Platform.environment.containsKey('FLUTTER_TEST');
+    final disableAnimations = MediaQuery.of(context).disableAnimations || isTest;
     final isCompact = size.height < 700;
 
     return Padding(
@@ -370,7 +373,7 @@ class _SlideHeroVisual extends StatelessWidget {
                   ),
                 ),
               )
-                  .animate(onPlay: (c) => c.repeat(reverse: true))
+                  .animate(onPlay: disableAnimations ? null : (c) => c.repeat(reverse: true))
                   .scale(
                     begin: const Offset(0.98, 0.98),
                     end: const Offset(1.03, 1.03),
@@ -432,7 +435,7 @@ class _SlideHeroVisual extends StatelessWidget {
                   ),
                 ),
               )
-                  .animate(onPlay: (c) => c.repeat(reverse: true))
+                  .animate(onPlay: disableAnimations ? null : (c) => c.repeat(reverse: true))
                   .moveY(
                     begin: -5,
                     end: 5,

@@ -30,7 +30,7 @@ class _CanivueAppView extends ConsumerWidget {
       valueListenable: AppTheme.themeModeNotifier,
       builder: (context, themeMode, _) {
         return MaterialApp.router(
-          title: 'Canivue',
+          title: 'Canive',
           debugShowCheckedModeBanner: false,
           theme: AppTheme.lightTheme,
           darkTheme: AppTheme.darkTheme,

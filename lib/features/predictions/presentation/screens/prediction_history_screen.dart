@@ -78,7 +78,6 @@ class _PredictionHistoryScreenState extends ConsumerState<PredictionHistoryScree
         ],
       ),
       body: AmbientPawBackdrop(
-        showContainerLines: false,
         showPawWatermarks: true,
         showParticles: true,
         child: historyAsync.when(
@@ -160,7 +159,7 @@ class _PredictionHistoryScreenState extends ConsumerState<PredictionHistoryScree
                           const SizedBox(width: 10),
                           Expanded(
                             child: Text(
-                              'Canivue Multimodal AI Engine',
+                              'Canive Multimodal AI Engine',
                               style: GoogleFonts.plusJakartaSans(
                                 color: const Color(0xFFFED25E),
                                 fontWeight: FontWeight.w700,

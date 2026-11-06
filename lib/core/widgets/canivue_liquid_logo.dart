@@ -357,7 +357,7 @@ class CanivueLandingLogoPreview extends StatelessWidget {
             end: Alignment.bottomRight,
           ).createShader(bounds),
           child: Text(
-            'CANIVUE',
+            'CANIVE',
             style: GoogleFonts.plusJakartaSans(
               fontSize: titleSize,
               fontWeight: FontWeight.w800,

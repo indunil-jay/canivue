@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:canivue/core/theme/app_theme.dart';
+import 'package:canivue/core/design_system/tokens/tokens.dart';
 import 'package:canivue/core/widgets/luxury_biometric_ring.dart';
 import 'package:canivue/features/pets/models/pet_model.dart';
 
@@ -26,17 +26,17 @@ class PetCard extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF131D2D).withValues(alpha: 0.85) : Colors.white,
+        color: isDark ? AppColors.darkCard : Colors.white,
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
-          color: isDark ? Colors.white.withValues(alpha: 0.12) : const Color(0xFFE2E8F0),
+          color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
           width: 1.2,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: isDark ? 0.25 : 0.05),
+            color: Colors.black.withValues(alpha: isDark ? 0.22 : 0.04),
             blurRadius: 18,
-            offset: const Offset(0, 6),
+            offset: const Offset(0, 5),
           ),
         ],
       ),
@@ -54,19 +54,23 @@ class PetCard extends StatelessWidget {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Avatar with gradient border / shadow
+                    // Avatar with warm sanctuary border / shadow
                     Hero(
                       tag: 'pet-avatar-${pet.id}',
                       child: Container(
                         height: 72,
                         width: 72,
                         decoration: BoxDecoration(
-                          gradient: AppTheme.aquaGradient,
+                          gradient: const LinearGradient(
+                            colors: [Color(0xFF0F766E), Color(0xFF14B8A6)],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
                           borderRadius: BorderRadius.circular(22),
                           border: Border.all(color: Colors.white, width: 2),
                           boxShadow: [
                             BoxShadow(
-                              color: AppTheme.primaryBlue.withValues(alpha: 0.25),
+                              color: AppColors.primary.withValues(alpha: 0.25),
                               blurRadius: 10,
                               offset: const Offset(0, 4),
                             ),
@@ -79,77 +83,56 @@ class PetCard extends StatelessWidget {
                                 fit: BoxFit.cover,
                                 errorBuilder: (context, error, stackTrace) => Center(
                                   child: Text(
-                                    pet.avatarEmoji,
-                                    style: const TextStyle(fontSize: 34),
+                                    pet.species.toLowerCase() == 'cat' ? '🐱' : '🐶',
+                                    style: const TextStyle(fontSize: 32),
                                   ),
                                 ),
                               )
-                            : pet.assetImagePath != null
-                                ? Image.asset(
-                                    pet.assetImagePath!,
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (context, error, stackTrace) => Center(
-                                      child: Text(
-                                        pet.avatarEmoji,
-                                        style: const TextStyle(fontSize: 34),
-                                      ),
-                                    ),
-                                  )
-                                : Center(
-                                    child: Text(
-                                      pet.avatarEmoji,
-                                      style: const TextStyle(fontSize: 34),
-                                    ),
-                                  ),
+                            : Center(
+                                child: Text(
+                                  pet.species.toLowerCase() == 'cat' ? '🐱' : '🐶',
+                                  style: const TextStyle(fontSize: 32),
+                                ),
+                              ),
                       ),
                     ),
                     const SizedBox(width: 14),
 
-                    // Name, Breed & Chips
+                    // Center Details
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
                             children: [
-                              Expanded(
+                              Flexible(
                                 child: Text(
                                   pet.name,
                                   style: GoogleFonts.plusJakartaSans(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 19,
-                                    color: isDark ? Colors.white : const Color(0xFF0F172A),
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w800,
+                                    color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
                                     letterSpacing: -0.3,
                                   ),
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ),
+                              const SizedBox(width: 6),
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3.5),
+                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                 decoration: BoxDecoration(
-                                  color: (isMale ? const Color(0xFF0066FF) : const Color(0xFFEC4899)).withValues(alpha: isDark ? 0.2 : 0.12),
-                                  borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(
-                                    color: (isMale ? const Color(0xFF0066FF) : const Color(0xFFEC4899)).withValues(alpha: 0.3),
-                                  ),
+                                  color: isMale
+                                      ? (isDark ? const Color(0x330284C7) : const Color(0xFFEAF4FB))
+                                      : (isDark ? const Color(0x33F43F5E) : const Color(0xFFFDF2F0)),
+                                  borderRadius: BorderRadius.circular(8),
                                 ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(
-                                      isMale ? Icons.male_rounded : Icons.female_rounded,
-                                      size: 13,
-                                      color: isMale ? (isDark ? AppTheme.cyanAccent : const Color(0xFF0066FF)) : const Color(0xFFEC4899),
-                                    ),
-                                    const SizedBox(width: 3),
-                                    Text(
-                                      pet.gender,
-                                      style: GoogleFonts.plusJakartaSans(
-                                        fontSize: 11,
-                                        fontWeight: FontWeight.bold,
-                                        color: isMale ? (isDark ? AppTheme.cyanAccent : const Color(0xFF0066FF)) : const Color(0xFFEC4899),
-                                      ),
-                                    ),
-                                  ],
+                                child: Text(
+                                  isMale ? '♂' : '♀',
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.bold,
+                                    color: isMale ? const Color(0xFF0284C7) : const Color(0xFFF43F5E),
+                                  ),
                                 ),
                               ),
                             ],
@@ -158,18 +141,19 @@ class PetCard extends StatelessWidget {
                           Text(
                             pet.breed,
                             style: GoogleFonts.plusJakartaSans(
-                              color: isDark ? Colors.white70 : const Color(0xFF64748B),
                               fontSize: 13,
                               fontWeight: FontWeight.w500,
+                              color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
                             ),
                           ),
                           const SizedBox(height: 8),
 
-                          // Age & Weight Badges
-                          Row(
+                          // Mini Info Pills
+                          Wrap(
+                            spacing: 6,
+                            runSpacing: 4,
                             children: [
-                              _buildMiniPill(Icons.cake_outlined, '${pet.ageYears} yrs', isDark),
-                              const SizedBox(width: 8),
+                              _buildMiniPill(Icons.cake_outlined, '${pet.ageYears}y ${pet.ageMonths}m', isDark),
                               _buildMiniPill(Icons.monitor_weight_outlined, '${pet.weightKg.toStringAsFixed(1)} kg', isDark),
                             ],
                           ),
@@ -181,11 +165,10 @@ class PetCard extends StatelessWidget {
                     const SizedBox(width: 8),
                     const LuxuryBiometricRing(
                       percentage: 96,
-                      size: 54,
+                      size: 52,
                       strokeWidth: 5,
-                      glow: false,
+                      accentColor: Color(0xFF10B981),
                       valueText: '96',
-                      unitText: '%',
                     ),
                   ],
                 ),
@@ -193,7 +176,7 @@ class PetCard extends StatelessWidget {
 
                 Divider(
                   height: 1,
-                  color: isDark ? Colors.white.withValues(alpha: 0.08) : const Color(0xFFF1F5F9),
+                  color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
                 ),
                 const SizedBox(height: 12),
 
@@ -205,10 +188,10 @@ class PetCard extends StatelessWidget {
                       child: Row(
                         children: [
                           Container(
-                            height: 7,
-                            width: 7,
+                            height: 8,
+                            width: 8,
                             decoration: const BoxDecoration(
-                              color: AppTheme.emeraldAccent,
+                              color: Color(0xFF10B981),
                               shape: BoxShape.circle,
                             ),
                           ),
@@ -219,7 +202,7 @@ class PetCard extends StatelessWidget {
                               style: GoogleFonts.plusJakartaSans(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w600,
-                                color: isDark ? Colors.white70 : const Color(0xFF64748B),
+                                color: isDark ? AppColors.darkMutedText : AppColors.lightMutedText,
                               ),
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -230,16 +213,16 @@ class PetCard extends StatelessWidget {
                     const SizedBox(width: 8),
                     InkWell(
                       onTap: onScanTap ?? onTap,
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(16),
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                         decoration: BoxDecoration(
-                          gradient: AppTheme.primaryGradient,
-                          borderRadius: BorderRadius.circular(12),
+                          color: isDark ? AppColors.charcoalBlack : const Color(0xFF181A20),
+                          borderRadius: BorderRadius.circular(16),
                           boxShadow: [
                             BoxShadow(
-                              color: AppTheme.primaryBlue.withValues(alpha: 0.3),
-                              blurRadius: 8,
+                              color: Colors.black.withValues(alpha: 0.2),
+                              blurRadius: 6,
                               offset: const Offset(0, 2),
                             ),
                           ],
@@ -248,12 +231,12 @@ class PetCard extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             const Icon(Icons.auto_awesome, size: 13, color: Colors.white),
-                            const SizedBox(width: 4),
+                            const SizedBox(width: 5),
                             Text(
-                              'AI Check',
+                              'AI Scan',
                               style: GoogleFonts.plusJakartaSans(
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
+                                fontSize: 11.5,
+                                fontWeight: FontWeight.w800,
                                 color: Colors.white,
                               ),
                             ),
@@ -275,23 +258,23 @@ class PetCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
-        color: isDark ? Colors.white.withValues(alpha: 0.06) : const Color(0xFFF1F5F9),
+        color: isDark ? const Color(0x1AFFFFFF) : const Color(0xFFF7F5F0),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: isDark ? Colors.white.withValues(alpha: 0.1) : const Color(0xFFE2E8F0),
+          color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
         ),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 12, color: isDark ? AppTheme.cyanAccent : AppTheme.primaryBlue),
+          Icon(icon, size: 12, color: isDark ? AppColors.primaryOnDark : AppColors.primary),
           const SizedBox(width: 4),
           Text(
             text,
             style: GoogleFonts.plusJakartaSans(
               fontSize: 11.5,
               fontWeight: FontWeight.w600,
-              color: isDark ? Colors.white.withValues(alpha: 0.8) : const Color(0xFF475569),
+              color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
             ),
           ),
         ],

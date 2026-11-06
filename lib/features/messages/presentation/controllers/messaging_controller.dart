@@ -37,9 +37,33 @@ class ChatController extends FamilyAsyncNotifier<List<ChatMessage>, String> {
     final sent = await repo.sendMessage(_conversationId, text.trim());
     state = AsyncData([...(state.value ?? const []), sent]);
   }
+
+  Future<void> sendTelemetry({
+    required String dogName,
+    required int heartRate,
+    required int vitalityScore,
+    required double temperature,
+  }) async {
+    final repo = ref.read(messagingRepositoryProvider);
+    final sent = await repo.sendTelemetry(
+      _conversationId,
+      dogName: dogName,
+      heartRate: heartRate,
+      vitalityScore: vitalityScore,
+      temperature: temperature,
+    );
+    state = AsyncData([...(state.value ?? const []), sent]);
+  }
+
+  Future<void> sendPhoto({required String label}) async {
+    final repo = ref.read(messagingRepositoryProvider);
+    final sent = await repo.sendPhoto(_conversationId, label: label);
+    state = AsyncData([...(state.value ?? const []), sent]);
+  }
 }
 
-final chatControllerProvider = AsyncNotifierProvider.family<ChatController, List<ChatMessage>, String>(ChatController.new);
+final chatControllerProvider =
+    AsyncNotifierProvider.family<ChatController, List<ChatMessage>, String>(ChatController.new);
 
 /// Whether the vet is "typing" — a purely cosmetic timer tied to sending a
 /// message, mirroring the fake repository's ~2s auto-reply delay.

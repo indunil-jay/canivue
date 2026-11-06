@@ -365,7 +365,6 @@ class _PetDetailScreenState extends State<PetDetailScreen> with SingleTickerProv
         ],
       ),
       body: AmbientPawBackdrop(
-        showContainerLines: false,
         showPawWatermarks: true,
         showParticles: true,
         child: SafeArea(

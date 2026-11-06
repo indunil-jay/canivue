@@ -68,7 +68,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
     ref.read(authControllerProvider.notifier).signIn(
           email: _emailController.text.trim().isNotEmpty
               ? _emailController.text.trim()
-              : 'alex@canivue.com',
+              : 'alex@canive.com',
           name: 'Alex',
         );
 
@@ -78,7 +78,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
 
   void _handleVetSignIn() {
     ref.read(authControllerProvider.notifier).signIn(
-          email: 'sarah.jenkins@canivue.com',
+          email: 'sarah.jenkins@canive.com',
           name: 'Dr. Sarah Jenkins',
           role: UserRole.veterinarian,
         );
@@ -158,7 +158,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                     // Email Field
                     CustomTextField(
                       label: 'Email Address',
-                      hintText: 'e.g. alex@canivue.com',
+                      hintText: 'e.g. alex@canive.com',
                       prefixIcon: Icons.alternate_email_rounded,
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,

@@ -5,4 +5,7 @@ import 'package:canivue/features/pets/models/pet_model.dart';
 /// presentation-layer changes (see the `canivue-architecture` skill).
 abstract class DogRepository {
   Future<List<Pet>> fetchDogs();
+  Future<void> addDog(Pet pet);
+  Future<void> updateDog(Pet pet);
+  Future<void> deleteDog(String petId);
 }

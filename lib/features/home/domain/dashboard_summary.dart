@@ -63,7 +63,7 @@ enum DeviceConnectionState { connected, disconnected, notPaired }
 class DeviceStatus {
   const DeviceStatus({
     required this.state,
-    this.deviceName = 'Canivue Smart Collar',
+    this.deviceName = 'Canive Smart Collar',
     this.batteryPercent,
     this.lastSyncedAt,
   });

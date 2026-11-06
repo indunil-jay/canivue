@@ -5,10 +5,44 @@ import 'package:canivue/features/pets/models/pet_model.dart';
 
 final dogRepositoryProvider = Provider<DogRepository>((ref) => FakeDogRepository());
 
-/// All of the signed-in owner's dogs.
-final dogsProvider = FutureProvider<List<Pet>>((ref) {
-  return ref.watch(dogRepositoryProvider).fetchDogs();
-});
+/// All of the signed-in owner's dogs with full CRUD capabilities.
+class DogsNotifier extends AsyncNotifier<List<Pet>> {
+  @override
+  Future<List<Pet>> build() {
+    return ref.watch(dogRepositoryProvider).fetchDogs();
+  }
+
+  Future<void> addDog(Pet pet) async {
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(() async {
+      await ref.read(dogRepositoryProvider).addDog(pet);
+      ref.read(activeDogIdProvider.notifier).state = pet.id;
+      return ref.read(dogRepositoryProvider).fetchDogs();
+    });
+  }
+
+  Future<void> updateDog(Pet pet) async {
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(() async {
+      await ref.read(dogRepositoryProvider).updateDog(pet);
+      return ref.read(dogRepositoryProvider).fetchDogs();
+    });
+  }
+
+  Future<void> deleteDog(String petId) async {
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(() async {
+      await ref.read(dogRepositoryProvider).deleteDog(petId);
+      final remaining = await ref.read(dogRepositoryProvider).fetchDogs();
+      if (ref.read(activeDogIdProvider) == petId) {
+        ref.read(activeDogIdProvider.notifier).state = remaining.isNotEmpty ? remaining.first.id : null;
+      }
+      return remaining;
+    });
+  }
+}
+
+final dogsProvider = AsyncNotifierProvider<DogsNotifier, List<Pet>>(DogsNotifier.new);
 
 /// The explicitly-selected dog id, if the owner has switched away from the
 /// default. `null` means "use the first dog" — see [activeDogProvider].

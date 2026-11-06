@@ -16,8 +16,8 @@ class FakeNutritionRepository implements NutritionRepository {
           bodyConditionScore: 6,
           dailyCalorieTarget: 1450,
           feedingSchedule: [
-            FeedingScheduleEntry(time: '7:00 AM', foodName: 'Canivue Adult Formula', portionGrams: 180),
-            FeedingScheduleEntry(time: '6:00 PM', foodName: 'Canivue Adult Formula', portionGrams: 180),
+            FeedingScheduleEntry(time: '7:00 AM', foodName: 'Canive Adult Formula', portionGrams: 180),
+            FeedingScheduleEntry(time: '6:00 PM', foodName: 'Canive Adult Formula', portionGrams: 180),
           ],
           nutritionGoal: 'Gradual weight reduction — slightly overweight for breed and frame.',
         ),
@@ -28,8 +28,8 @@ class FakeNutritionRepository implements NutritionRepository {
           bodyConditionScore: 5,
           dailyCalorieTarget: 1300,
           feedingSchedule: [
-            FeedingScheduleEntry(time: '7:30 AM', foodName: 'Canivue Active Formula', portionGrams: 160),
-            FeedingScheduleEntry(time: '5:30 PM', foodName: 'Canivue Active Formula', portionGrams: 160),
+            FeedingScheduleEntry(time: '7:30 AM', foodName: 'Canive Active Formula', portionGrams: 160),
+            FeedingScheduleEntry(time: '5:30 PM', foodName: 'Canive Active Formula', portionGrams: 160),
           ],
           nutritionGoal: 'Maintain current weight — ideal body condition.',
         ),
@@ -40,8 +40,8 @@ class FakeNutritionRepository implements NutritionRepository {
           bodyConditionScore: 4,
           dailyCalorieTarget: 620,
           feedingSchedule: [
-            FeedingScheduleEntry(time: '8:00 AM', foodName: 'Canivue Small Breed Formula', portionGrams: 90),
-            FeedingScheduleEntry(time: '6:30 PM', foodName: 'Canivue Small Breed Formula', portionGrams: 90),
+            FeedingScheduleEntry(time: '8:00 AM', foodName: 'Canive Small Breed Formula', portionGrams: 90),
+            FeedingScheduleEntry(time: '6:30 PM', foodName: 'Canive Small Breed Formula', portionGrams: 90),
           ],
           nutritionGoal: 'Slight weight gain recommended — monitor appetite.',
         ),

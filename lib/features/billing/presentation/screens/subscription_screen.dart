@@ -68,7 +68,6 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
         ],
       ),
       body: AmbientPawBackdrop(
-        showContainerLines: false,
         showPawWatermarks: true,
         showParticles: true,
         child: subscriptionAsync.when(

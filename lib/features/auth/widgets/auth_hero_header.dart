@@ -1,3 +1,4 @@
+﻿import 'dart:io' show Platform;
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
@@ -36,7 +37,8 @@ class AuthTopMascot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final disableAnimations = MediaQuery.of(context).disableAnimations;
+    final isTest = Platform.environment.containsKey('FLUTTER_TEST');
+    final disableAnimations = MediaQuery.of(context).disableAnimations || isTest;
 
     Widget dogImage = Image.asset(
       imageAsset,

@@ -24,11 +24,14 @@ class ActiveDogSwitcher extends ConsumerWidget {
   final List<Pet> dogs;
   final Pet activeDog;
 
-  void _onAddPet(BuildContext context) {
+  void _onAddPet(BuildContext context, WidgetRef ref) async {
     HapticFeedback.lightImpact();
-    Navigator.of(context).push(
+    final newPet = await Navigator.of(context).push<Pet>(
       MaterialPageRoute(builder: (_) => const AddEditPetScreen()),
     );
+    if (newPet != null) {
+      await ref.read(dogsProvider.notifier).addDog(newPet);
+    }
   }
 
   @override
@@ -46,7 +49,7 @@ class ActiveDogSwitcher extends ConsumerWidget {
         itemBuilder: (context, index) {
           if (index == dogs.length) {
             // "Add Pet" action pill
-            return _AddPetButton(onTap: () => _onAddPet(context), isDark: isDark);
+            return _AddPetButton(onTap: () => _onAddPet(context, ref), isDark: isDark);
           }
 
           final dog = dogs[index];

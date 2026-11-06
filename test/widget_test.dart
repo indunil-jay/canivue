@@ -16,22 +16,25 @@ import 'package:canivue/features/pets/screens/pet_detail_screen.dart';
 import 'package:canivue/features/pets/screens/pet_list_screen.dart';
 import 'package:canivue/features/profile/screens/personal_information_screen.dart';
 import 'package:canivue/features/profile/screens/profile_screen.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:canivue/main.dart';
 
 /// Test-only [AuthController] that starts already signed in, so screens
 /// gated behind [authControllerProvider] can be smoke-tested in isolation.
 class _SignedInAuthController extends AuthController {
   @override
-  AppUser? build() => const AppUser(email: 'alex@canivue.com', name: 'Alex');
+  AppUser? build() => const AppUser(email: 'alex@canive.com', name: 'Alex');
 }
 
 void main() {
+  setUp(() { Animate.restartOnHotReload = false; });
+  tearDown(() { Animate.restartOnHotReload = true; });
   testWidgets('CanivueApp launches with the onboarding flow smoke test', (WidgetTester tester) async {
     await tester.pumpWidget(const CanivueApp());
     // Flush the splash screen's brief branded pause before it routes on,
     // then pump once more so go_router's resulting rebuild lands.
     await tester.pump(const Duration(milliseconds: 1200));
-    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
 
     expect(find.text('Your Dog\'s Health,\nAll in One Place'), findsOneWidget);
     expect(find.text('Skip'), findsOneWidget);
@@ -42,10 +45,11 @@ void main() {
     // Flush the splash screen's brief branded pause before it routes on,
     // then pump once more so go_router's resulting rebuild lands.
     await tester.pump(const Duration(milliseconds: 1200));
-    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
 
     await tester.tap(find.text('Skip'));
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 600));
+    await tester.pump(const Duration(milliseconds: 600));
 
     expect(find.text('Welcome Back'), findsOneWidget);
     expect(find.text('Email Address'), findsOneWidget);
@@ -63,6 +67,7 @@ void main() {
         ),
       ),
     );
+    await tester.pump(const Duration(milliseconds: 500));
 
     expect(find.text('Create an Account'), findsOneWidget);
     expect(find.text('Full Name'), findsOneWidget);
@@ -78,6 +83,7 @@ void main() {
         home: ForgotPasswordScreen(),
       ),
     );
+    await tester.pump(const Duration(milliseconds: 500));
 
     expect(find.text('Forgot Password?'), findsOneWidget);
     expect(find.text('Email Address'), findsOneWidget);
@@ -90,6 +96,7 @@ void main() {
         home: OtpVerificationScreen(email: 'test@example.com'),
       ),
     );
+    await tester.pump(const Duration(milliseconds: 500));
 
     expect(find.text('Enter Verification Code'), findsOneWidget);
     expect(find.textContaining('test@example.com'), findsOneWidget);
@@ -102,6 +109,7 @@ void main() {
         home: ResetPasswordScreen(email: 'test@example.com'),
       ),
     );
+    await tester.pump(const Duration(milliseconds: 500));
 
     expect(find.text('Set New Password'), findsOneWidget);
     expect(find.text('New Password'), findsOneWidget);
@@ -122,10 +130,10 @@ void main() {
     await tester.pump(const Duration(milliseconds: 700));
     await tester.pump(const Duration(milliseconds: 700));
 
-    expect(find.text('Hello, Alex 👋'), findsOneWidget);
-    expect(find.text('Quick Services'), findsOneWidget);
-    expect(find.text('Health Check'), findsOneWidget);
-    expect(find.text('Vaccinations'), findsOneWidget);
+    expect(find.text('canive'), findsOneWidget);
+    expect(find.text('Main Feature Services'), findsOneWidget);
+    expect(find.text('AI Health Scanner'), findsOneWidget);
+    expect(find.text('Vet Consult & Bookings'), findsOneWidget);
   });
 
   testWidgets('ProfileScreen renders correctly smoke test', (WidgetTester tester) async {
@@ -140,7 +148,7 @@ void main() {
 
     expect(find.text('Profile & Settings'), findsOneWidget);
     expect(find.text('Alex'), findsOneWidget);
-    expect(find.text('alex@canivue.com'), findsOneWidget);
+    expect(find.text('alex@canive.com'), findsOneWidget);
     expect(find.text('MY DOGS'), findsOneWidget);
     expect(find.text('Buddy'), findsOneWidget);
     expect(find.text('Luna'), findsOneWidget);
@@ -152,7 +160,7 @@ void main() {
     await tester.pumpWidget(
       const MaterialApp(
         home: PersonalInformationScreen(
-          userEmail: 'alex@canivue.com',
+          userEmail: 'alex@canive.com',
           userName: 'Alex Taylor',
         ),
       ),

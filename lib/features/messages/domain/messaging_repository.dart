@@ -8,6 +8,19 @@ abstract class MessagingRepository {
 
   Future<ChatMessage> sendMessage(String conversationId, String text);
 
+  Future<ChatMessage> sendTelemetry(
+    String conversationId, {
+    required String dogName,
+    required int heartRate,
+    required int vitalityScore,
+    required double temperature,
+  });
+
+  Future<ChatMessage> sendPhoto(
+    String conversationId, {
+    required String label,
+  });
+
   /// Emits an auto-reply a short while after a message is sent, so the chat
   /// screen has a real typing-indicator/incoming-message moment to render.
   Stream<ChatMessage> watchIncoming(String conversationId);

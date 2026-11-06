@@ -216,7 +216,7 @@ class Pet {
             VaccinationRecord(name: 'Bordetella', dateGiven: DateTime(2025, 7, 2), nextDueDate: DateTime(2026, 1, 2)),
           ],
           medications: const [],
-          insurance: InsuranceInfo(provider: 'Canivue Care', policyNumber: 'CV-40217', expiryDate: DateTime(2026, 6, 30)),
+          insurance: InsuranceInfo(provider: 'Canive Care', policyNumber: 'CV-40217', expiryDate: DateTime(2026, 6, 30)),
         ),
       ];
 }
