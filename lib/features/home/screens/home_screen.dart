@@ -116,24 +116,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   child: CustomScrollView(
                     physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
                     slivers: [
-                      // Search & Quick Filter Bar
+                      // Search Bar
                       SliverToBoxAdapter(
                         child: Padding(
-                          padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+                          padding: const EdgeInsets.fromLTRB(16, 12, 16, 6),
                           child: _buildSearchBar(context, isDark, a11y),
-                        ),
-                      ),
-                      SliverToBoxAdapter(
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 8, bottom: 8),
-                          child: _buildSegmentedFilterBar(isDark, a11y),
                         ),
                       ),
 
                       // Sanctuary Overview Dashboard
                       SliverToBoxAdapter(
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                           child: _buildHomeOverviewTab(context, ref, isDark, a11y),
                         ),
                       ),
@@ -1084,76 +1078,27 @@ class _DashboardOverviewContent extends ConsumerWidget {
             ),
           ),
 
-          // 1. UNIVERSAL MAIN FEATURE SERVICE NAVIGATION HUB
-          // Removes dog selection bottleneck: 1-tap direct access to all Canivue services!
-          HomeFeatureServiceHub(
-            dog: dog,
-            dogs: dogs,
-            summary: summary,
-          ),
+          // 1. HERO SPOTLIGHT: Instant Multimodal Canine AI Health Scan
+          _buildAiHeroSpotlight(context, isDark),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: 22),
 
-          // 2. Active Pet Switcher row (Accessible, non-blocking)
+          // 2. Active Pet Switcher & Hero Showcase Card
           if (dogs.isNotEmpty) ...[
             ActiveDogSwitcher(dogs: dogs, activeDog: effectiveDog),
-            const SizedBox(height: 18),
+            const SizedBox(height: 14),
           ],
-
-          // 3. Reimagined Pet Showcase Hero Card
           HomeHeroPetCard(
             dog: effectiveDog,
             dogs: dogs,
             summary: summary,
           ),
 
-          const SizedBox(height: 20),
-
-          // 4. Side-by-Side Quick Action Tiles
-          HomeQuickActionTiles(dog: effectiveDog, dogs: dogs),
-
           const SizedBox(height: 22),
 
-          // 5. Category Quick Navigation Row
-          HomeCategoryPills(dog: effectiveDog, dogs: dogs),
-
-          const SizedBox(height: 26),
-
-          // 6. Biometric Health Cockpit & Ring Overview
-          _buildHealthCockpitCard(context, summary, isDark),
-
-          const SizedBox(height: 20),
-
-          // 7. Complete 4-Stat Live Telemetry Grid (Activity, Sleep, Heart Rate, Hydration)
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _sectionHeader('Daily Biometrics & Activity', isDark),
-              Text(
-                'Today',
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: isDark ? const Color(0xFF2DD4BF) : AppColors.primary,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          _buildVitalsGrid(context, summary.vitals, isDark),
-
-          const SizedBox(height: 26),
-
-          // Complete 5-Service Interactive Cards Grid
-          _sectionHeader('Quick Services', isDark),
-          const SizedBox(height: 12),
-          _buildQuickServicesGrid(context, ref, isDark),
-
-          const SizedBox(height: 26),
-
-          // 8. Multimodal AI Insights Card
-          _sectionHeader('Multimodal AI Insights', isDark),
-          const SizedBox(height: 12),
+          // 3. Multimodal AI Biometric Insights & Risk Analysis
+          _sectionHeader('Multimodal AI Health Insights', isDark),
+          const SizedBox(height: 10),
           AiInsightCard(
             insight: summary.insight,
             onTap: () {
@@ -1166,9 +1111,38 @@ class _DashboardOverviewContent extends ConsumerWidget {
             },
           ),
 
+          const SizedBox(height: 24),
+
+          // 4. Live 4-Stat Telemetry Vitals Grid (Activity, Sleep, Heart Rate, Hydration)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _sectionHeader('Collar Telemetry Vitals', isDark),
+              Text(
+                'Live Sync',
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                  color: isDark ? const Color(0xFF2DD4BF) : AppColors.primary,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          _buildVitalsGrid(context, summary.vitals, isDark),
+
           const SizedBox(height: 26),
 
-          // 9. Care Reminders & Preventive Health
+          // 5. Unified Canivue Services Hub (Single source of truth, NO DUPLICATES)
+          HomeFeatureServiceHub(
+            dog: dog,
+            dogs: dogs,
+            summary: summary,
+          ),
+
+          const SizedBox(height: 26),
+
+          // 6. Care Reminders & Preventive Health
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -1227,94 +1201,271 @@ class _DashboardOverviewContent extends ConsumerWidget {
     );
   }
 
-  Widget _buildHealthCockpitCard(BuildContext context, DashboardSummary summary, bool isDark) {
-    return InkWell(
-      onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => PetDetailScreen(pet: effectiveDog))),
-      borderRadius: BorderRadius.circular(28),
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF1A2230) : Colors.white,
-          borderRadius: BorderRadius.circular(28),
-          border: Border.all(
-            color: isDark ? const Color(0x332DD4BF) : const Color(0xFFE2E8F0),
-            width: 1.2,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: isDark ? Colors.black.withValues(alpha: 0.3) : const Color(0x100F766E),
-              blurRadius: 18,
-              offset: const Offset(0, 6),
-            ),
+  Widget _buildAiHeroSpotlight(BuildContext context, bool isDark) {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [
+            Color(0xFF0F766E), // Deep Emerald
+            Color(0xFF14B8A6), // Vibrant Teal
+            Color(0xFF0D9488),
           ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
-        child: Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: isDark ? const Color(0x332DD4BF) : const Color(0xFFE6F4F1),
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          height: 7,
-                          width: 7,
-                          decoration: const BoxDecoration(
-                            color: Color(0xFF10B981),
-                            shape: BoxShape.circle,
-                          ),
-                        ),
-                        const SizedBox(width: 6),
-                        Text(
-                          '${summary.vitals.heartRateBpm} bpm • ${summary.vitals.temperatureC.toStringAsFixed(1)}°C',
-                          style: GoogleFonts.plusJakartaSans(
-                            color: isDark ? const Color(0xFF2DD4BF) : const Color(0xFF0F766E),
-                            fontSize: 11,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    "${effectiveDog.name}'s Health Cockpit",
-                    style: GoogleFonts.plusJakartaSans(
-                      color: isDark ? Colors.white : const Color(0xFF181A20),
-                      fontSize: 18,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: -0.3,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'Multimodal AI fusing visual scans, bio-collar metrics & symptom signals.',
-                    style: GoogleFonts.plusJakartaSans(
-                      color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
-                      fontSize: 12.5,
-                      height: 1.35,
-                    ),
-                  ),
-                ],
+        borderRadius: BorderRadius.circular(28),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF0F766E).withValues(alpha: isDark ? 0.45 : 0.25),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: Stack(
+        children: [
+          Positioned(
+            right: -10,
+            bottom: -15,
+            child: Opacity(
+              opacity: 0.12,
+              child: const Text(
+                '🐾',
+                style: TextStyle(fontSize: 120),
               ),
             ),
-            const SizedBox(width: 14),
-            LuxuryBiometricRing(
-              percentage: summary.healthScore.toDouble(),
-              size: 94,
-              strokeWidth: 8.5,
-              valueText: '${summary.healthScore}',
-              unitText: '%',
-              label: 'Health Score',
+          ),
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Top Tag & Model Status Pill
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.22),
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.3),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.auto_awesome_rounded, color: Color(0xFFFED25E), size: 14),
+                          const SizedBox(width: 6),
+                          Text(
+                            'MULTIMODAL AI 2.0',
+                            style: GoogleFonts.plusJakartaSans(
+                              color: Colors.white,
+                              fontSize: 10.5,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 0.8,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF10B981).withValues(alpha: 0.25),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: const Color(0xFF34D399).withValues(alpha: 0.4)),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            height: 6,
+                            width: 6,
+                            decoration: const BoxDecoration(
+                              color: Color(0xFF34D399),
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                          const SizedBox(width: 5),
+                          Text(
+                            '98.4% Confidence',
+                            style: GoogleFonts.plusJakartaSans(
+                              color: Colors.white,
+                              fontSize: 10.5,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 14),
+
+                // Main Heading
+                Text(
+                  'Instant Canine AI Health Scan',
+                  style: GoogleFonts.plusJakartaSans(
+                    color: Colors.white,
+                    fontSize: 21 * a11y.textScaleFactor,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: -0.5,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  'Early symptom triage across eyes, coat, skin, and gait fused with live smart collar vitals.',
+                  style: GoogleFonts.plusJakartaSans(
+                    color: Colors.white.withValues(alpha: 0.92),
+                    fontSize: 13,
+                    height: 1.4,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(height: 18),
+
+                // Primary CTA button
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        onPressed: () => _navigateToHealthCheck(context),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          foregroundColor: const Color(0xFF0F766E),
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+                          elevation: 0,
+                          shadowColor: Colors.transparent,
+                        ),
+                        icon: const Icon(Icons.document_scanner_rounded, size: 20, color: Color(0xFF0F766E)),
+                        label: Text(
+                          'Launch AI Scanner',
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w800,
+                            color: const Color(0xFF0F766E),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    InkWell(
+                      onTap: () {
+                        HapticFeedback.lightImpact();
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => PredictionHistoryScreen(dogId: effectiveDog.id, dogName: effectiveDog.name),
+                          ),
+                        );
+                      },
+                      borderRadius: BorderRadius.circular(18),
+                      child: Container(
+                        padding: const EdgeInsets.all(14),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.18),
+                          borderRadius: BorderRadius.circular(18),
+                          border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
+                        ),
+                        child: const Icon(
+                          Icons.insights_rounded,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 14),
+
+                // Targeted Quick Symptom Probes
+                Text(
+                  'FAST SYMPTOM PROBES',
+                  style: GoogleFonts.plusJakartaSans(
+                    color: Colors.white.withValues(alpha: 0.75),
+                    fontSize: 10,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 0.8,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  physics: const BouncingScrollPhysics(),
+                  child: Row(
+                    children: [
+                      _aiSymptomChip(
+                        emoji: '👁️',
+                        label: 'Eyes & Cloudiness',
+                        onTap: () => _navigateToHealthCheck(context),
+                      ),
+                      const SizedBox(width: 8),
+                      _aiSymptomChip(
+                        emoji: '🐾',
+                        label: 'Paw & Hotspots',
+                        onTap: () => _navigateToHealthCheck(context),
+                      ),
+                      const SizedBox(width: 8),
+                      _aiSymptomChip(
+                        emoji: '👂',
+                        label: 'Ear & Odor',
+                        onTap: () => _navigateToHealthCheck(context),
+                      ),
+                      const SizedBox(width: 8),
+                      _aiSymptomChip(
+                        emoji: '🦴',
+                        label: 'Limping & Joints',
+                        onTap: () => _navigateToHealthCheck(context),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _aiSymptomChip({
+    required String emoji,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () {
+          HapticFeedback.lightImpact();
+          onTap();
+        },
+        borderRadius: BorderRadius.circular(14),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: 0.18),
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.25)),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(emoji, style: const TextStyle(fontSize: 13)),
+              const SizedBox(width: 5),
+              Text(
+                label,
+                style: GoogleFonts.plusJakartaSans(
+                  color: Colors.white,
+                  fontSize: 11.5,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -1419,167 +1570,6 @@ class _DashboardOverviewContent extends ConsumerWidget {
           ],
         ),
       ],
-    );
-  }
-
-  Widget _buildQuickServicesGrid(BuildContext context, WidgetRef ref, bool isDark) {
-    return GridView.count(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      crossAxisCount: 2,
-      crossAxisSpacing: 14,
-      mainAxisSpacing: 14,
-      childAspectRatio: 1.24,
-      children: [
-        _buildServiceCard(
-          title: 'Health Check',
-          subtitle: 'Multimodal AI Vision',
-          icon: Icons.health_and_safety_rounded,
-          gradient: const LinearGradient(
-            colors: [Color(0xFF0F766E), Color(0xFF14B8A6)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          isDark: isDark,
-          onTap: () => _navigateToHealthCheck(context),
-        ),
-        _buildServiceCard(
-          title: 'Vaccinations',
-          subtitle: 'Schedule & Alerts',
-          icon: Icons.vaccines_rounded,
-          gradient: const LinearGradient(
-            colors: [Color(0xFF0E7490), Color(0xFF06B6B0)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          isDark: isDark,
-          onTap: () => AppFeedback.showToast(
-            context,
-            title: 'Vaccination Tracker 💉',
-            message: 'All core vaccinations (Rabies, DHPP) are up to date for your dogs.',
-            type: ToastType.info,
-          ),
-        ),
-        _buildServiceCard(
-          title: 'Dog Telemetry',
-          subtitle: 'Collar & Biometrics',
-          icon: Icons.bluetooth_connected_rounded,
-          gradient: const LinearGradient(
-            colors: [Color(0xFF4F46E5), Color(0xFF6366F1)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          isDark: isDark,
-          onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => DeviceManagementScreen(dogId: effectiveDog.id, dogName: effectiveDog.name)),
-            );
-          },
-        ),
-        _buildServiceCard(
-          title: 'Nutrition',
-          subtitle: 'Weight & Feeding Plan',
-          icon: Icons.restaurant_rounded,
-          gradient: const LinearGradient(
-            colors: [Color(0xFFB45309), Color(0xFFFBBF24)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          isDark: isDark,
-          onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => NutritionScreen(dogId: effectiveDog.id, dogName: effectiveDog.name)),
-            );
-          },
-        ),
-        _buildServiceCard(
-          title: 'Vet Bookings',
-          subtitle: 'Consultations',
-          icon: Icons.calendar_month_rounded,
-          gradient: const LinearGradient(
-            colors: [Color(0xFF059669), Color(0xFF10B981)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          isDark: isDark,
-          onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => VetDiscoveryScreen(dogId: effectiveDog.id, dogName: effectiveDog.name)),
-            );
-          },
-        ),
-      ],
-    );
-  }
-
-  Widget _buildServiceCard({
-    required String title,
-    required String subtitle,
-    required IconData icon,
-    required LinearGradient gradient,
-    required bool isDark,
-    VoidCallback? onTap,
-  }) {
-    return InkWell(
-      onTap: onTap ?? () {},
-      borderRadius: BorderRadius.circular(24),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF1E2430) : Colors.white,
-          borderRadius: BorderRadius.circular(24),
-          border: Border.all(
-            color: isDark ? const Color(0x22FFFFFF) : const Color(0xFFE2E8F0),
-            width: 1.1,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: isDark ? 0.25 : 0.04),
-              blurRadius: 14,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(9),
-              decoration: BoxDecoration(
-                gradient: gradient,
-                borderRadius: BorderRadius.circular(14),
-                boxShadow: [
-                  BoxShadow(
-                    color: gradient.colors.first.withValues(alpha: 0.35),
-                    blurRadius: 10,
-                    offset: const Offset(0, 3),
-                  ),
-                ],
-              ),
-              child: Icon(icon, color: Colors.white, size: 20),
-            ),
-            const Spacer(),
-            Text(
-              title,
-              style: GoogleFonts.plusJakartaSans(
-                fontWeight: FontWeight.w800,
-                fontSize: 14,
-                color: isDark ? Colors.white : const Color(0xFF181A20),
-                letterSpacing: -0.2,
-              ),
-            ),
-            const SizedBox(height: 2),
-            Text(
-              subtitle,
-              style: GoogleFonts.plusJakartaSans(
-                color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
-                fontSize: 11,
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
